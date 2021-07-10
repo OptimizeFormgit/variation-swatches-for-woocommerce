@@ -38,6 +38,10 @@ class TA_WC_Variation_Swatches_Admin {
 
 		// Display attribute fields
 		add_action( 'tawcvs_product_attribute_field', array( $this, 'attribute_fields' ), 10, 3 );
+
+		
+		include_once( dirname( __FILE__ ) . '/class-variation-settings.php' );
+		new VSWC_Settings();
 	}
 
 	/**
