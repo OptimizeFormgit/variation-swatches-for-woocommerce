@@ -128,6 +128,8 @@ jQuery( document ).ready( function ( $ ) {
 				closeModal();
 			}
 		} );
+
+		
 	} );
 
 	/**
@@ -139,5 +141,11 @@ jQuery( document ).ready( function ( $ ) {
 		$msg.removeClass( 'error success' ).hide();
 		$modal.hide();
 	}
+
+	// accordion js code
+	
+	
 } );
+
+
 
