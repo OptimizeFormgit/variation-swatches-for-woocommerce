@@ -138,7 +138,7 @@ class VSWC_Settings_Page {
                                                     <!-- vairation switch item -->
                                                     <div class="variation-switcher-item">
                                                         <div class="variation-switcher-label">
-                                                            <h3 class="vs-label-title"> <?php _e('Disable Default Plugin Styliesheet.', 'wcvs');?></h3>
+                                                            <h3 class="vs-label-title"> <?php _e('Disable Default Plugin Stylesheet.', 'wcvs');?></h3>
                                                             <p> <?php _e('Option to enable/disable default plugin stylesheet for theme developer', 'wcvs');?></p>
                                                         </div>
                                                         <div class="variation-switch-field">
@@ -651,7 +651,7 @@ class VSWC_Settings_Page {
 
                                     <!-- widget -->
                                     <div class="swatch-var-widget">
-                                        <h2 class="swatch-video-title"> <?php _e('Works with well..','wcvs')?></h3>
+                                        <h2 class="swatch-video-title"> <?php _e('Works well with..','wcvs')?></h3>
                                         <div class="swatch-var-addon-wrap">
                                             <div class="swatch-var-addon">
                                                 <a href="#" class="swatch-addon-link"><h2><?php _e('WooCommerce Show single variation','wcvs')?></h2></a>
@@ -755,73 +755,6 @@ class VSWC_Settings_Page {
                 <!-- variation body -->
             </div>
         </div>
-
-        <script>
-            (function($){
-                // accordion js
-                $('.variation-item-head').on('click', function(){
-                    $(this).next().slideToggle();
-                    $(this).toggleClass('active-accordion');
-                    
-                });
-
-                // accordion tab 
-
-                $('.accor-tab-btn').on('click', function(){
-                    var index = $(this).index();
-                    $('.accor-tab-btn').removeClass('active-at-btn');
-                    $(this).addClass('active-at-btn');
-                    $('.wcvs-accor-tab-content').hide();
-                    $('.wcvs-accor-tab-content').eq(index).show();
-                });
-
-                $("input[name='item-styling']").change(function() {
-                    if(this.checked) {
-                        $('.vs-item-style').slideDown();
-                    }else{
-                        $('.vs-item-style').slideUp();
-                    }
-                });
-
-                $("input[name='item-hover']").change(function() {
-                    if(this.checked) {
-                        $('.vs-item-hover').slideDown();
-                    }else{
-                        $('.vs-item-hover').slideUp();
-                    }
-                });
-
-                $("input[name='item-selected']").change(function() {
-                    if(this.checked) {
-                        $('.vs-item-selected').slideDown();
-                    }else{
-                        $('.vs-item-selected').slideUp();
-                    }
-                });
-
-                $("input[name='item-font']").change(function() {
-                    if(this.checked) {
-                        $('.vs-item-font').slideDown();
-                    }else{
-                        $('.vs-item-font').slideUp();
-                    }
-                });
-
-                // Add Color Picker to all inputs that have 'color-field' class
-                    $(function() {
-                        $('.vs-color-picker').wpColorPicker();
-                    });
-            })(jQuery);
-            
-        </script>
-
-
-
-
-
-
-
-
 
         <?php
     }

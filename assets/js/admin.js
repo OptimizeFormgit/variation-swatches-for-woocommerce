@@ -148,4 +148,70 @@ jQuery( document ).ready( function ( $ ) {
 } );
 
 
+(function($){
+	// accordion js
+	$('.variation-item-head').on('click', function(){
+		var $clickedHead = $(this);
+		$('.variation-item-head').each(function(){
+			if ( $(this).is($clickedHead) ) {
+				// Do nothing
+			}
+			else {
+				$(this).removeClass('active-accordion');
+				$(this).next().slideUp();
+			}
+		});
+		$clickedHead.next().slideToggle();
+		$clickedHead.toggleClass('active-accordion');
+		
+	});
+
+	// accordion tab 
+
+	$('.accor-tab-btn').on('click', function(){
+		var index = $(this).index();
+		$('.accor-tab-btn').removeClass('active-at-btn');
+		$(this).addClass('active-at-btn');
+		$('.wcvs-accor-tab-content').hide();
+		$('.wcvs-accor-tab-content').eq(index).show();
+	});
+
+	$("input[name='item-styling']").change(function() {
+		if(this.checked) {
+			$('.vs-item-style').slideDown();
+		}else{
+			$('.vs-item-style').slideUp();
+		}
+	});
+
+	$("input[name='item-hover']").change(function() {
+		if(this.checked) {
+			$('.vs-item-hover').slideDown();
+		}else{
+			$('.vs-item-hover').slideUp();
+		}
+	});
+
+	$("input[name='item-selected']").change(function() {
+		if(this.checked) {
+			$('.vs-item-selected').slideDown();
+		}else{
+			$('.vs-item-selected').slideUp();
+		}
+	});
+
+	$("input[name='item-font']").change(function() {
+		if(this.checked) {
+			$('.vs-item-font').slideDown();
+		}else{
+			$('.vs-item-font').slideUp();
+		}
+	});
+
+	// Add Color Picker to all inputs that have 'color-field' class
+	$(function() {
+		$('.vs-color-picker').wpColorPicker();
+	});
+})(jQuery);
+
 
