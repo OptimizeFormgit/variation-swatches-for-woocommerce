@@ -11,6 +11,8 @@ class TA_WC_Variation_Swatches_Admin {
 	 */
 	protected static $instance = null;
 
+	private $generalSettings;
+
 	/**
 	 * Main instance
 	 *
@@ -37,11 +39,35 @@ class TA_WC_Variation_Swatches_Admin {
 		add_action( 'admin_init', array( $this, 'restore_attribute_types' ) );
 
 		// Display attribute fields
-		add_action( 'tawcvs_product_attribute_field', array( $this, 'attribute_fields' ), 10, 3 );
+		add_action( 'tawcvs_product_attribute_field', array( $this, 'attribute_fields' ), 10, 4 );
 
-		
+		add_filter( 'woosuite_core_module_settings_url', array(
+			$this,
+			'render_the_setting_url_in_core_plugin'
+		), 10, 2 );
+
 		include_once( dirname( __FILE__ ) . '/class-menu-page.php' );
 		new VSWC_Settings_Page();
+
+		$latest_option = get_option( 'woosuite_variation_swatches_option', array() );
+
+		$this->generalSettings = isset( $latest_option['general'] ) ? $latest_option['general'] : array();
+	}
+
+	/**
+	 * Rendering the setting url for this plugin in the dashboard page of Woosuite Core
+	 *
+	 * @param $url
+	 * @param $module
+	 *
+	 * @return mixed|string|void
+	 */
+	function render_the_setting_url_in_core_plugin( $url, $module ) {
+		if ( $module === WCVS_PLUGIN_NAME ) {
+			$url = admin_url( 'admin.php?page=variation-swatches-settings' );
+		}
+
+		return $url;
 	}
 
 	/**
@@ -49,6 +75,10 @@ class TA_WC_Variation_Swatches_Admin {
 	 */
 	public function includes() {
 		include_once( dirname( __FILE__ ) . '/class-admin-product.php' );
+		include_once( dirname( __FILE__ ) . '/class-menu-page.php' );
+		include_once( dirname( __FILE__ ) . '/class-setting-fields-manager.php' );
+		include_once( dirname( __FILE__ ) . '/class-setting-fields-renderer.php' );
+		new VSWC_Setting_Fields_Renderer();
 	}
 
 	/**
@@ -65,10 +95,19 @@ class TA_WC_Variation_Swatches_Admin {
 
 		foreach ( $attribute_taxonomies as $tax ) {
 			add_action( 'pa_' . $tax->attribute_name . '_add_form_fields', array( $this, 'add_attribute_fields' ) );
-			add_action( 'pa_' . $tax->attribute_name . '_edit_form_fields', array( $this, 'edit_attribute_fields' ), 10, 2 );
+			add_action( 'pa_' . $tax->attribute_name . '_edit_form_fields', array(
+				$this,
+				'edit_attribute_fields'
+			), 10, 2 );
 
-			add_filter( 'manage_edit-pa_' . $tax->attribute_name . '_columns', array( $this, 'add_attribute_columns' ) );
-			add_filter( 'manage_pa_' . $tax->attribute_name . '_custom_column', array( $this, 'add_attribute_column_content' ), 10, 3 );
+			add_filter( 'manage_edit-pa_' . $tax->attribute_name . '_columns', array(
+				$this,
+				'add_attribute_columns'
+			) );
+			add_filter( 'manage_pa_' . $tax->attribute_name . '_custom_column', array(
+				$this,
+				'add_attribute_column_content'
+			), 10, 3 );
 		}
 
 		add_action( 'created_term', array( $this, 'save_term_meta' ), 10, 2 );
@@ -79,15 +118,33 @@ class TA_WC_Variation_Swatches_Admin {
 	 * Load stylesheet and scripts in edit product attribute screen
 	 */
 	public function enqueue_scripts() {
-		$screen = get_current_screen();
+		$screen   = get_current_screen();
+		$dir_name = dirname( __FILE__ );
+
+		if ( strpos( $screen->id, 'variation-swatches-addons' ) !== false ) {
+			wp_enqueue_style( 'tawcvs-admin-addons', plugins_url( '/assets/css/admin-addons-page.css', $dir_name ), array() );
+		}
+
 		if ( strpos( $screen->id, 'edit-pa_' ) === false && strpos( $screen->id, 'product' ) === false ) {
+			return;
+		}
+
+		// Don't let the below styles and css affect other woosuite plugin pages
+		if ( strpos( $screen->id, 'woosuite_page_' ) !== false ) {
 			return;
 		}
 
 		wp_enqueue_media();
 
-		wp_enqueue_style( 'tawcvs-admin', plugins_url( '/assets/css/admin.css', dirname( __FILE__ ) ), array( 'wp-color-picker' ), '20160615' );
-		wp_enqueue_script( 'tawcvs-admin', plugins_url( '/assets/js/admin.js', dirname( __FILE__ ) ), array( 'jquery', 'wp-color-picker', 'wp-util' ), '20170113', true );
+		wp_enqueue_style( 'wp-color-picker' );
+		wp_enqueue_script( 'wp-color-picker' );
+
+		wp_enqueue_style( 'tawcvs-admin', plugins_url( '/assets/css/admin.css', $dir_name ), array( 'wp-color-picker' ), WCVS_PLUGIN_VERSION );
+		wp_enqueue_script( 'tawcvs-admin', plugins_url( '/assets/js/admin.js', $dir_name ), array(
+			'jquery',
+			'wp-color-picker',
+			'wp-util'
+		), WCVS_PLUGIN_VERSION, true );
 
 		wp_localize_script(
 			'tawcvs-admin',
@@ -100,6 +157,7 @@ class TA_WC_Variation_Swatches_Admin {
 				'placeholder' => WC()->plugin_url() . '/assets/images/placeholder.png'
 			)
 		);
+
 	}
 
 	/**
@@ -108,29 +166,35 @@ class TA_WC_Variation_Swatches_Admin {
 	public function restore_attributes_notice() {
 		if ( get_transient( 'tawcvs_attribute_taxonomies' ) && ! get_option( 'tawcvs_restore_attributes_time' ) ) {
 			?>
-			<div class="notice-warning notice is-dismissible">
-				<p>
+            <div class="notice-warning notice is-dismissible">
+                <p>
 					<?php
 					esc_html_e( 'Found a backup of product attributes types. This backup was generated at', 'wcvs' );
 					echo ' ' . date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), get_option( 'tawcvs_backup_attributes_time' ) ) . '.';
 					?>
-				</p>
-				<p>
-					<a href="<?php echo esc_url( add_query_arg( array( 'tawcvs_action' => 'restore_attributes_types', 'tawcvs_nonce' => wp_create_nonce( 'restore_attributes_types' ) ) ) ); ?>">
-						<strong><?php esc_html_e( 'Restore product attributes types', 'wcvs' ); ?></strong>
-					</a>
-					|
-					<a href="<?php echo esc_url( add_query_arg( array( 'tawcvs_action' => 'dismiss_restore_notice', 'tawcvs_nonce' => wp_create_nonce( 'dismiss_restore_notice' ) ) ) ); ?>">
-						<strong><?php esc_html_e( 'Dismiss this notice', 'wcvs' ); ?></strong>
-					</a>
-				</p>
-			</div>
+                </p>
+                <p>
+                    <a href="<?php echo esc_url( add_query_arg( array(
+						'tawcvs_action' => 'restore_attributes_types',
+						'tawcvs_nonce'  => wp_create_nonce( 'restore_attributes_types' )
+					) ) ); ?>">
+                        <strong><?php esc_html_e( 'Restore product attributes types', 'wcvs' ); ?></strong>
+                    </a>
+                    |
+                    <a href="<?php echo esc_url( add_query_arg( array(
+						'tawcvs_action' => 'dismiss_restore_notice',
+						'tawcvs_nonce'  => wp_create_nonce( 'dismiss_restore_notice' )
+					) ) ); ?>">
+                        <strong><?php esc_html_e( 'Dismiss this notice', 'wcvs' ); ?></strong>
+                    </a>
+                </p>
+            </div>
 			<?php
 		} elseif ( isset( $_GET['tawcvs_message'] ) && 'restored' == $_GET['tawcvs_message'] ) {
 			?>
-			<div class="notice-warning settings-error notice is-dismissible">
-				<p><?php esc_html_e( 'All attributes types have been restored.', 'wcvs' ) ?></p>
-			</div>
+            <div class="notice-warning settings-error notice is-dismissible">
+                <p><?php esc_html_e( 'All attributes types have been restored.', 'wcvs' ) ?></p>
+            </div>
 			<?php
 		}
 	}
@@ -186,8 +250,7 @@ class TA_WC_Variation_Swatches_Admin {
 	 */
 	public function add_attribute_fields( $taxonomy ) {
 		$attr = TA_WCVS()->get_tax_attribute( $taxonomy );
-
-		do_action( 'tawcvs_product_attribute_field', $attr->attribute_type, '', 'add' );
+		do_action( 'tawcvs_product_attribute_field', $attr->attribute_type, false, $taxonomy, 'add' );
 	}
 
 	/**
@@ -197,24 +260,29 @@ class TA_WC_Variation_Swatches_Admin {
 	 * @param string $taxonomy
 	 */
 	public function edit_attribute_fields( $term, $taxonomy ) {
-		$attr  = TA_WCVS()->get_tax_attribute( $taxonomy );
-		$value = get_term_meta( $term->term_id, $attr->attribute_type, true );
-
-		do_action( 'tawcvs_product_attribute_field', $attr->attribute_type, $value, 'edit' );
+		$attr = TA_WCVS()->get_tax_attribute( $taxonomy );
+		do_action( 'tawcvs_product_attribute_field', $attr->attribute_type, $term, $taxonomy, 'edit' );
 	}
 
 	/**
 	 * Print HTML of custom fields on attribute term screens
 	 *
 	 * @param $type
-	 * @param $value
+	 * @param $term
+	 * @param $taxonomy
 	 * @param $form
 	 */
-	public function attribute_fields( $type, $value, $form ) {
+	public function attribute_fields( $type, $term, $taxonomy, $form ) {
 		// Return if this is a default attribute type
 		if ( in_array( $type, array( 'select', 'text' ) ) ) {
 			return;
 		}
+		if ( $term instanceof WP_Term ) {
+			$term_id = $term->term_id;
+		} else {
+			$term_id = false;
+		}
+		$value         = get_term_meta( $term_id, $type, true );
 
 		// Print the open tag of field container
 		printf(
@@ -222,7 +290,7 @@ class TA_WC_Variation_Swatches_Admin {
 			'edit' == $form ? 'tr' : 'div',
 			'edit' == $form ? '<th>' : '',
 			esc_attr( $type ),
-			TA_WCVS()->types[$type],
+			TA_WCVS()->types[ $type ],
 			'edit' == $form ? '</th><td>' : ''
 		);
 
@@ -231,24 +299,27 @@ class TA_WC_Variation_Swatches_Admin {
 				$image = $value ? wp_get_attachment_image_src( $value ) : '';
 				$image = $image ? $image[0] : WC()->plugin_url() . '/assets/images/placeholder.png';
 				?>
-				<div class="tawcvs-term-image-thumbnail" style="float:left;margin-right:10px;">
-					<img src="<?php echo esc_url( $image ) ?>" width="60px" height="60px" />
-				</div>
-				<div style="line-height:60px;">
-					<input type="hidden" class="tawcvs-term-image" name="image" value="<?php echo esc_attr( $value ) ?>" />
-					<button type="button" class="tawcvs-upload-image-button button"><?php esc_html_e( 'Upload/Add image', 'wcvs' ); ?></button>
-					<button type="button" class="tawcvs-remove-image-button button <?php echo $value ? '' : 'hidden' ?>"><?php esc_html_e( 'Remove image', 'wcvs' ); ?></button>
-				</div>
+                <div class="tawcvs-term-image-thumbnail" style="float:left;margin-right:10px;">
+                    <img src="<?php echo esc_url( $image ) ?>" width="60px" height="60px"/>
+                </div>
+                <div style="line-height:60px;">
+                    <input type="hidden" class="tawcvs-term-image" name="image"
+                           value="<?php echo esc_attr( $value ) ?>"/>
+                    <button type="button"
+                            class="tawcvs-upload-image-button button"><?php esc_html_e( 'Upload/Add image', 'wcvs' ); ?></button>
+                    <button type="button"
+                            class="tawcvs-remove-image-button button <?php echo $value ? '' : 'hidden' ?>"><?php esc_html_e( 'Remove image', 'wcvs' ); ?></button>
+                </div>
 				<?php
 				break;
 
 			default:
 				?>
-				<input type="text" id="term-<?php echo esc_attr( $type ) ?>" name="<?php echo esc_attr( $type ) ?>" value="<?php echo esc_attr( $value ) ?>" />
+                <input type="text" id="term-<?php echo esc_attr( $type ) ?>" name="<?php echo esc_attr( $type ) ?>"
+                       value="<?php echo esc_attr( $value ) ?>"/>
 				<?php
 				break;
 		}
-
 		// Print the close tag of field container
 		echo 'edit' == $form ? '</td></tr>' : '</div>';
 	}
@@ -261,8 +332,15 @@ class TA_WC_Variation_Swatches_Admin {
 	 */
 	public function save_term_meta( $term_id, $tt_id ) {
 		foreach ( TA_WCVS()->types as $type => $label ) {
-			if ( isset( $_POST[$type] ) ) {
-				update_term_meta( $term_id, $type, sanitize_text_field( $_POST[$type] ) );
+			if ( isset( $_POST[ $type ] ) ) {
+				update_term_meta( $term_id, $type, sanitize_text_field( $_POST[ $type ] ) );
+
+				//Additional data for color
+				if ( 'color' === $type && '1' === $this->generalSettings['enable-dual-color'] ) {
+					array_map( function ( $meta_key ) use ( $term_id ) {
+						update_term_meta( $term_id, $meta_key, sanitize_text_field( isset( $_POST[ $meta_key ] ) ? $_POST[ $meta_key ] : '' ) );
+					}, array( 'is-dual-color', 'secondary-color' ) );
+				}
 			}
 		}
 	}
@@ -274,7 +352,7 @@ class TA_WC_Variation_Swatches_Admin {
 	 *
 	 * @return array
 	 */
-	public function add_attribute_columns( $columns ) {
+	public function add_attribute_columns( array $columns ) {
 		$new_columns          = array();
 		$new_columns['cb']    = $columns['cb'];
 		$new_columns['thumb'] = '';
@@ -289,6 +367,8 @@ class TA_WC_Variation_Swatches_Admin {
 	 * @param $columns
 	 * @param $column
 	 * @param $term_id
+	 *
+	 * @return mixed|void
 	 */
 	public function add_attribute_column_content( $columns, $column, $term_id ) {
 		if ( 'thumb' !== $column ) {
@@ -300,7 +380,8 @@ class TA_WC_Variation_Swatches_Admin {
 
 		switch ( $attr->attribute_type ) {
 			case 'color':
-				printf( '<div class="swatch-preview swatch-color" style="background-color:%s;"></div>', esc_attr( $value ) );
+				$formatted_color_style = TA_WC_Variation_Swatches::generate_color_style( $term_id, $value );
+				printf( '<div class="swatch-preview swatch-color" style="background:%s;"></div>', esc_attr( $formatted_color_style ) );
 				break;
 
 			case 'image':

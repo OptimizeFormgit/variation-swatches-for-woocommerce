@@ -1,134 +1,220 @@
 .hidden {
-	display: none !important;
-	visibility: hidden !important;
+  display: none !important;
+  visibility: hidden !important;
 }
 
 .tawcvs-swatches {
-	padding: 5px;
+  padding: 5px;
+  display: inline-flex;
 }
-
-.tawcvs-swatches .swatch {
-	-webkit-transition: all 0.3s;
-	-moz-transition: all 0.3s;
-	-ms-transition: all 0.3s;
-	-o-transition: all 0.3s;
-	transition: all 0.3s;
-	-webkit-border-radius: 50%;
-	-moz-border-radius: 50%;
-	border-radius: 50%;
-	display: inline-block;
-	width: 30px;
-	height: 30px;
-	line-height: 28px;
-	text-align: center;
-	margin-right: 15px;
-	margin-bottom: 15px;
-	cursor: pointer;
-	border: 2px solid transparent;
-	position: relative;
-	white-space: nowrap;
+.tawcvs-swatches .swatch,
+.tawcvs-swatches .swatch-show-more {
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+  width: 30px;
+  height: 30px;
+  line-height: 28px;
+  text-align: center;
+  cursor: pointer;
+  border: 2px solid transparent;
+  position: relative;
+  white-space: nowrap;
+  margin: 0 10px;
+  padding: 2px 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
-
-.tawcvs-swatches .swatch.selected {
-	border-color: #999;
+.tawcvs-swatches .swatch.swatch-label,
+.tawcvs-swatches .swatch-show-more.swatch-label {
+  min-width: max-content;
+  min-height: 100%;
 }
-
-.tawcvs-swatches .swatch.disabled {
-	cursor: default;
-	opacity: 0.1 !important;
+.tawcvs-swatches .swatch.swatch-shape-circle,
+.tawcvs-swatches .swatch-show-more.swatch-shape-circle {
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
 }
-
-.tawcvs-swatches .swatch.disabled .swatch__tooltip {
-	display: none;
+.tawcvs-swatches .swatch.swatch-shape-circle img,
+.tawcvs-swatches .swatch-show-more.swatch-shape-circle img {
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
 }
-
+.tawcvs-swatches .swatch.swatch-shape-rounded,
+.tawcvs-swatches .swatch-show-more.swatch-shape-rounded {
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  border-radius: 8px;
+}
+.tawcvs-swatches .swatch.swatch-shape-rounded img,
+.tawcvs-swatches .swatch-show-more.swatch-shape-rounded img {
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  border-radius: 8px;
+}
+.tawcvs-swatches .swatch.swatch-shape-edge,
+.tawcvs-swatches .swatch-show-more.swatch-shape-edge {
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+.tawcvs-swatches .swatch.swatch-shape-edge img,
+.tawcvs-swatches .swatch-show-more.swatch-shape-edge img {
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+.tawcvs-swatches .swatch.disabled,
+.tawcvs-swatches .swatch-show-more.disabled {
+  cursor: default;
+  opacity: 0.4 !important;
+}
+.tawcvs-swatches .swatch.disabled .swatch__tooltip,
+.tawcvs-swatches .swatch-show-more.disabled .swatch__tooltip {
+  display: none;
+}
+.tawcvs-swatches .swatch.selected,
+.tawcvs-swatches .swatch-show-more.selected {
+  border: 2px solid #674399 !important;
+}
+.tawcvs-swatches .swatch:first-child,
+.tawcvs-swatches .swatch-show-more:first-child {
+  margin-left: 0;
+}
+.tawcvs-swatches .swatch:last-child,
+.tawcvs-swatches .swatch-show-more:last-child {
+  margin-right: 0;
+}
 .tawcvs-swatches .swatch-color {
-	text-indent: -9999em;
-	border: 2px solid #ccc;
+  text-indent: -9999em;
+  border: 2px solid #ccc;
 }
-
 .tawcvs-swatches .swatch-color.selected {
-	border-color: #333;
+  border-color: #333;
 }
-
 .tawcvs-swatches .swatch-color.selected:before {
-	-webkit-transform: translate(-50%, -50%) rotate(45deg);
-	-moz-transform: translate(-50%, -50%) rotate(45deg);
-	transform: translate(-50%, -50%) rotate(45deg);
-	content: "";
-	width: 6px;
-	height: 10px;
-	display: block;
-	border: solid #eee;
-	border-width: 0 2px 2px 0;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	margin: -2px -2px 0 0;
+  -webkit-transform: translate(-50%, -50%) rotate(45deg);
+  -moz-transform: translate(-50%, -50%) rotate(45deg);
+  transform: translate(-50%, -50%) rotate(45deg);
+  content: "";
+  width: 6px;
+  height: 10px;
+  display: block;
+  border: solid #eee;
+  border-width: 0 2px 2px 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -2px -2px 0 0;
 }
-
 .tawcvs-swatches .swatch-label {
-	font-size: 14px;
-	background-color: #f1f1f1;
+  font-size: 14px;
+  background-color: #f1f1f1;
 }
-
 .tawcvs-swatches .swatch-image {
-	font-size: 0;
+  font-size: 0;
 }
-
-.tawcvs-swatches .swatch-image img {
-	-webkit-border-radius: 50%;
-	-moz-border-radius: 50%;
-	border-radius: 50%;
-}
-
 .tawcvs-swatches .swatch-image .swatch__tooltip {
-	font-size: 14px;
+  font-size: 14px;
 }
-
 .tawcvs-swatches .swatch__tooltip {
-	-webkit-transform: translate(-50%, -100%);
-	-moz-transform: translate(-50%, -100%);
-	transform: translate(-50%, -100%);
-	-webkit-transition: all 0.3s;
-	-moz-transition: all 0.3s;
-	-ms-transition: all 0.3s;
-	-o-transition: all 0.3s;
-	transition: all 0.3s;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px;
-	position: absolute;
-	left: 50%;
-	top: 0;
-	background: #333;
-	z-index: 2;
-	color: #fff;
-	margin: -15px 0 0 0;
-	padding: 5px 10px;
-	text-indent: initial;
-	font-size: 14px;
-	font-weight: 500;
-	opacity: 0;
-	visibility: hidden;
-	user-select: none;
+  -webkit-transform: translate(-50%, -100%);
+  -moz-transform: translate(-50%, -100%);
+  transform: translate(-50%, -100%);
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  background: #333;
+  z-index: 2;
+  color: #fff;
+  margin: -15px 0 0 0;
+  padding: 5px 10px;
+  text-indent: initial;
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0;
+  visibility: hidden;
+  user-select: none;
+  display: inline-block;
+  word-break: break-all;
+  white-space: normal;
+  min-width: max-content;
+}
+.tawcvs-swatches .swatch__tooltip:after {
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  transform: rotate(45deg);
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #333;
+  bottom: -4px;
+  left: 50%;
+  margin-left: -6px;
+}
+.tawcvs-swatches .swatch-item-wrapper {
+  position: relative;
+}
+.tawcvs-swatches .swatch:hover + .swatch__tooltip {
+  opacity: 1;
+  visibility: visible;
+  user-select: auto;
+}
+.tawcvs-swatches.oss-blur-with-cross .swatch.disabled {
+  position: relative;
+  background: #33333357;
+}
+.tawcvs-swatches.oss-blur-with-cross .swatch.disabled img {
+  opacity: 0.5;
+}
+.tawcvs-swatches.oss-blur-with-cross .swatch.disabled:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(to top left, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) calc(50% - 0.8px), black 50%, rgba(0, 0, 0, 0) calc(50% + 0.8px), rgba(0, 0, 0, 0) 100%), linear-gradient(to top right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) calc(50% - 0.8px), black 50%, rgba(0, 0, 0, 0) calc(50% + 0.8px), rgba(0, 0, 0, 0) 100%);
+}
+.tawcvs-swatches.oss-hide .swatch.disabled {
+  display: none;
 }
 
-.tawcvs-swatches .swatch__tooltip:after {
-	-webkit-transform: rotate(45deg);
-	-moz-transform: rotate(45deg);
-	transform: rotate(45deg);
-	content: "";
-	position: absolute;
-	width: 12px;
-	height: 12px;
-	background: #333;
-	bottom: -4px;
-	left: 50%;
-	margin-left: -6px;
+.swatch-align-left .variations td {
+  text-align: left;
 }
-.tawcvs-swatches .swatch:hover .swatch__tooltip {
-	opacity: 1;
-	visibility: visible;
-	user-select: auto;
+.swatch-align-left .variations td img, .swatch-align-left .variations td select {
+  text-align: left;
+}
+
+.swatch-align-center .variations td {
+  text-align: center;
+}
+.swatch-align-center .variations td img, .swatch-align-center .variations td select {
+  text-align: center;
+}
+
+.related.products .swatch-align-center .variations td.label {
+  display: none;
+}
+
+.swatch-align-right .variations td, .swatch-align-right .variations img, .swatch-align-right .variations td select {
+  text-align: right;
+}
+
+.variations .reset_variations {
+  display: none;
 }
