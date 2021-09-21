@@ -1,5 +1,5 @@
 === Variation Swatches for WooCommerce ===
-Contributors: variationswatches, themealien, zgani, mehbubrashid, minhnguyen25
+Contributors: variationswatches, themealien, zgani,minhnguyen25, mehbubrashid 
 Tags: variation swatches, woocommerce, product attribute, product color, product size, variable products
 Requires at least: 4.5
 Tested up to: 5.8
