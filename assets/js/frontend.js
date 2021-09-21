@@ -21,6 +21,12 @@
 						return;
 					}
 
+					//Disabling other swatches, then resetting the select value to empty
+					$el.parents('.tawcvs-swatches').find(".swatch.selected").each(function(){
+						$(this).not($el).removeClass("selected");
+						$select.val( '' );
+					})
+
 					// For old WC
 					$select.trigger( 'focusin' );
 
@@ -83,8 +89,38 @@
 		} );
 	};
 
+	//Tracking the reset_variations button on change visibility -> change the corresponding display state
+	function toggle_hidden_variation_btn() {
+		const resetVariationNodes = document.getElementsByClassName('reset_variations');
+
+		if (resetVariationNodes.length) {
+
+			Array.prototype.forEach.call(resetVariationNodes, function (resetVariationEle) {
+
+				let observer = new MutationObserver(function () {
+
+					if (resetVariationEle.style.visibility !== 'hidden') {
+
+						resetVariationEle.style.display = 'block';
+
+					} else {
+
+						resetVariationEle.style.display = 'none';
+
+					}
+
+				});
+
+				observer.observe(resetVariationEle, {attributes: true, childList: true});
+
+			})
+
+		}
+	}
+
 	$( function () {
 		$( '.variations_form' ).tawcvs_variation_swatches_form();
 		$( document.body ).trigger( 'tawcvs_initialized' );
+		toggle_hidden_variation_btn();
 	} );
 })( jQuery );

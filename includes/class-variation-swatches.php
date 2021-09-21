@@ -44,15 +44,19 @@ final class TA_WC_Variation_Swatches {
 		$this->includes();
 		$this->init_hooks();
 	}
-
 	/**
 	 * Include required core files used in admin and on the frontend.
 	 */
 	public function includes() {
-		require_once dirname( __FILE__ ) . '/class-frontend.php';
+		$current_dir = dirname( __FILE__ );
+		require_once $current_dir . '/class-upgrader.php';
+		require_once $current_dir . '/class-frontend.php';
 
 		if ( is_admin() ) {
-			require_once dirname( __FILE__ ) . '/class-admin.php';
+			require_once $current_dir . '/class-admin.php';
+			if ( ! self::is_woo_core_active() ) {
+				require_once $current_dir . '/class-addon-page.php';
+			}
 		}
 	}
 
@@ -88,10 +92,8 @@ final class TA_WC_Variation_Swatches {
 	 *
 	 * @return array
 	 */
-	public function add_attribute_types( $types ) {
-		$types = array_merge( $types, $this->types );
-
-		return $types;
+	public function add_attribute_types( array $types ) {
+		return array_merge( $types, $this->types );
 	}
 
 	/**
@@ -105,9 +107,8 @@ final class TA_WC_Variation_Swatches {
 		global $wpdb;
 
 		$attr = substr( $taxonomy, 3 );
-		$attr = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . $wpdb->prefix . "woocommerce_attribute_taxonomies WHERE attribute_name = %s", $attr ) );
 
-		return $attr;
+		return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . $wpdb->prefix . "woocommerce_attribute_taxonomies WHERE attribute_name = %s", $attr ) );
 	}
 
 	/**
@@ -126,6 +127,107 @@ final class TA_WC_Variation_Swatches {
 	 */
 	public function frontend() {
 		return TA_WC_Variation_Swatches_Frontend::instance();
+	}
+
+	/**
+	 * Function to generate the formatted style for the dual color feature
+	 *
+	 * @param int $term_id
+	 * @param string $main_color
+	 *
+	 * @return string
+	 */
+	public static function generate_color_style( $term_id, $main_color ) {
+
+		$color_style = apply_filters( 'tawcvs_color_style', $main_color, $term_id, $main_color );
+
+		return esc_attr( $color_style );
+	}
+
+	/**
+	 * Include a specified template file
+	 *
+	 * @param $file_path
+	 */
+	public static function get_template( $file_path ) {
+		$template = WCVS_PLUGIN_DIR . 'templates/' . $file_path;
+		if ( file_exists( $template ) ) {
+			include $template;
+		}
+	}
+
+	public static function get_product_attributes_as_checkbox( $section_id, $tab_id, $field_name ) {
+		ob_start();
+		$current_options = get_option( 'woosuite_variation_swatches_option' ) ?: array();
+		if ( ! empty( $tab_id ) ) {
+			$field_name_prefix = $section_id . '[' . $tab_id . ']';
+		} else {
+			$field_name_prefix = $section_id;
+		}
+		foreach ( wc_get_attribute_taxonomies() as $att ) {
+			if ( ! empty( $tab_id ) ) {
+				$field_value = isset( $current_options[ $section_id ][ $tab_id ][ $field_name . '-' . $att->attribute_name ] ) ? $current_options[ $section_id ][ $tab_id ][ $field_name . '-' . $att->attribute_name ] : '';
+			} else {
+				$field_value = isset( $current_options[ $section_id ][ $field_name . '-' . $att->attribute_name ] ) ? $current_options[ $section_id ][ $field_name . '-' . $att->attribute_name ] : '';
+			}
+			$field_id            = $field_name . '-' . $att->attribute_name;
+			$field_name_modified = $field_name_prefix . '[' . $field_name . '-' . $att->attribute_name . ']';
+			?>
+            <label class="variation-checkbox-container" for="<?php echo $field_id; ?>">
+				<?php echo $att->attribute_label; ?>
+                <input type="hidden" name="<?php echo $field_name_modified; ?>" value="0">
+                <input id="<?php echo $field_id; ?>"
+                       type="checkbox"
+                       name="<?php echo $field_name_modified; ?>"
+                       value="1"
+					<?php checked( '1', $field_value ); ?>/>
+                <span class="checkmark"></span>
+            </label>
+			<?php
+		}
+
+		return ob_get_clean();
+	}
+
+	public static function get_detailed_product_variations( $product, $attribute_tax_name ) {
+		if ( ! $product instanceof WC_Product_Variable ) {
+			return array();
+		}
+		$collected_variations = array();
+		$variations           = $product->get_available_variations();
+		if ( ! empty( $variations ) ) {
+			foreach ( $variations as $variation ) {
+				$attribute_item_obj_slug = $variation['attributes'][ 'attribute_' . $attribute_tax_name ];
+
+				if ( ! isset( $collected_variations[ $attribute_item_obj_slug ] ) ) {
+					$collected_variations[ $attribute_item_obj_slug ] = $variation;
+				}
+			}
+		}
+
+		return $collected_variations;
+	}
+
+	/**
+	 * Detect if we have the Woosuite Core plugin activated
+	 *
+	 * @return bool
+	 */
+	public static function is_woo_core_active() {
+		return class_exists( 'Woosuite_Core' );
+	}
+
+	/**
+	 * Detect if we have the Woosuite Core plugin activated
+	 *
+	 * @return bool
+	 */
+	public static function is_pro_addon_active() {
+		return class_exists( 'Woosuite_Variation_Swatches_Pro' );
+	}
+
+	public static function is_in_plugin_settings_page() {
+		return is_admin() && isset( $_GET['page'] ) && $_GET['page'] === 'variation-swatches-settings';
 	}
 }
 

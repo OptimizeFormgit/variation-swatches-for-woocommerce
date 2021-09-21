@@ -1,17 +1,17 @@
 <?php
 /**
  * Plugin Name: Variation Swatches for WooCommerce
- * Plugin URI: http://themealien.com/wordpress-plugin/woocommerce-variation-swatches
- * Description: An extension of WooCommerce to make variable products be more beauty and friendly to users.
- * Version: 1.0.11
- * Author: ThemeAlien
- * Author URI: http://themealien.com/
+ * Plugin URI: https://woosuite.com/plugins/woocommerce-variation-swatches/
+ * Description: Creates variation swatches for WooCommerce, converts your variation dropdown into color, label, or photo swatches with ease, The original Variation Swatches for WooCommerce.
+ * Version: 2.0.0
+ * Author: Woosuite
+ * Author URI: https://woosuite.com/
  * Requires at least: 4.5
- * Tested up to: 5.7
+ * Tested up to: 5.8.1
  * Text Domain: wcvs
  * Domain Path: /languages
  * WC requires at least: 3.0.0
- * WC tested up to: 5.4.1
+ * WC tested up to: 5.6.0
  *
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -26,6 +26,26 @@ if ( ! defined( 'TAWC_VS_PLUGIN_FILE' ) ) {
 	define( 'TAWC_VS_PLUGIN_FILE', __FILE__ );
 }
 
+if ( ! defined( 'WCVS_PLUGIN_VERSION' ) ) {
+	define( 'WCVS_PLUGIN_VERSION', '2.0.0' );
+}
+
+if ( ! defined( 'WCVS_PLUGIN_URL' ) ) {
+	define( 'WCVS_PLUGIN_URL', plugin_dir_url( TAWC_VS_PLUGIN_FILE ) );
+}
+
+if ( ! defined( 'WCVS_PLUGIN_DIR' ) ) {
+	define( 'WCVS_PLUGIN_DIR', plugin_dir_path( TAWC_VS_PLUGIN_FILE ) );
+}
+
+if ( ! defined( 'WCVS_PLUGIN_NAME' ) ) {
+	define( 'WCVS_PLUGIN_NAME', 'variation-swatches-for-woocommerce' );
+}
+
+if ( ! defined( 'WCVS_NEED_TO_SHOW_NOTICE_AFTER_UPGRADED' ) ) {
+	define( 'WCVS_NEED_TO_SHOW_NOTICE_AFTER_UPGRADED', true );
+}
+
 if ( ! function_exists( 'ta_wc_variation_swatches_wc_notice' ) ) {
 	/**
 	 * Display notice in case of WooCommerce plugin is not activated
@@ -33,9 +53,9 @@ if ( ! function_exists( 'ta_wc_variation_swatches_wc_notice' ) ) {
 	function ta_wc_variation_swatches_wc_notice() {
 		?>
 
-		<div class="error">
-			<p><?php esc_html_e( 'Variation Swatcher for WooCommerce is enabled but not effective. It requires WooCommerce in order to work.', 'wcvs' ); ?></p>
-		</div>
+        <div class="error">
+            <p><?php esc_html_e( 'Variation Swatcher for WooCommerce is enabled but not effective. It requires WooCommerce in order to work.', 'wcvs' ); ?></p>
+        </div>
 
 		<?php
 	}
@@ -48,9 +68,9 @@ if ( ! function_exists( 'ta_wc_variation_swatches_pro_notice' ) ) {
 	function ta_wc_variation_swatches_pro_notice() {
 		?>
 
-		<div class="error">
-			<p><?php esc_html_e( 'No need to activate the free version of Variation Swatcher for WooCommerce plugin while the pro version is activated.', 'wcvs' ); ?></p>
-		</div>
+        <div class="error">
+            <p><?php esc_html_e( 'No need to activate the free version of Variation Swatcher for WooCommerce plugin while the pro version is activated.', 'wcvs' ); ?></p>
+        </div>
 
 		<?php
 	}

@@ -1,15 +1,15 @@
 === Variation Swatches for WooCommerce ===
-Contributors: themealien, mehbubrashid
-Tags: woocommerce, product attribute, product color, product size, variation swatches, variable products
+Contributors: variationswatches, themealien, zgani, mehbubrashid, minhnguyen25
+Tags: variation swatches, woocommerce, product attribute, product color, product size, variable products
 Requires at least: 4.5
-Tested up to: 5.7
-Stable tag: 1.0.11
+Tested up to: 5.8
+Stable tag: 2.0.0
 WC requires at least: 3.2.0
-WC tested up to: 5.4.1
+WC tested up to: 5.6.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-An extension of WooCommerce that make variable products be more beauty and friendly to customers.
+Creates variation swatches for WooCommerce, converts your variation dropdown into color, label, or photo swatches with ease, The original Variation Swatches for WooCommerce.
 
 == Description ==
 
@@ -18,8 +18,16 @@ This plugin only adds more options to show product variations with swatches. It 
 
 With a friendly and easy-to-use interface, you can add default color, image or label to each attribute in the attributes management page. It can also helps you pick the right style for quick-add attribute right inside the editing product page.
 
-**Features provided with this plugin:**
+https://www.youtube.com/watch?v=1qGusf9IfFY&t
 
+**Woosuite Variation Swatches for WooCommerce Features :**
+
+* <a href="https://woosuite.com/plugins/woocommerce-variation-swatches/#button" rel="friend">Auto Convert All Variation Dropdowns To Button Swatch</a> - With a click of a button you can convert your dropdowns into button/label.
+*  <a href="https://woosuite.com/plugins/woocommerce-variation-swatches/#autoimage" rel="friend">Auto Convert Into Image Swatches*</a> - By toggling this option you can set dual color for those products that can not be described with one color. 
+*   <a href="https://woosuite.com/plugins/woocommerce-variation-swatches/#dualcolor" rel="friend">Dual Color Variation Swatches*</a> - Automatically covert dropdowns to "Image Swatch" if variation has an image.
+* <a href="https://woosuite.com/plugins/woocommerce-variation-swatches/#archive" rel="friend">Show swatches on archive / shop</a> - Let users find what they really want by showing your swatches on the shop archive. 
+* <a href="https://woosuite.com/plugins/woocommerce-variation-swatches/#shapes" rel="friend">Attribute Variation Swatches Shapes</a> - We have included three presets for you to choose from as well as advanced styling options to further customize your swatches. 
+* <a href="https://woosuite.com/plugins/woocommerce-variation-swatches/#outofstock" rel="friend">Out of Stock Variation Swatches Control</a> - With our recent update, we have included the option for you to manage how to handle your out-of-stock variation.  
 * Completely integrate with WooCommerce plugin
 * Work on variable product only
 * Create attribute color swatches
@@ -27,6 +35,25 @@ With a friendly and easy-to-use interface, you can add default color, image or l
 * Create attribute label/text swatches
 * Manage attribute globally
 * Create new attribute swatch in product editing page
+
+
+= What's Next =
+
+If you like this WordPress popup plugin, then consider checking out our other projects:
+
+* <a href="https://woosuite.com/plugins/woocommerce-additional-variation-images/" rel="friend" title="Additional variation images for WooCommerce">Additional variation images for WooCommerce</a> - Show additional variation images and videos to showcase your product key highlights.
+*    <a href="https://woosuite.com/plugins/woocommerce-show-variations-on-shop-page/">Show Variations on Shop Page</a> - Show your variation products on your shop page separately to increase your catalog size and the user experience.
+* <a href="https://woosuite.com/plugins/dynamic-pricing-discount-rules/" rel="friend" title="Dynamic Pricing & Discount Rules for WooCommerce">Dynamic Pricing & Discount Rules for WooCommerce</a> - Create Buy one get one free offers, schedule promotions, tiered pricing, role base pricing, and much more.
+* <a href="https://woosuite.com/plugins/min-max-quantities/" rel="friend" title="Minimum/Maximum Quantity for WooCommerce">Minimum/Maximum Quantity for WooCommerce</a> - Create quantity increments, spending rules, and as the name suggests minimum and maximum quantity for woocommerce.
+* <a href="https://woosuite.com/plugins/woocommerce-product-bundles/">Product Bundles for WooCommerce</a> - Improve your average order value by creating irresistible product bundles. 
+* <a href="https://woosuite.com/plugins/wholesale/">Wholesale Suite for Woocommerce</a> - Maximize your store revenue by catering to wholesale customers, you can sell to B2B + B2C.
+*  <a href="https://woosuite.com/plugins/product-table/">Quick Order Form for WooCommerce</a> - Create a streamlined bulk order form to reduce friction in users checking out.
+*   <a href="https://woosuite.com/plugins/woocommerce-quick-view/">Product Quick View for WooCommerce</a> - Allows users to get a quick look at products without opening the product page.
+*   <a href="https://woosuite.com/plugins/restriction-rules/">Restriction Rules for WooCommerce</a> - Set your store to private mode, password protection, menu item restriction, hide products, and more.
+*    <a href="https://woosuite.com/plugins/sales-agent-reps/">Sales Agents for WooCommerce</a> - Grow your business by adding sale agents to your WooCommerce store.
+
+
+Visit <a href="https://woosuite.com/blog/" rel="friend" title="WPBeginner">the Woosuite blog</a> to learn from our <a href="https://woosuite.com/woocommerce/" rel="friend" title="WooCommerce Tutorials">WordPress Tutorials</a> and find out about other <a href="https://woosuite.com/plugins/" rel="friend" title="Best WordPress Plugins">WooCommerce plugins</a>.
 
 
 == Installation ==
@@ -68,14 +95,27 @@ Yes, it will work with any theme, but may require some styling to make it match 
 == Screenshots ==
 
 1. Variations on frontend
-1. Add new attribute
-1. Edit Attribute
-1. Attribute color
-1. Attribute label
-1. Attribute image
-1. Add new attribute color when edit a product
+2. Add new attribute
+3. Edit Attribute
+4. Attribute color
+5. Attribute label
+6. Attribute image
+7. Add new attribute color when edit a product
 
 == Changelog ==
+
+= 2.0.0 =
+**MAJOR UPDATE**
+* We have a brand new Settings page.
+* Allow converting Dropdowns to Label or Image Swatches automatically.
+* Allow enabling/disabling the built-in styles.
+* Ability to control the Swatch (shape, position, alignment, limit, custom state colors).
+* Ability to control the Tooltip (show/hide, custom styles)
+* Added the Dual-colour feature for the Swatches color.
+* Allow changing the Out of Stock behaviour.
+* Allow designing the Swatch styles in Product and Archive/Shop pages.
+* Allow showing/hiding the Swatches in the Archive/Shop pages.
+* Allow showing/hiding the Clear link in Archive/Shop pages.
 
 = 1.0.11 =
 * Compatible with latest wordpress.
@@ -119,3 +159,8 @@ Yes, it will work with any theme, but may require some styling to make it match 
 
 = 1.0.0 =
 * Initial release.
+
+== Upgrade Notice ==
+
+= 2.0.0 =
+This is the major update. You might need to check the new Settings page after upgrading to make sure your plugin works as expected.
