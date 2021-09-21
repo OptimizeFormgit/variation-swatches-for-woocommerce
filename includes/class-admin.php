@@ -139,12 +139,12 @@ class TA_WC_Variation_Swatches_Admin {
 		wp_enqueue_style( 'wp-color-picker' );
 		wp_enqueue_script( 'wp-color-picker' );
 
-		wp_enqueue_style( 'tawcvs-admin', plugins_url( '/assets/css/admin.css', $dir_name ), array( 'wp-color-picker' ), '20160615' );
+		wp_enqueue_style( 'tawcvs-admin', plugins_url( '/assets/css/admin.css', $dir_name ), array( 'wp-color-picker' ), WCVS_PLUGIN_VERSION );
 		wp_enqueue_script( 'tawcvs-admin', plugins_url( '/assets/js/admin.js', $dir_name ), array(
 			'jquery',
 			'wp-color-picker',
 			'wp-util'
-		), '20170113', true );
+		), WCVS_PLUGIN_VERSION, true );
 
 		wp_localize_script(
 			'tawcvs-admin',
