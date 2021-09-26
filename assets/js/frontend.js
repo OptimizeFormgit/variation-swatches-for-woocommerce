@@ -10,6 +10,8 @@
 
 			$form
 				.addClass( 'swatches-support' )
+                .data("product_variations", $form.find(".tawcvs-available-product-variation").data("product_variations"))
+                .trigger('reload_product_variations')
 				.on( 'click', '.swatch', function ( e ) {
 					e.preventDefault();
 
@@ -54,9 +56,9 @@
 				} )
 				.on( 'woocommerce_update_variation_values', function() {
 					setTimeout( function() {
-						$form.find( 'tbody tr' ).each( function() {
-							var $variationRow = $( this ),
-								$options = $variationRow.find( 'select' ).find( 'option' ),
+						$form.find( '.variation-selector' ).each( function() {
+							var $variationSelector = $( this ),
+								$options = $variationSelector.find( 'select' ).find( 'option' ),
 								$selected = $options.filter( ':selected' ),
 								values = [];
 
@@ -66,7 +68,7 @@
 								}
 							} );
 
-							$variationRow.find( '.swatch' ).each( function() {
+							$variationSelector.closest('.value').find( '.swatch' ).each( function() {
 								var $swatch = $( this ),
 									value = $swatch.attr( 'data-value' );
 

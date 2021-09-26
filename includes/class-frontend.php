@@ -31,6 +31,7 @@ class TA_WC_Variation_Swatches_Frontend {
 	 */
 	public function __construct() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_action( 'woocommerce_before_variations_form', array( $this, 'get_available_variation' ) );
 
 		add_filter( 'woocommerce_dropdown_variation_attribute_options_html', array(
 			$this,
@@ -63,6 +64,22 @@ class TA_WC_Variation_Swatches_Frontend {
 			), 10, 3 );
 		}
 		add_action( 'wp_head', array( $this, 'apply_custom_design_styles' ) );
+	}
+
+	/**
+	 * Getting all available variations to a hidden elements
+	 */
+	public function get_available_variation() {
+		global $product;
+		if ( $product instanceof WC_Product_Variable ) {
+			$variations_json = wp_json_encode( $product->get_available_variations() );
+			$variations_attr = function_exists( 'wc_esc_json' ) ? wc_esc_json( $variations_json ) : _wp_specialchars( $variations_json, ENT_QUOTES, 'UTF-8', true );
+			if ( ! empty( $variations_attr ) ) {
+				?>
+                <div class="tawcvs-placeholder-element hidden tawcvs-available-product-variation"
+                     data-product_variations="<?php echo $variations_attr; ?>"></div>
+			<?php }
+		}
 	}
 
 	/**
@@ -369,10 +386,8 @@ class TA_WC_Variation_Swatches_Frontend {
 
             /*tooltip*/
             .tawcvs-swatches .swatch .swatch__tooltip {
-            <?php if(isset($this->toolTipDesign['item-font']) && $this->toolTipDesign['item-font']):?>
-                font-size: <?php echo isset($this->toolTipDesign['text-font-size']) ? $this->toolTipDesign['text-font-size'] : '14'; echo isset($this->toolTipDesign['item-font-size-type']) ? $this->toolTipDesign['item-font-size-type'] : 'px'; ?>;
-            <?php endif;?>
-                width: <?php echo isset($this->toolTipDesign['width']) ? $this->toolTipDesign['width'] . 'px' : 'auto' ?>;
+            <?php if(isset($this->toolTipDesign['item-font']) && $this->toolTipDesign['item-font']):?> font-size: <?php echo isset($this->toolTipDesign['text-font-size']) ? $this->toolTipDesign['text-font-size'] : '14'; echo isset($this->toolTipDesign['item-font-size-type']) ? $this->toolTipDesign['item-font-size-type'] : 'px'; ?>;
+            <?php endif;?> width: <?php echo isset($this->toolTipDesign['width']) ? $this->toolTipDesign['width'] . 'px' : 'auto' ?>;
                 max-width: <?php echo isset($this->toolTipDesign['max-width']) ? $this->toolTipDesign['max-width'] .'px' : '100%' ?>;
                 line-height: <?php echo isset($this->toolTipDesign['line-height']) ?: 'unset'; ?>;
             }
