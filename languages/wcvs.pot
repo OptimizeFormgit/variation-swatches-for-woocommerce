@@ -16,13 +16,13 @@ msgstr ""
 
 #: variation-swatches-for-woocommerce.php:35
 msgid ""
-"Variation Swatcher for WooCommerce is enabled but not effective. It requires "
+"Variation Swatches for WooCommerce is enabled but not effective. It requires "
 "WooCommerce in order to work."
 msgstr ""
 
 #: variation-swatches-for-woocommerce.php:50
 msgid ""
-"No need to activate the free version of Variation Swatcher for WooCommerce "
+"No need to activate the free version of Variation Swatches for WooCommerce "
 "plugin while the pro version is activated."
 msgstr ""
 
@@ -131,7 +131,7 @@ msgid "All attributes types have been restored."
 msgstr ""
 
 #. Name of the plugin
-msgid "Variation Swatcher for WooCommerce"
+msgid "Variation Swatches for WooCommerce"
 msgstr ""
 
 #. Description of the plugin

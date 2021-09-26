@@ -3,7 +3,7 @@
  * Plugin Name: Variation Swatches for WooCommerce
  * Plugin URI: https://woosuite.com/plugins/woocommerce-variation-swatches/
  * Description: Creates variation swatches for WooCommerce, converts your variation dropdown into color, label, or photo swatches with ease, The original Variation Swatches for WooCommerce.
- * Version: 2.0.0
+ * Version: 2.0.1
  * Author: Woosuite
  * Author URI: https://woosuite.com/
  * Requires at least: 4.5
@@ -27,7 +27,7 @@ if ( ! defined( 'TAWC_VS_PLUGIN_FILE' ) ) {
 }
 
 if ( ! defined( 'WCVS_PLUGIN_VERSION' ) ) {
-	define( 'WCVS_PLUGIN_VERSION', '2.0.0' );
+	define( 'WCVS_PLUGIN_VERSION', '2.0.1' );
 }
 
 if ( ! defined( 'WCVS_PLUGIN_URL' ) ) {
@@ -54,7 +54,7 @@ if ( ! function_exists( 'ta_wc_variation_swatches_wc_notice' ) ) {
 		?>
 
         <div class="error">
-            <p><?php esc_html_e( 'Variation Swatcher for WooCommerce is enabled but not effective. It requires WooCommerce in order to work.', 'wcvs' ); ?></p>
+            <p><?php esc_html_e( 'Variation Swatches for WooCommerce is enabled but not effective. It requires WooCommerce in order to work.', 'wcvs' ); ?></p>
         </div>
 
 		<?php
@@ -69,7 +69,7 @@ if ( ! function_exists( 'ta_wc_variation_swatches_pro_notice' ) ) {
 		?>
 
         <div class="error">
-            <p><?php esc_html_e( 'No need to activate the free version of Variation Swatcher for WooCommerce plugin while the pro version is activated.', 'wcvs' ); ?></p>
+            <p><?php esc_html_e( 'No need to activate the free version of Variation Swatches for WooCommerce plugin while the pro version is activated.', 'wcvs' ); ?></p>
         </div>
 
 		<?php
