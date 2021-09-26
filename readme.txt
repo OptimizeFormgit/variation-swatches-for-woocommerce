@@ -1,5 +1,5 @@
 === Variation Swatches for WooCommerce ===
-Contributors: variationswatches, themealien, zgani,minhnguyen25, mehbubrashid 
+Contributors: variationswatches, themealien, zgani, minhnguyen25, mehbubrashid 
 Tags: variation swatches, woocommerce, product attribute, product color, product size, variable products
 Requires at least: 4.5
 Tested up to: 5.8
@@ -103,6 +103,17 @@ Yes, it will work with any theme, but may require some styling to make it match 
 7. Add new attribute color when edit a product
 
 == Changelog ==
+= 2.0.1 =
+* Make the Circle Shape as default option
+* Show the global attribute image first, then show the default image if empty
+* Update CSS to make the variation drop to new line if it is over the wrapper
+* matching the default value in field settings with function to render
+* Fix cross and swatch shape issue
+* Add Sober theme style fix
+* Add Zoa theme style fix
+* Move the product variation into args instead of term
+* Checking array key isset before using, fix compatible issue with PHP 5.6
+
 
 = 2.0.0 =
 **MAJOR UPDATE**

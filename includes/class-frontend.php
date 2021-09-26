@@ -46,14 +46,17 @@ class TA_WC_Variation_Swatches_Frontend {
 		$this->shopDesign      = isset( $latest_option['design']['shopDesign'] ) ? $latest_option['design']['shopDesign'] : array();
 		$this->toolTipDesign   = isset( $latest_option['design']['toolTipDesign'] ) ? $latest_option['design']['toolTipDesign'] : array();
 
-		if ( ! $this->archiveSettings['show-clear-link'] ) {
+
+		if ( isset($this->archiveSettings['show-clear-link']) && ! $this->archiveSettings['show-clear-link'] ) {
 			add_filter( 'woocommerce_reset_variations_link', array(
 				$this,
 				'tawcvs_show_clear_link_on_variations_on_shop_page'
 			) );
 		}
 
-		if ( $this->archiveSettings['show-swatch'] && ! defined( 'WOOSUITE_VARIATION_SWATCHES_PRO_VERSION' ) ) {
+		if ( isset( $this->archiveSettings['show-swatch'] )
+		     && $this->archiveSettings['show-swatch']
+		     && ! defined( 'WOOSUITE_VARIATION_SWATCHES_PRO_VERSION' ) ) {
 			add_filter( 'woocommerce_loop_add_to_cart_link', array(
 				$this,
 				'display_variations_on_shop_page_before_add_to_cart_btn'
@@ -66,7 +69,7 @@ class TA_WC_Variation_Swatches_Frontend {
 	 * Enqueue scripts and stylesheets
 	 */
 	public function enqueue_scripts() {
-		if ( ! $this->generalSettings['disable-plugin-stylesheet'] ) {
+		if ( isset($this->generalSettings['disable-plugin-stylesheet']) && ! $this->generalSettings['disable-plugin-stylesheet'] ) {
 			wp_enqueue_style( 'tawcvs-frontend', plugins_url( 'assets/css/frontend.css', TAWC_VS_PLUGIN_FILE ), array(), WCVS_PLUGIN_VERSION );
 		}
 		if ( is_shop() || is_product_category() || is_product_tag() ) {
@@ -109,13 +112,14 @@ class TA_WC_Variation_Swatches_Frontend {
 			$options    = $attributes[ $attribute_tax_name ];
 		}
 
-		$dropdown_to_label_setting = isset( $this->generalSettings['dropdown-to-label'] ) ? $this->generalSettings['dropdown-to-label'] : false;
+		$dropdown_to_label_setting = isset( $this->generalSettings['dropdown-to-label'] ) && $this->generalSettings['dropdown-to-label'];
 
 		// If the type isn't supported, and we turned on the setting to convert dropdown to label/image
 		// then we forced that type to the corresponding type
 		if ( ! array_key_exists( $attr->attribute_type, $supported_swatch_types ) ) {
 
 			if ( $dropdown_to_label_setting
+			     && isset( $this->generalSettings[ 'dropdown-to-label-attribute-' . $attr->attribute_name ] )
 			     && $this->generalSettings[ 'dropdown-to-label-attribute-' . $attr->attribute_name ] ) {
 
 				$attr->attribute_type = 'label';
@@ -143,12 +147,14 @@ class TA_WC_Variation_Swatches_Frontend {
 			// Get terms if this is a taxonomy - ordered. We need the names too.
 			$terms = $this->get_product_variation_term( $product, $defined_limit, $attribute_tax_name, $options );
 			foreach ( $terms as $term ) {
-				$variation_attribute = array( 'attribute_item_obj' => $term );
+
 				//Check if we have the product variable for this attribute
 				if ( isset( $collected_variations[ $term->slug ] ) ) {
-					$variation_attribute['variation_product'] = $collected_variations[ $term->slug ];
+					$args['variation_product'] = $collected_variations[ $term->slug ];
 				}
-				$swatches .= apply_filters( 'tawcvs_swatch_html', '', $variation_attribute, $attr->attribute_type, $args );
+
+				$swatches .= apply_filters( 'tawcvs_swatch_html', '', $term, $attr->attribute_type, $args );
+
 			}
 			//If we are on shop/archived page (not product page), we will check the defined limit number of variations
 			//the product still have more variations -> show the view more icon
@@ -194,90 +200,81 @@ class TA_WC_Variation_Swatches_Frontend {
 	 * Print HTML of a single swatch
 	 *
 	 * @param $html
-	 * @param $variation_attribute
+	 * @param $term
 	 * @param $type
 	 * @param $args
 	 *
 	 * @return string
 	 */
-	public function swatch_html( $html, $variation_attribute, $type, $args ) {
-		$attribute_item_obj = $variation_attribute['attribute_item_obj'];
+	public function swatch_html( $html, $term, $type, $args ) {
 
-		$selected = sanitize_title( $args['selected'] ) == $attribute_item_obj->slug ? 'selected' : '';
-		$name     = esc_html( apply_filters( 'woocommerce_variation_option_name', $attribute_item_obj->name ) );
+		$selected = sanitize_title( $args['selected'] ) == $term->slug ? 'selected' : '';
+		$name     = esc_html( apply_filters( 'woocommerce_variation_option_name', $term->name ) );
 
-		$tooltip = $this->get_tooltip_html( '', $attribute_item_obj, $name, $args );
-		$tooltip = apply_filters( 'tawcvs_tooltip_html', $tooltip, $attribute_item_obj, $name, $args );
+		$tooltip = $this->get_tooltip_html( '', $term, $name, $args );
+		$tooltip = apply_filters( 'tawcvs_tooltip_html', $tooltip, $term, $name, $args );
 
-		$swatchShape = isset( $this->generalSettings['swatch-shape'] ) ? $this->generalSettings['swatch-shape'] : 'rounded';
+		$swatchShape = isset( $this->generalSettings['swatch-shape'] ) ? $this->generalSettings['swatch-shape'] : 'circle';
 
 
 		switch ( $type ) {
 			case 'color':
-				$main_color            = get_term_meta( $attribute_item_obj->term_id, 'color', true );
-				$formatted_color_style = TA_WC_Variation_Swatches::generate_color_style( $attribute_item_obj->term_id, $main_color );
+				$main_color            = get_term_meta( $term->term_id, 'color', true );
+				$formatted_color_style = TA_WC_Variation_Swatches::generate_color_style( $term->term_id, $main_color );
 				list( $r, $g, $b ) = sscanf( $main_color, "#%02x%02x%02x" );
 				$html = sprintf(
 					'<div class="swatch-item-wrapper"><div class="swatch swatch-shape-' . $swatchShape . ' swatch-color swatch-%s %s" style="background:%s;color:%s;" data-value="%s"></div>%s</div>',
-					esc_attr( $attribute_item_obj->slug ),
+					esc_attr( $term->slug ),
 					$selected,
 					esc_attr( $formatted_color_style ),
 					"rgba($r,$g,$b,0.5)",
-					esc_attr( $attribute_item_obj->slug ),
+					esc_attr( $term->slug ),
 					$tooltip
 				);
 				break;
 
 			case 'image':
-				$thumb_id = 0;
-				//First, we check the variation product already had its thumbnail or not
-				if ( isset( $variation_attribute['variation_product'] ) ) {
-					$variation_product_id = $variation_attribute['variation_product']['variation_id'];
-					$thumb_id             = get_post_meta( $variation_product_id, '_thumbnail_id', true );
-				}
-
-				if ( ! empty( $thumb_id ) ) {
-					$image_url = wp_get_attachment_image_url( $thumb_id );
-				} else {
-					//unless we will get the default thumbnail of attribute variation
-					$attach_id = get_term_meta( $attribute_item_obj->term_id, 'image', true );
+				// First, we check the default thumbnail of attribute variation
+				$attach_id = get_term_meta( $term->term_id, 'image', true );
+				if ( ! empty( $attach_id ) ) {
 					$image_url = wp_get_attachment_image_url( $attach_id );
+				} else {
+					//If we also do not have default thumbnail, we will use the placeholder image of WC
+					$image_url = WC()->plugin_url() . '/assets/images/placeholder.png';
 				}
-
-				//If we also do not have default thumbnail, we will use the placeholder image of WC
-				$image_url = $image_url ?: WC()->plugin_url() . '/assets/images/placeholder.png';
+				$image_url = apply_filters( 'tawcvs_product_swatch_image_url', $image_url, $args );
 
 				$html = sprintf(
 					'<div class="swatch-item-wrapper"><div class="swatch swatch-shape-' . $swatchShape . ' swatch-image swatch-%s %s" data-value="%s"><img src="%s" alt="%s"></div>%s</div>',
-					esc_attr( $attribute_item_obj->slug ),
+					esc_attr( $term->slug ),
 					$selected,
-					esc_attr( $attribute_item_obj->slug ),
+					esc_attr( $term->slug ),
 					esc_url( $image_url ),
 					esc_attr( $name ),
 					$tooltip
 				);
 				break;
 			case 'label':
-				$label = get_term_meta( $attribute_item_obj->term_id, 'label', true );
+				$label = get_term_meta( $term->term_id, 'label', true );
 				$label = $label ?: $name;
 				$html  = sprintf(
 					'<div class="swatch-item-wrapper"><div class="swatch swatch-shape-' . $swatchShape . ' swatch-label swatch-%s %s" data-value="%s"><span class="text">%s</span></div>%s</div>',
-					esc_attr( $attribute_item_obj->slug ),
+					esc_attr( $term->slug ),
 					$selected,
-					esc_attr( $attribute_item_obj->slug ),
+					esc_attr( $term->slug ),
 					esc_html( $label ),
 					$tooltip
 				);
 				break;
 		}
 
-		return apply_filters( 'tawcvs_swatch_item_html', $html, $attribute_item_obj, $type, $selected, $name, $tooltip, $swatchShape );
+		return apply_filters( 'tawcvs_swatch_item_html', $html, $term, $type, $selected, $name, $tooltip, $swatchShape );
 	}
 
 
 	public function tawcvs_show_clear_link_on_variations_on_shop_page( $content ) {
 		if ( ! is_product() ) {
-			return;
+			return '';
 		}
 
 		return $content;
@@ -328,15 +325,15 @@ class TA_WC_Variation_Swatches_Frontend {
 	 * Render the tooltip html if it is enabled
 	 *
 	 * @param $html
-	 * @param $attribute_item_obj
+	 * @param $term
 	 * @param $name
 	 * @param $args
 	 *
 	 * @return mixed|string
 	 */
-	public function get_tooltip_html( $html, $attribute_item_obj, $name, $args ) {
+	public function get_tooltip_html( $html, $term, $name, $args ) {
 		if ( ! empty( $args['tooltip'] ) ) {
-			$html = '<span class="swatch__tooltip">' . ( $attribute_item_obj->description ?: $name ) . '</span>';
+			$html = '<span class="swatch__tooltip">' . ( $term->description ?: $name ) . '</span>';
 		}
 
 		return $html;
@@ -353,8 +350,8 @@ class TA_WC_Variation_Swatches_Frontend {
                 margin-bottom: <?php echo isset($this->{$page}['wrm-bottom']) ? $this->{$page}['wrm-bottom'] : '15'; echo isset($this->{$page}['wrm-type']) ? $this->{$page}['wrm-type'] : 'px'  ?>;
                 margin-left: <?php echo isset($this->{$page}['wrm-left']) ? $this->{$page}['wrm-left'] : '0'; echo isset($this->{$page}['wrm-type']) ? $this->{$page}['wrm-type'] : 'px'  ?>;
                 padding-top: <?php echo isset($this->{$page}['wrp-top']) ? $this->{$page}['wrp-top'] : '0'; echo isset($this->{$page}['wrp-type']) ? $this->{$page}['wrp-type'] : 'px'  ?>;
-                padding-right: <?php echo isset($this->{$page}['wrp-right']) ? $this->{$page}['wrp-right'] : '15'; echo isset($this->{$page}['wrp-type']) ? $this->{$page}['wrp-type'] : 'px'  ?>;
-                padding-bottom: <?php echo isset($this->{$page}['wrp-bottom']) ? $this->{$page}['wrp-bottom'] : '15'; echo isset($this->{$page}['wrp-type']) ? $this->{$page}['wrp-type'] : 'px'  ?>;
+                padding-right: <?php echo isset($this->{$page}['wrp-right']) ? $this->{$page}['wrp-right'] : '0'; echo isset($this->{$page}['wrp-type']) ? $this->{$page}['wrp-type'] : 'px'  ?>;
+                padding-bottom: <?php echo isset($this->{$page}['wrp-bottom']) ? $this->{$page}['wrp-bottom'] : '0'; echo isset($this->{$page}['wrp-type']) ? $this->{$page}['wrp-type'] : 'px'  ?>;
                 padding-left: <?php echo isset($this->{$page}['wrp-left']) ? $this->{$page}['wrp-left'] : '0'; echo isset($this->{$page}['wrp-type']) ? $this->{$page}['wrp-type'] : 'px'  ?>;
             }
 
@@ -365,17 +362,19 @@ class TA_WC_Variation_Swatches_Frontend {
                 margin-bottom: <?php echo isset($this->{$page}['mar-bottom']) ? $this->{$page}['mar-bottom'] : '15'; echo isset($this->{$page}['mar-type']) ? $this->{$page}['mar-type'] : 'px'  ?> !important;
                 margin-left: <?php echo isset($this->{$page}['mar-left']) ? $this->{$page}['mar-left'] : '0'; echo isset($this->{$page}['mar-type']) ? $this->{$page}['mar-type'] : 'px'  ?> !important;
                 padding-top: <?php echo isset($this->{$page}['pad-top']) ? $this->{$page}['pad-top'] : '0'; echo isset($this->{$page}['pad-type']) ? $this->{$page}['pad-type'] : 'px'  ?> !important;
-                padding-right: <?php echo isset($this->{$page}['pad-right']) ? $this->{$page}['pad-right'] : '15'; echo isset($this->{$page}['pad-type']) ? $this->{$page}['pad-type'] : 'px'  ?> !important;
-                padding-bottom: <?php echo isset($this->{$page}['pad-bottom']) ? $this->{$page}['pad-bottom'] : '15'; echo isset($this->{$page}['pad-type']) ? $this->{$page}['pad-type'] : 'px'  ?> !important;
+                padding-right: <?php echo isset($this->{$page}['pad-right']) ? $this->{$page}['pad-right'] : '0'; echo isset($this->{$page}['pad-type']) ? $this->{$page}['pad-type'] : 'px'  ?> !important;
+                padding-bottom: <?php echo isset($this->{$page}['pad-bottom']) ? $this->{$page}['pad-bottom'] : '0'; echo isset($this->{$page}['pad-type']) ? $this->{$page}['pad-type'] : 'px'  ?> !important;
                 padding-left: <?php echo isset($this->{$page}['pad-left']) ? $this->{$page}['pad-left'] : '0'; echo isset($this->{$page}['pad-type']) ? $this->{$page}['pad-type'] : 'px'  ?> !important;
             }
 
             /*tooltip*/
             .tawcvs-swatches .swatch .swatch__tooltip {
-            <?php if($this->toolTipDesign['item-font']):?> font-size: <?php echo isset($this->toolTipDesign['text-font-size']) ? $this->toolTipDesign['text-font-size'] : '14'; echo isset($this->toolTipDesign['item-font-size-type']) ? $this->toolTipDesign['item-font-size-type'] : 'px'; ?>;
-            <?php endif;?> width: <?php echo $this->toolTipDesign['width'] ? $this->toolTipDesign['width'] . 'px' : 'auto' ?>;
-                max-width: <?php echo $this->toolTipDesign['max-width'] ? $this->toolTipDesign['max-width'] .'px' : '100%' ?>;
-                line-height: <?php echo $this->toolTipDesign['line-height'] ?: 'unset'; ?>;
+            <?php if(isset($this->toolTipDesign['item-font']) && $this->toolTipDesign['item-font']):?>
+                font-size: <?php echo isset($this->toolTipDesign['text-font-size']) ? $this->toolTipDesign['text-font-size'] : '14'; echo isset($this->toolTipDesign['item-font-size-type']) ? $this->toolTipDesign['item-font-size-type'] : 'px'; ?>;
+            <?php endif;?>
+                width: <?php echo isset($this->toolTipDesign['width']) ? $this->toolTipDesign['width'] . 'px' : 'auto' ?>;
+                max-width: <?php echo isset($this->toolTipDesign['max-width']) ? $this->toolTipDesign['max-width'] .'px' : '100%' ?>;
+                line-height: <?php echo isset($this->toolTipDesign['line-height']) ?: 'unset'; ?>;
             }
         </style>
 		<?php

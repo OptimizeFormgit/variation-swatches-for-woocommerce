@@ -114,19 +114,19 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 								'name'              => 'swatch-shape',
 								'options_group'     => array(
 									array(
+										'value' => 'circle',
+										'label' => __( 'S', 'wcvs' ),
+									),
+									array(
 										'value' => 'edge',
 										'label' => __( 'S', 'wcvs' ),
 									),
 									array(
 										'value' => 'rounded',
 										'label' => __( 'S', 'wcvs' ),
-									),
-									array(
-										'value' => 'circle',
-										'label' => __( 'S', 'wcvs' ),
 									)
 								),
-								'default_value'     => 'edge',
+								'default_value'     => 'circle',
 								'custom_item_class' => 'swatch-shape-radio',
 							)
 						),
@@ -299,13 +299,13 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 									'id'            => 'wcvs-mar-right',
 									'type'          => 'number',
 									'name'          => 'mar-right',
-									'default_value' => '0'
+									'default_value' => '15'
 								),
 								array(
 									'id'            => 'wcvs-mar-bottom',
 									'type'          => 'number',
 									'name'          => 'mar-bottom',
-									'default_value' => '0'
+									'default_value' => '15'
 								),
 								array(
 									'id'            => 'wcvs-mar-left',
@@ -407,13 +407,13 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 									'id'            => 'wcvs-wrm-right',
 									'type'          => 'number',
 									'name'          => 'wrm-right',
-									'default_value' => '0'
+									'default_value' => '15'
 								),
 								array(
 									'id'            => 'wcvs-wrm-bottom',
 									'type'          => 'number',
 									'name'          => 'wrm-bottom',
-									'default_value' => '0'
+									'default_value' => '15'
 								),
 								array(
 									'id'            => 'wcvs-wrm-left',
@@ -639,13 +639,13 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 									'id'            => 'wcvs-mar-right',
 									'type'          => 'number',
 									'name'          => 'mar-right',
-									'default_value' => '0'
+									'default_value' => '15'
 								),
 								array(
 									'id'            => 'wcvs-mar-bottom',
 									'type'          => 'number',
 									'name'          => 'mar-bottom',
-									'default_value' => '0'
+									'default_value' => '15'
 								),
 								array(
 									'id'            => 'wcvs-mar-left',
@@ -747,13 +747,13 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 									'id'            => 'wcvs-wrm-right',
 									'type'          => 'number',
 									'name'          => 'wrm-right',
-									'default_value' => '0'
+									'default_value' => '15'
 								),
 								array(
 									'id'            => 'wcvs-wrm-bottom',
 									'type'          => 'number',
 									'name'          => 'wrm-bottom',
-									'default_value' => '0'
+									'default_value' => '15'
 								),
 								array(
 									'id'            => 'wcvs-wrm-left',

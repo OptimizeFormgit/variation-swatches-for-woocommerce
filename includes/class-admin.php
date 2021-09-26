@@ -335,12 +335,7 @@ class TA_WC_Variation_Swatches_Admin {
 			if ( isset( $_POST[ $type ] ) ) {
 				update_term_meta( $term_id, $type, sanitize_text_field( $_POST[ $type ] ) );
 
-				//Additional data for color
-				if ( 'color' === $type && '1' === $this->generalSettings['enable-dual-color'] ) {
-					array_map( function ( $meta_key ) use ( $term_id ) {
-						update_term_meta( $term_id, $meta_key, sanitize_text_field( isset( $_POST[ $meta_key ] ) ? $_POST[ $meta_key ] : '' ) );
-					}, array( 'is-dual-color', 'secondary-color' ) );
-				}
+				do_action('tawcvs_after_save_term_meta',$term_id,$type);
 			}
 		}
 	}

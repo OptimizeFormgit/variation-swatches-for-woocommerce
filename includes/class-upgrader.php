@@ -56,7 +56,7 @@ if ( ! class_exists( 'VSWC_Upgrader' ) ) {
 		 *
 		 * @return bool
 		 */
-		public function is_welcome_popup_should_be_shown(): bool {
+		public function is_welcome_popup_should_be_shown() {
 			$this->saved_plugin_version = $this->get_current_plugin_version();
 
 			if ( ! $this->is_welcome_page_is_already_show() ) {
@@ -73,7 +73,7 @@ if ( ! class_exists( 'VSWC_Upgrader' ) ) {
 		 *
 		 * @return bool
 		 */
-		public function is_admin_notice_should_be_shown(): bool {
+		public function is_admin_notice_should_be_shown() {
 			$this->saved_plugin_version = $this->get_current_plugin_version();
 
 			return $this->is_notice_allowed_to_show() && ! $this->is_met_admin_notice_requirements();
@@ -82,7 +82,7 @@ if ( ! class_exists( 'VSWC_Upgrader' ) ) {
 		/**
 		 * @return bool
 		 */
-		private function is_notice_allowed_to_show(): bool {
+		private function is_notice_allowed_to_show() {
 			if ( WCVS_NEED_TO_SHOW_NOTICE_AFTER_UPGRADED ) {
 				return ! empty( $this->saved_plugin_version ) && $this->is_current_version_newer_than_compared_version();
 			}
