@@ -3,7 +3,7 @@ Contributors: variationswatches, themealien, zgani, mehbubrashid, minhnguyen25
 Tags: variation swatches, woocommerce, product attribute, product color, product size, variable products
 Requires at least: 4.5
 Tested up to: 5.8
-Stable tag: 2.0.0
+Stable tag: 2.0.21
 WC requires at least: 3.2.0
 WC tested up to: 5.6.0
 License: GPLv2 or later
@@ -103,6 +103,9 @@ Yes, it will work with any theme, but may require some styling to make it match 
 7. Add new attribute color when edit a product
 
 == Changelog ==
+= 2.0.21 =
+* stable tag fix
+
 = 2.0.2 =
 * add separated function to get the available variations
 * Added support for out of stock for Sober theme
