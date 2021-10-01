@@ -5,7 +5,7 @@
 
 .woocommerce .tawcvs-swatches {
   padding: 5px;
-  display: inline-flex;
+  display: inline-flex !important;
   flex-wrap: wrap;
 }
 .woocommerce .tawcvs-swatches .swatch,
@@ -14,8 +14,8 @@
   -moz-transition: all 0.3s;
   -o-transition: all 0.3s;
   transition: all 0.3s;
-  width: 30px;
-  height: 30px;
+  width: 30px !important;
+  height: 30px !important;
   line-height: 28px;
   text-align: center;
   cursor: pointer;
@@ -33,9 +33,9 @@
 }
 .woocommerce .tawcvs-swatches .swatch.swatch-shape-circle,
 .woocommerce .tawcvs-swatches .swatch-show-more.swatch-shape-circle {
-  -webkit-border-radius: 50%;
-  -moz-border-radius: 50%;
-  border-radius: 50%;
+  -webkit-border-radius: 50% !important;
+  -moz-border-radius: 50% !important;
+  border-radius: 50% !important;
 }
 .woocommerce .tawcvs-swatches .swatch.swatch-shape-circle img,
 .woocommerce .tawcvs-swatches .swatch-show-more.swatch-shape-circle img {
@@ -109,6 +109,10 @@
 .woocommerce .tawcvs-swatches .swatch.selected:before,
 .woocommerce .tawcvs-swatches .swatch-show-more.selected:before {
   border-color: #674399;
+}
+.woocommerce .tawcvs-swatches .swatch.selected.swatch-label,
+.woocommerce .tawcvs-swatches .swatch-show-more.selected.swatch-label {
+  border-bottom: none !important;
 }
 .woocommerce .tawcvs-swatches .swatch-color {
   text-indent: -9999em;
