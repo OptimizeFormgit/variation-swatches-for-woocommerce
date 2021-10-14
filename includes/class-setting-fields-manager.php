@@ -68,6 +68,72 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 			$settings_fields = array(
 				'general' => array(
 					array(
+						'title'    => __( 'Enable Color Swatches', 'wcvs' ),
+						'fields'   => array(
+							array(
+								'id'   => 'wcvs-enable-color-swatches',
+								'type' => 'checkbox',
+								'name' => 'enable-color-swatches',
+							)
+						),
+						'class'=>'main-ajax-trigger',
+						'desc'     => __( 'Enable the Color type for Product Attributes', 'wcvs' ),
+						'priority' => 1
+					),
+					array(
+						'title'           => __( 'Select Attributes', 'wcvs' ),
+						'fields'          => array(
+							array(
+								'id'   => 'wcvs-color-swatches-attributes',
+								'type' => 'html',
+								'html' => TA_WC_Variation_Swatches::get_product_attributes_as_checkbox(
+									'general',
+									'',
+									'color-swatches-attribute',
+									true,
+									'color' )
+							)
+						),
+						'desc'            => __( 'Which attributes you want to enable the Color type?', 'wcvs' ),
+						'class'           => 'indent ajax-to-update',
+						'field_to_check'  => 'wcvs-enable-color-swatches',
+						'show_if_checked' => true,
+						'priority'        => 1
+					),
+					array(
+						'title'    => __( 'Enable Image Swatches', 'wcvs' ),
+						'fields'   => array(
+							array(
+								'id'   => 'wcvs-enable-image-swatches',
+								'type' => 'checkbox',
+								'name' => 'enable-image-swatches',
+							)
+						),
+						'class'=>'main-ajax-trigger',
+						'desc'     => __( 'Enable the Image type for Product Attributes', 'wcvs' ),
+						'priority' => 1
+					),
+					array(
+						'title'           => __( 'Select Attributes', 'wcvs' ),
+						'fields'          => array(
+							array(
+								'id'   => 'wcvs-image-swatches-attributes',
+								'type' => 'html',
+								'html' => TA_WC_Variation_Swatches::get_product_attributes_as_checkbox(
+									'general',
+									'',
+									'image-swatches-attribute',
+									true,
+									'image' )
+							)
+						),
+						'desc'            => __( 'Which attributes you want to enable the Image type?', 'wcvs' ),
+						'class'           => 'indent ajax-to-update',
+						'field_to_check'  => 'wcvs-enable-image-swatches',
+						'show_if_checked' => true,
+						'priority'        => 1
+					),
+					array(
 						'title'    => __( 'Auto Convert Dropdowns To Label', 'wcvs' ),
 						'fields'   => array(
 							array(
@@ -85,7 +151,7 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 							array(
 								'id'   => 'wcvs-selectbox-to-label',
 								'type' => 'html',
-								'html' => TA_WC_Variation_Swatches::get_product_attributes_as_checkbox( 'general', '','dropdown-to-label-attribute' )
+								'html' => TA_WC_Variation_Swatches::get_product_attributes_as_checkbox( 'general', '', 'dropdown-to-label-attribute' )
 							)
 						),
 						'class'           => 'indent',
@@ -159,8 +225,8 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 						'priority' => 7
 					),
 					array(
-						'title'    => __( 'Enable Dual Color', 'wcvs' ),
-						'fields'   => array(
+						'title'          => __( 'Enable Dual Color', 'wcvs' ),
+						'fields'         => array(
 							array(
 								'id'   => 'wcvs-enable-dual-color',
 								'type' => 'checkbox',
@@ -168,8 +234,8 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 							)
 						),
 						'is_pro_feature' => true,
-						'desc'     => __( 'Enable or disable when the attribute type is set to color', 'wcvs' ),
-						'priority' => 8
+						'desc'           => __( 'Enable or disable when the attribute type is set to color', 'wcvs' ),
+						'priority'       => 8
 					),
 					array(
 						'title'          => __( 'Out of Stock Behaviour', 'wcvs' ),
@@ -845,16 +911,16 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 					),
 					'toolTipDesign' => array(
 						array(
-							'title'    => __( 'Tooltip styling', 'wcvs' ),
-							'fields'   => array(
+							'title'          => __( 'Tooltip styling', 'wcvs' ),
+							'fields'         => array(
 								array(
 									'id'   => 'wcvs-item-tooltip',
 									'type' => 'checkbox',
 									'name' => 'item-tooltip',
 								)
 							),
-							'is_pro_feature'=>true,
-							'priority' => 1
+							'is_pro_feature' => true,
+							'priority'       => 1
 						),
 						array(
 							'title'    => __( 'Tooltip Text font size', 'wcvs' ),

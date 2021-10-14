@@ -423,7 +423,7 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Renderer' ) ) {
 		 */
 		private function render_field_desc( $field_args ) {
 			if ( ! empty( $field_args['desc'] ) ) {
-				echo '<br><span class="sub">' . esc_html( $field_args['desc'] ) . '</span>';
+				echo '<br><span class="sub">' . $field_args['desc'] . '</span>';
 			}
 		}
 

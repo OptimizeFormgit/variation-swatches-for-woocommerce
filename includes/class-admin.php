@@ -11,7 +11,8 @@ class TA_WC_Variation_Swatches_Admin {
 	 */
 	protected static $instance = null;
 
-	private $generalSettings;
+	private $option_name = 'woosuite_variation_swatches_option';
+
 
 	/**
 	 * Main instance
@@ -34,12 +35,22 @@ class TA_WC_Variation_Swatches_Admin {
 		add_action( 'admin_init', array( $this, 'init_attribute_hooks' ) );
 		add_action( 'admin_print_scripts', array( $this, 'enqueue_scripts' ) );
 
+		add_action( 'woocommerce_product_data_tabs', array( $this, 'add_custom_swatch_variation_tab' ) );
+		add_action( 'woocommerce_product_data_panels', array( $this, 'product_tab_variation_swatches_panel' ) );
+		add_action( 'woocommerce_process_product_meta', array( $this, 'save_custom_product_data' ) );
+
 		// Restore attributes
 		add_action( 'admin_notices', array( $this, 'restore_attributes_notice' ) );
 		add_action( 'admin_init', array( $this, 'restore_attribute_types' ) );
 
 		// Display attribute fields
 		add_action( 'tawcvs_product_attribute_field', array( $this, 'attribute_fields' ), 10, 4 );
+
+		add_action( 'wp_ajax_update_product_attr_type', array( $this, 'update_product_attr_type' ) );
+
+
+		add_action( 'woocommerce_attribute_added', array( $this, 'update_plugin_setting_on_added' ), 10, 2 );
+		add_action( 'woocommerce_attribute_updated', array( $this, 'update_plugin_setting_on_updated' ), 10, 3 );
 
 		add_filter( 'woosuite_core_module_settings_url', array(
 			$this,
@@ -48,10 +59,115 @@ class TA_WC_Variation_Swatches_Admin {
 
 		include_once( dirname( __FILE__ ) . '/class-menu-page.php' );
 		new VSWC_Settings_Page();
+	}
 
-		$latest_option = get_option( 'woosuite_variation_swatches_option', array() );
+	/**
+	 * @param $id
+	 * @param $data
+	 */
+	public function update_plugin_setting_on_added( $id, $data ) {
 
-		$this->generalSettings = isset( $latest_option['general'] ) ? $latest_option['general'] : array();
+		$this->sync_attribute_setting_to_plugin_settings( $data );
+	}
+
+	/**
+	 * @param $id
+	 * @param $data
+	 * @param $old_slug
+	 */
+	public function update_plugin_setting_on_updated( $id, $data, $old_slug ) {
+
+		$latest_option = $this->get_latest_plugin_option();
+
+		//Remove the old slug from our plugin setting
+		if ( $data['attribute_name'] !== $old_slug && isset( $latest_option['general'] ) ) {
+			unset( $latest_option['general'][ 'color-swatches-attribute-' . $old_slug ] );
+			unset( $latest_option['general'][ 'image-swatches-attribute-' . $old_slug ] );
+		}
+
+		$this->sync_attribute_setting_to_plugin_settings( $data, $latest_option );
+	}
+
+	/**
+	 * Function to sync the attribute type setting with the plugin setting
+	 *
+	 * @param $data
+	 * @param array|bool $latest_option
+	 */
+	private function sync_attribute_setting_to_plugin_settings( $data, $latest_option = false ) {
+		if ( ! $latest_option ) {
+			$latest_option = $this->get_latest_plugin_option();
+		}
+
+		$generalSettings = isset( $latest_option['general'] ) ? $latest_option['general'] : array();
+
+		//Set new value
+		switch ( $data['attribute_type'] ) {
+			case 'image':
+				$generalSettings[ 'image-swatches-attribute-' . $data['attribute_name'] ] = '1';
+				$generalSettings[ 'color-swatches-attribute-' . $data['attribute_name'] ] = '0';
+				$generalSettings['enable-image-swatches']                                 = '1';
+				break;
+			case 'color':
+				$generalSettings[ 'image-swatches-attribute-' . $data['attribute_name'] ] = '0';
+				$generalSettings[ 'color-swatches-attribute-' . $data['attribute_name'] ] = '1';
+				$generalSettings['enable-color-swatches']                                 = '1';
+				break;
+		}
+
+		$latest_option['general'] = $generalSettings;
+
+		update_option( $this->option_name, $latest_option );
+
+		$this->remove_wc_attributes_cache();
+	}
+
+	/**
+	 * Add the custom product tab for Variation swatches
+	 *
+	 * @param $product_data_tabs
+	 *
+	 * @return mixed
+	 */
+	public function add_custom_swatch_variation_tab( $product_data_tabs ) {
+		$product_data_tabs['variation-swatches'] = array(
+			'label'    => __( 'Variation Swatches', 'wcvs' ),
+			'target'   => 'variation_swatches_options',
+			'class'    => array( 'show_if_variable' ),
+			'priority' => 61,
+		);
+
+		return $product_data_tabs;
+	}
+
+	/**
+	 * Rendering the product data panel for Swatch Variation settings
+	 */
+	public function product_tab_variation_swatches_panel() { ?>
+        <div id="variation_swatches_options" class="panel woocommerce_options_panel">
+            <div class="options_group">
+				<?php
+				woocommerce_wp_checkbox( array(
+					'id'            => 'variation_swatches_disabled',
+					'wrapper_class' => 'show_if_variable',
+					'label'         => __( 'Disable Swatches', 'wcvs' ),
+					'default'       => '0',
+					'desc_tip'      => false,
+					'description'   => __( 'Show the default dropdown selection instead of swatches settings', 'wcvs' )
+				) );
+				?>
+            </div>
+        </div>
+		<?php
+	}
+
+	/**
+	 * Saving custom field of product data tab
+	 *
+	 * @param $post_id
+	 */
+	public function save_custom_product_data( $post_id ) {
+		update_post_meta( $post_id, 'variation_swatches_disabled', esc_attr( $_POST['variation_swatches_disabled'] ) );
 	}
 
 	/**
@@ -335,7 +451,7 @@ class TA_WC_Variation_Swatches_Admin {
 			if ( isset( $_POST[ $type ] ) ) {
 				update_term_meta( $term_id, $type, sanitize_text_field( $_POST[ $type ] ) );
 
-				do_action('tawcvs_after_save_term_meta',$term_id,$type);
+				do_action( 'tawcvs_after_save_term_meta', $term_id, $type );
 			}
 		}
 	}
@@ -389,5 +505,61 @@ class TA_WC_Variation_Swatches_Admin {
 				printf( '<div class="swatch-preview swatch-label">%s</div>', esc_html( $value ) );
 				break;
 		}
+	}
+
+	/**
+	 * Ajax callback to update the Product Attribute type
+	 */
+	public function update_product_attr_type() {
+		global $wpdb;
+
+		$latest_option = $this->get_latest_plugin_option();
+
+		$attribute_name = isset( $_POST['attribute'] ) ? sanitize_text_field( $_POST['attribute'] ) : '';
+		$type_to_update = isset( $_POST['typeToUpdate'] ) ? sanitize_text_field( $_POST['typeToUpdate'] ) : '';
+
+		if ( empty( $attribute_name ) || empty( $type_to_update ) ) {
+			wp_send_json_error( array( 'message' => 'Missing data', 'success' => false ), 200 );
+		}
+
+		//Setting the Product attribute to specified type
+		$result = $wpdb->update(
+			$wpdb->prefix . 'woocommerce_attribute_taxonomies',
+			array( 'attribute_type' => $type_to_update ),
+			array( 'attribute_name' => $attribute_name ),
+			array( '%s' ),
+			array( '%s' )
+		);
+
+		//Update the plugin settings also
+		$main_setting_arr = array_slice( $_POST, 1, 1, true );
+
+		update_option( $this->option_name, array_replace_recursive( $latest_option, $main_setting_arr ) );
+
+		$this->remove_wc_attributes_cache();
+
+		//Save the setting
+		if ( false !== $result ) {
+			wp_send_json_success( array( 'message' => 'Done with update', 'success' => true ), 200 );
+		}
+
+		wp_send_json_error( array( 'message' => 'Unexpected error', 'success' => false ), 200 );
+
+	}
+
+	/**
+	 * Reset the WC cache to get the latest value
+	 */
+	private function remove_wc_attributes_cache() {
+		delete_transient( 'wc_attribute_taxonomies' );
+	}
+
+	/**
+	 * Get the latest plugin option settings
+	 */
+	private function get_latest_plugin_option() {
+		$option = get_option( $this->option_name, array() );
+
+		return is_array( $option ) ? $option : array();
 	}
 }

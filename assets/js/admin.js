@@ -201,11 +201,6 @@ jQuery(document).ready(function ($) {
 
     }
 
-
-});
-
-
-jQuery(document).ready(function ($) {
     // accordion js
     $('.variation-item-head').on('click', function () {
         var $clickedHead = $(this);
@@ -272,15 +267,90 @@ jQuery(document).ready(function ($) {
             conditionalFieldEle.trigger("change");
         }
     })
+
     //Show the Pro features popup
     $('#tawcvs-settings-wrap').on('click', '.wcvs-pro-item, .wcvs-pro-item *', function (e) {
         e.preventDefault();
         $('.wcvs-pro-feature-popup,.wcvs-popup-blur').show();
     })
+
     //Hide the Pro features popup when clicking on close button or outside the popup
     $('.popup-close,.wcvs-popup-blur').on('click', function () {
         $('.wcvs-popup,.wcvs-popup-blur').hide();
     })
+
+    //Update the Product Attribute type when changing it in the Settings page
+    $('.ajax-to-update input[type="checkbox"]').change(function () {
+        let typeToUpdate = "select";
+        let configureLinkEle = $(this).parent().find(".configure-items-link");
+        let mainTriggerEle = $("#" + $(this).parents('.ajax-to-update').data("conditional"));
+        let ajaxData = {attribute: $(this).data("slug")};
+
+        if (!mainTriggerEle.length) {
+            return;
+        }
+
+        if (mainTriggerEle.is(":checked")) {
+            ajaxData[mainTriggerEle.attr("name")] = 1;
+        } else {
+            ajaxData[mainTriggerEle.attr("name")] = 0;
+        }
+
+        if (this.checked && mainTriggerEle.is(":checked")) {
+            typeToUpdate = $(this).data("type");
+
+            //Uncheck same attributes in other settings
+            $('.ajax-to-update input[type="checkbox"][data-slug="' + $(this).data("slug") + '"]:checked').not(this).each(function () {
+                $(this).prop("checked", false);
+                $(this).parent().find(".configure-items-link").addClass("hidden");
+                //Set the plugin setting to false for this field
+                ajaxData[$(this).attr("name")] = 0;
+            })
+
+            //Set the plugin setting to true
+            ajaxData[$(this).attr("name")] = 1;
+
+        } else {
+            configureLinkEle.addClass("hidden");
+
+            //Set the plugin setting to false
+            ajaxData[$(this).attr("name")] = 0;
+        }
+
+        ajaxData.typeToUpdate = typeToUpdate;
+
+        $(this).closest(".ajax-to-update").toggleClass("saving");
+
+        wp.ajax.send("update_product_attr_type", {
+            data: ajaxData,
+            success: function (response) {
+                if (response.success) {
+                    if ("select" === typeToUpdate) {
+                        configureLinkEle.addClass("hidden");
+                    } else {
+                        configureLinkEle.removeClass("hidden");
+                    }
+                    $(".main-ajax-trigger,.ajax-to-update").removeClass("saving");
+                }
+            }
+        });
+    });
+
+    //Sync all child attributes when toggle on/off the setting
+    $('.main-ajax-trigger input[type="checkbox"]').change(function () {
+        let mainTriggerEle = $(this).closest(".main-ajax-trigger");
+
+        mainTriggerEle.toggleClass("saving");
+        mainTriggerEle.next(".ajax-to-update").toggleClass("saving");
+
+        let childAttrs = $("div[data-conditional='" + $(this).attr("id") + "'] input[type='checkbox']:checked");
+        if (childAttrs.length) {
+            childAttrs.each(function () {
+                $(this).trigger("change");
+            })
+        }
+    });
+
 });
 
 
