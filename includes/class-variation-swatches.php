@@ -44,6 +44,7 @@ final class TA_WC_Variation_Swatches {
 		$this->includes();
 		$this->init_hooks();
 	}
+
 	/**
 	 * Include required core files used in admin and on the frontend.
 	 */
@@ -108,7 +109,9 @@ final class TA_WC_Variation_Swatches {
 
 		$attr = substr( $taxonomy, 3 );
 
-		return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . $wpdb->prefix . "woocommerce_attribute_taxonomies WHERE attribute_name = %s", $attr ) );
+		$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . $wpdb->prefix . "woocommerce_attribute_taxonomies WHERE attribute_name = %s", $attr ) );
+
+		return apply_filters( 'tawcvs_tax_attributes', $result );
 	}
 
 	/**
@@ -156,7 +159,7 @@ final class TA_WC_Variation_Swatches {
 		}
 	}
 
-	public static function get_product_attributes_as_checkbox( $section_id, $tab_id, $field_name ) {
+	public static function get_product_attributes_as_checkbox( $section_id, $tab_id, $field_name, $show_configure_link = false, $type_to_update = '' ) {
 		ob_start();
 		$current_options = get_option( 'woosuite_variation_swatches_option' ) ?: array();
 		if ( ! empty( $tab_id ) ) {
@@ -172,6 +175,8 @@ final class TA_WC_Variation_Swatches {
 			}
 			$field_id            = $field_name . '-' . $att->attribute_name;
 			$field_name_modified = $field_name_prefix . '[' . $field_name . '-' . $att->attribute_name . ']';
+
+			$tax_slug = esc_attr( wc_attribute_taxonomy_name( $att->attribute_name ) );
 			?>
             <label class="variation-checkbox-container" for="<?php echo $field_id; ?>">
 				<?php echo $att->attribute_label; ?>
@@ -180,8 +185,17 @@ final class TA_WC_Variation_Swatches {
                        type="checkbox"
                        name="<?php echo $field_name_modified; ?>"
                        value="1"
+                       data-slug="<?php echo $att->attribute_name; ?>"
+					<?php echo $type_to_update ? 'data-type="' . esc_attr( $type_to_update ) . '"' : '';; ?>
 					<?php checked( '1', $field_value ); ?>/>
                 <span class="checkmark"></span>
+				<?php if ( $show_configure_link ): ?>
+					<?php $configure_link = 'edit-tags.php?taxonomy=' . $tax_slug . '&amp;post_type=product'; ?>
+                    <a class="configure-items-link <?php echo 1 == $field_value ? '' : 'hidden'; ?>"
+                       href="<?php echo $configure_link; ?>">
+						<?php _e( 'Configure items', 'wcvs' ); ?>
+                    </a>
+				<?php endif; ?>
             </label>
 			<?php
 		}

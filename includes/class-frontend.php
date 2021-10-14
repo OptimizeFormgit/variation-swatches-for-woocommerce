@@ -48,7 +48,7 @@ class TA_WC_Variation_Swatches_Frontend {
 		$this->toolTipDesign   = isset( $latest_option['design']['toolTipDesign'] ) ? $latest_option['design']['toolTipDesign'] : array();
 
 
-		if ( isset($this->archiveSettings['show-clear-link']) && ! $this->archiveSettings['show-clear-link'] ) {
+		if ( isset( $this->archiveSettings['show-clear-link'] ) && ! $this->archiveSettings['show-clear-link'] ) {
 			add_filter( 'woocommerce_reset_variations_link', array(
 				$this,
 				'tawcvs_show_clear_link_on_variations_on_shop_page'
@@ -57,13 +57,41 @@ class TA_WC_Variation_Swatches_Frontend {
 
 		if ( isset( $this->archiveSettings['show-swatch'] )
 		     && $this->archiveSettings['show-swatch']
-		     && ! defined( 'WOOSUITE_VARIATION_SWATCHES_PRO_VERSION' ) ) {
+		     && ! TA_WC_Variation_Swatches::is_pro_addon_active() ) {
 			add_filter( 'woocommerce_loop_add_to_cart_link', array(
 				$this,
 				'display_variations_on_shop_page_before_add_to_cart_btn'
 			), 10, 3 );
 		}
 		add_action( 'wp_head', array( $this, 'apply_custom_design_styles' ) );
+
+		add_filter( 'tawcvs_tax_attributes', array( $this, 'get_updated_attribute_type' ), 10 );
+	}
+
+	public function get_updated_attribute_type( $attr ) {
+		$supported_swatch_types    = TA_WCVS()->types;
+		$dropdown_to_label_setting = isset( $this->generalSettings['dropdown-to-label'] ) && $this->generalSettings['dropdown-to-label'];
+
+		// If the type isn't supported, and we turned on the setting to convert dropdown to label/image
+		// then we forced that type to the corresponding type
+		if ( ! array_key_exists( $attr->attribute_type, $supported_swatch_types ) ) {
+
+			if ( $dropdown_to_label_setting
+			     && isset( $this->generalSettings[ 'dropdown-to-label-attribute-' . $attr->attribute_name ] )
+			     && $this->generalSettings[ 'dropdown-to-label-attribute-' . $attr->attribute_name ] ) {
+
+				$attr->attribute_type = 'label';
+
+			} else {
+				//Default attribute type should be select
+				$attr->attribute_type = 'select';
+
+			}
+
+		}
+		$attr->attribute_type = apply_filters( 'tawcvs_attribute_type', $attr->attribute_type, $attr, $supported_swatch_types );
+
+		return $attr;
 	}
 
 	/**
@@ -86,7 +114,7 @@ class TA_WC_Variation_Swatches_Frontend {
 	 * Enqueue scripts and stylesheets
 	 */
 	public function enqueue_scripts() {
-		if ( isset($this->generalSettings['disable-plugin-stylesheet']) && ! $this->generalSettings['disable-plugin-stylesheet'] ) {
+		if ( isset( $this->generalSettings['disable-plugin-stylesheet'] ) && ! $this->generalSettings['disable-plugin-stylesheet'] ) {
 			wp_enqueue_style( 'tawcvs-frontend', plugins_url( 'assets/css/frontend.css', TAWC_VS_PLUGIN_FILE ), array(), WCVS_PLUGIN_VERSION );
 		}
 		if ( is_shop() || is_product_category() || is_product_tag() ) {
@@ -106,8 +134,7 @@ class TA_WC_Variation_Swatches_Frontend {
 	public function get_swatch_html( $html, $args ) {
 		global $woocommerce_loop;
 
-		$supported_swatch_types = TA_WCVS()->types;
-		$attr                   = TA_WCVS()->get_tax_attribute( $args['attribute'] );
+		$attr = TA_WCVS()->get_tax_attribute( $args['attribute'] );
 
 		// Return if this is normal attribute
 		if ( empty( $attr ) || ! $args['product'] instanceof WC_Product_Variable ) {
@@ -123,32 +150,16 @@ class TA_WC_Variation_Swatches_Frontend {
 		$defined_limit      = apply_filters( 'tawcvs_swatch_limit_number', 0 );
 		$out_of_stock_state = apply_filters( 'tawcvs_out_of_stock_state', '' );
 
+		//If this product has disabled the variation swatches
+		if ( $this->is_disabled_variation_swatches( $product ) ) {
+			return $html;
+		}
 
 		if ( empty( $options ) && ! empty( $product ) && ! empty( $attribute_tax_name ) ) {
 			$attributes = $product->get_variation_attributes();
 			$options    = $attributes[ $attribute_tax_name ];
 		}
 
-		$dropdown_to_label_setting = isset( $this->generalSettings['dropdown-to-label'] ) && $this->generalSettings['dropdown-to-label'];
-
-		// If the type isn't supported, and we turned on the setting to convert dropdown to label/image
-		// then we forced that type to the corresponding type
-		if ( ! array_key_exists( $attr->attribute_type, $supported_swatch_types ) ) {
-
-			if ( $dropdown_to_label_setting
-			     && isset( $this->generalSettings[ 'dropdown-to-label-attribute-' . $attr->attribute_name ] )
-			     && $this->generalSettings[ 'dropdown-to-label-attribute-' . $attr->attribute_name ] ) {
-
-				$attr->attribute_type = 'label';
-
-			} else {
-
-				$attr->attribute_type = '';
-
-			}
-
-		}
-		$attr->attribute_type = apply_filters( 'tawcvs_attribute_type', $attr->attribute_type, $attr, $supported_swatch_types );
 
 		if ( empty( $attr->attribute_type ) ) {
 			return $html;
@@ -168,6 +179,8 @@ class TA_WC_Variation_Swatches_Frontend {
 				//Check if we have the product variable for this attribute
 				if ( isset( $collected_variations[ $term->slug ] ) ) {
 					$args['variation_product'] = $collected_variations[ $term->slug ];
+				} else {
+					unset( $args['variation_product'] );
 				}
 
 				$swatches .= apply_filters( 'tawcvs_swatch_html', '', $term, $attr->attribute_type, $args );
@@ -189,6 +202,14 @@ class TA_WC_Variation_Swatches_Frontend {
 		}
 
 		return $html;
+	}
+
+	private function is_disabled_variation_swatches( $product ) {
+		if ( ! $product instanceof WC_Product_Variable ) {
+			return false;
+		}
+
+		return 'yes' === get_post_meta( $product->get_id(), 'variation_swatches_disabled', true );
 	}
 
 	/**
@@ -361,7 +382,8 @@ class TA_WC_Variation_Swatches_Frontend {
 		$page = is_product() ? 'productDesign' : 'shopDesign';
 		?>
         <style>
-            .tawcvs-swatches {
+            .woocommerce div.product form.cart.swatches-support .tawcvs-swatches,
+            .woocommerce.archive form.cart.swatches-support .tawcvs-swatches {
                 margin-top: <?php echo isset($this->{$page}['wrm-top']) ? $this->{$page}['wrm-top'] : '0'; echo isset($this->{$page}['wrm-type']) ? $this->{$page}['wrm-type'] : 'px'  ?>;
                 margin-right: <?php echo isset($this->{$page}['wrm-right']) ? $this->{$page}['wrm-right'] : '15'; echo isset($this->{$page}['wrm-type']) ? $this->{$page}['wrm-type'] : 'px'  ?>;
                 margin-bottom: <?php echo isset($this->{$page}['wrm-bottom']) ? $this->{$page}['wrm-bottom'] : '15'; echo isset($this->{$page}['wrm-type']) ? $this->{$page}['wrm-type'] : 'px'  ?>;
@@ -372,7 +394,8 @@ class TA_WC_Variation_Swatches_Frontend {
                 padding-left: <?php echo isset($this->{$page}['wrp-left']) ? $this->{$page}['wrp-left'] : '0'; echo isset($this->{$page}['wrp-type']) ? $this->{$page}['wrp-type'] : 'px'  ?>;
             }
 
-            .tawcvs-swatches .swatch-item-wrapper {
+            .woocommerce div.product form.cart.swatches-support .tawcvs-swatches .swatch-item-wrapper,
+            .woocommerce.archive form.cart.swatches-support .tawcvs-swatches .swatch-item-wrapper {
             <?php if($this->{$page}['item-font']):?> font-size: <?php echo isset($this->{$page}['text-font-size']) ? $this->{$page}['text-font-size'] : '12'; echo isset($this->{$page}['item-font-size-type']) ? $this->{$page}['item-font-size-type'] : 'px'; ?>;
             <?php endif;?> margin-top: <?php echo isset($this->{$page}['mar-top']) ? $this->{$page}['mar-top'] : '0'; echo isset($this->{$page}['mar-type']) ? $this->{$page}['mar-type'] : 'px'  ?> !important;
                 margin-right: <?php echo isset($this->{$page}['mar-right']) ? $this->{$page}['mar-right'] : '15'; echo isset($this->{$page}['mar-type']) ? $this->{$page}['mar-type'] : 'px'  ?> !important;
@@ -385,7 +408,8 @@ class TA_WC_Variation_Swatches_Frontend {
             }
 
             /*tooltip*/
-            .tawcvs-swatches .swatch .swatch__tooltip {
+            .woocommerce div.product form.cart.swatches-support .tawcvs-swatches .swatch .swatch__tooltip,
+            .woocommerce.archive form.cart.swatches-support .tawcvs-swatches .swatch .swatch__tooltip {
             <?php if(isset($this->toolTipDesign['item-font']) && $this->toolTipDesign['item-font']):?> font-size: <?php echo isset($this->toolTipDesign['text-font-size']) ? $this->toolTipDesign['text-font-size'] : '14'; echo isset($this->toolTipDesign['item-font-size-type']) ? $this->toolTipDesign['item-font-size-type'] : 'px'; ?>;
             <?php endif;?> width: <?php echo isset($this->toolTipDesign['width']) ? $this->toolTipDesign['width'] . 'px' : 'auto' ?>;
                 max-width: <?php echo isset($this->toolTipDesign['max-width']) ? $this->toolTipDesign['max-width'] .'px' : '100%' ?>;

@@ -425,7 +425,7 @@ input.font-size-input {
   align-items: center;
   padding-bottom: 20px;
   border-bottom: 1px solid #F3F3F3;
-  margin-bottom: 20px;
+  padding-top: 20px;
 
   &.hidden {
     display: none;
@@ -675,10 +675,10 @@ button.accor-tab-btn {
       content: "";
       position: absolute;
       display: none;
-      left: 8px;
+      left: 7px;
       top: 3px;
-      width: 6px;
-      height: 11px;
+      width: 4px;
+      height: 9px;
       border: solid white;
       border-width: 0 3px 3px 0;
       -webkit-transform: rotate(45deg);
@@ -1190,7 +1190,7 @@ p.vmch-text a {
 }
 
 .wcvs-welcome-popup {
-  max-width: 650px;
+  max-width: 450px;
   margin-top: calc(50vh - 250px);
 
   .popup {
@@ -1200,6 +1200,10 @@ p.vmch-text a {
       img {
         max-width: 250px;
       }
+    }
+
+    &-title {
+      font-size: 1.8em;
     }
 
     &-iframe {
@@ -1218,14 +1222,16 @@ p.vmch-text a {
 
     }
 
+    &-inner-content {
+      p {
+        font-size: 1.3em;
+      }
+    }
+
   }
 
   @media screen and (min-width: 961px) {
-    margin-left: calc(50vw - 500px);
-  }
-
-  @media screen and (max-width: 960px) {
-    margin-left: calc(50vw - 420px);
+    margin-left: calc(50vw - 450px);
   }
 
   @media screen and (max-width: 782px) {
@@ -1321,6 +1327,78 @@ p.vmch-text a {
       background: #202123;
       border: 1px solid #5d6367;
     }
+  }
+}
+
+.configure-items-link {
+  float: left;
+}
+
+#woocommerce-coupon-data ul.wc-tabs li.variation-swatches_options a::before,
+#woocommerce-product-data ul.wc-tabs li.variation-swatches_options a::before,
+.woocommerce ul.wc-tabs li.variation-swatches_options a::before {
+  content: "\f11c";
+}
+
+.ajax-to-update,
+.main-ajax-trigger {
+  position: relative;
+
+  &.saving {
+    &:after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(204, 204, 204, 0.87);
+    }
+
+    &:before {
+      content: "";
+      display: block;
+      position: absolute;
+      left: 48%;
+      top: 40%;
+      width: 20px;
+      height: 20px;
+      z-index: 9;
+      border-style: solid;
+      border-color: #008060;
+      border-top-color: transparent;
+      border-width: 4px;
+      border-radius: 50%;
+      -webkit-animation: spin .8s linear infinite;
+      animation: spin .8s linear infinite;
+    }
+  }
+}
+
+@-webkit-keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media screen and (min-width: 600px) {
+
+  .pro-feature-popup {
+    width: 450px;
+    margin-left: calc(50vw - 350px);
+    margin-top: calc(50vh - 150px);
   }
 }
 
