@@ -47,6 +47,7 @@ class TA_WC_Variation_Swatches_Admin {
 		add_action( 'tawcvs_product_attribute_field', array( $this, 'attribute_fields' ), 10, 4 );
 
 		add_action( 'wp_ajax_update_product_attr_type', array( $this, 'update_product_attr_type' ) );
+		add_action( 'wp_ajax_update_attribute_type_setting', array( $this, 'update_attribute_type_setting' ) );
 
 
 		add_action( 'woocommerce_attribute_added', array( $this, 'update_plugin_setting_on_added' ), 10, 2 );
@@ -508,12 +509,33 @@ class TA_WC_Variation_Swatches_Admin {
 	}
 
 	/**
+	 * The Ajax callback to update the plugin Attribute type setting.
+     * It also can be called from the Ajax callback to save attribute type
+	 */
+	public function update_attribute_type_setting() {
+
+        //Get the latest plugin option
+		$latest_option = $this->get_latest_plugin_option();
+
+        //Check if we need to return an json response or not
+		$send_response = (bool) ( isset( $_POST['sendResponse'] ) ? sanitize_text_field( $_POST['sendResponse'] ) : 0 );
+
+		//Update the plugin settings also
+		$main_setting_arr = array_slice( $_POST, 0, 1, true );
+
+        //Update the plugin setting and return the response if needed
+		if ( update_option( $this->option_name, array_replace_recursive( $latest_option, $main_setting_arr ) ) && $send_response ) {
+			wp_send_json_success( array( 'message' => 'Updated plugin settings', 'success' => true ), 200 );
+		} elseif ( $send_response ) {
+			wp_send_json_error( array( 'message' => 'Failed to update', 'success' => false ), 200 );
+		}
+	}
+
+	/**
 	 * Ajax callback to update the Product Attribute type
 	 */
 	public function update_product_attr_type() {
 		global $wpdb;
-
-		$latest_option = $this->get_latest_plugin_option();
 
 		$attribute_name = isset( $_POST['attribute'] ) ? sanitize_text_field( $_POST['attribute'] ) : '';
 		$type_to_update = isset( $_POST['typeToUpdate'] ) ? sanitize_text_field( $_POST['typeToUpdate'] ) : '';
@@ -531,10 +553,7 @@ class TA_WC_Variation_Swatches_Admin {
 			array( '%s' )
 		);
 
-		//Update the plugin settings also
-		$main_setting_arr = array_slice( $_POST, 1, 1, true );
-
-		update_option( $this->option_name, array_replace_recursive( $latest_option, $main_setting_arr ) );
+		$this->update_attribute_type_setting();
 
 		$this->remove_wc_attributes_cache();
 

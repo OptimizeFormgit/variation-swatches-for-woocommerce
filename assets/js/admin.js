@@ -284,7 +284,7 @@ jQuery(document).ready(function ($) {
         let typeToUpdate = "select";
         let configureLinkEle = $(this).parent().find(".configure-items-link");
         let mainTriggerEle = $("#" + $(this).parents('.ajax-to-update').data("conditional"));
-        let ajaxData = {attribute: $(this).data("slug")};
+        let ajaxData = {};
 
         if (!mainTriggerEle.length) {
             return;
@@ -295,6 +295,8 @@ jQuery(document).ready(function ($) {
         } else {
             ajaxData[mainTriggerEle.attr("name")] = 0;
         }
+
+        ajaxData.attribute = $(this).data("slug");
 
         if (this.checked && mainTriggerEle.is(":checked")) {
             typeToUpdate = $(this).data("type");
@@ -348,8 +350,50 @@ jQuery(document).ready(function ($) {
             childAttrs.each(function () {
                 $(this).trigger("change");
             })
+        } else {
+            updateMainTriggerEle(mainTriggerEle);
         }
     });
+
+    /**
+     * Save the main trigger setting only
+     *
+     * @param mainTriggerEle
+     */
+    function updateMainTriggerEle(mainTriggerEle) {
+        if (!mainTriggerEle.length) {
+            return;
+        }
+
+        //We need to find the checkbox element which contain the name attribute to update
+        let mainTriggerCheckboxEle = mainTriggerEle.find("input[type=checkbox]");
+
+        if (!mainTriggerCheckboxEle.length) {
+            return;
+        }
+
+        let ajaxData = {};
+
+        //Check if the main trigger is checked or not
+        if (mainTriggerCheckboxEle.is(":checked")) {
+            ajaxData[mainTriggerCheckboxEle.attr("name")] = 1;
+        } else {
+            ajaxData[mainTriggerCheckboxEle.attr("name")] = 0;
+        }
+
+        //We need to get the response after update the plugin setting
+        ajaxData.sendResponse = 1;
+
+        //Run the Ajax to update plugin setting
+        wp.ajax.send("update_attribute_type_setting", {
+            data: ajaxData,
+            success: function (response) {
+                if (response.success) {
+                    $(".main-ajax-trigger,.ajax-to-update").removeClass("saving");
+                }
+            }
+        });
+    }
 
 });
 

@@ -107,7 +107,11 @@ final class TA_WC_Variation_Swatches {
 	public function get_tax_attribute( $taxonomy ) {
 		global $wpdb;
 
-		$attr = substr( $taxonomy, 3 );
+		if ( strpos( $taxonomy, 'pa_' ) === 0 ) {
+			$attr = substr( $taxonomy, 3 );
+		} else {
+			$attr = $taxonomy;
+		}
 
 		$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . $wpdb->prefix . "woocommerce_attribute_taxonomies WHERE attribute_name = %s", $attr ) );
 
