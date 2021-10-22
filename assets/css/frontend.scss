@@ -4,8 +4,9 @@
 }
 
 .woocommerce div.product,
-.woocommerce.archive {
-  form.cart.swatches-support {
+.woocommerce.archive,
+.woocommerce.single-product {
+  form.cart.variations_form {
     .variable:not(.type-select) {
       .arrow {
         display: none !important;
@@ -47,12 +48,10 @@
 
         &.swatch-color {
           text-indent: -9999em;
-          border: 2px solid #ccc;
 
           &.selected {
-            border-color: #333;
 
-            &:before {
+            &:after {
               -webkit-transform: translate(-50%, -50%) rotate(45deg);
               -moz-transform: translate(-50%, -50%) rotate(45deg);
               transform: translate(-50%, -50%) rotate(45deg);
@@ -62,6 +61,7 @@
               display: block;
               border: solid #eee;
               border-width: 0 2px 2px 0;
+              border-radius: 0;
               position: absolute;
               top: 50%;
               left: 50%;
@@ -70,7 +70,7 @@
           }
         }
 
-        &:not(.swatch-color){
+        &:not(.swatch-color) {
           background-color: #f1f1f1;
         }
 
@@ -328,7 +328,7 @@
 /**
  * Custom CSS for the Sober theme
  */
-.woocommerce.theme-sober div.product form.cart.swatches-support {
+.woocommerce.theme-sober div.product form.cart.variations_form {
   .variations .variable {
     width: 90%;
   }

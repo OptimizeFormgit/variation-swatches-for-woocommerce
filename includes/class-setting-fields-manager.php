@@ -98,7 +98,7 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 						'class'           => 'indent ajax-to-update',
 						'field_to_check'  => 'wcvs-enable-color-swatches',
 						'show_if_checked' => true,
-						'priority'        => 1
+						'priority'        => 1.1
 					),
 					array(
 						'title'    => __( 'Enable Image Swatches', 'wcvs' ),
@@ -111,7 +111,7 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 						),
 						'class'=>'main-ajax-trigger',
 						'desc'     => __( 'Enable the Image type for Product Attributes', 'wcvs' ),
-						'priority' => 1
+						'priority' => 1.2
 					),
 					array(
 						'title'           => __( 'Select Attributes', 'wcvs' ),
@@ -131,7 +131,7 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 						'class'           => 'indent ajax-to-update',
 						'field_to_check'  => 'wcvs-enable-image-swatches',
 						'show_if_checked' => true,
-						'priority'        => 1
+						'priority'        => 1.3
 					),
 					array(
 						'title'    => __( 'Auto Convert Dropdowns To Label', 'wcvs' ),
@@ -143,7 +143,7 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 							)
 						),
 						'desc'     => __( 'Automatically covert dropdowns to &#34;Label Swatch&#34; by default', 'wcvs' ),
-						'priority' => 1
+						'priority' => 1.4
 					),
 					array(
 						'title'           => __( 'Select Attributes', 'wcvs' ),
@@ -199,6 +199,63 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 						'class'    => 'swatch-shape-wrapper',
 						'desc'     => __( 'Select option below', 'wcvs' ),
 						'priority' => 5
+					),
+					array(
+						'title'    => __( 'Choose your swatch image ratio', 'wcvs' ),
+						'fields'   => array(
+							array(
+								'type'              => 'radio',
+								'name'              => 'swatch-ratio',
+								'options_group'     => array(
+									array(
+										'value' => 'disabled',
+										'label' => __( 'None', 'wcvs' ),
+									),
+									array(
+										'value' => '11',
+										'label' => __( '1:1', 'wcvs' ),
+									),
+									array(
+										'value' => '34',
+										'label' => __( '3:4', 'wcvs' ),
+									),
+									array(
+										'value' => '43',
+										'label' => __( '4:3', 'wcvs' ),
+									),
+									array(
+										'value' => '32',
+										'label' => __( '3:2', 'wcvs' ),
+									),
+									array(
+										'value' => '23',
+										'label' => __( '2:3', 'wcvs' ),
+									),
+									array(
+										'value' => '169',
+										'label' => __( '16:9', 'wcvs' ),
+									),
+									array(
+										'value' => '916',
+										'label' => __( '9:16', 'wcvs' ),
+									),
+									array(
+										'value' => '54',
+										'label' => __( '5:4', 'wcvs' ),
+									),
+									array(
+										'value' => '45',
+										'label' => __( '4:5', 'wcvs' ),
+									)
+								),
+								'default_value'     => 'disabled',
+								'custom_item_class' => 'swatch-ratio-radio',
+							)
+						),
+						'is_pro_feature' => true,
+						'class'    => 'swatch-image-ratio-wrapper',
+						'desc'     => __( 'It will be applied to the swatch image only.<br><i><u>Note:</u></i> <b>Swatch Height</b> in <b>Design</b> tab will be ignored.', 'wcvs' ),
+						'priority' => 5.1
 					),
 					array(
 						'title'    => __( 'Disable Default Plugin Stylesheet', 'wcvs' ),

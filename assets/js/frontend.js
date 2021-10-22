@@ -128,8 +128,8 @@
     function change_variation_image_on_shop_page($form, variation) {
         var $product = $form.closest('.product'),
             $product_img = $product.find('.woocommerce-LoopProduct-link img');
-
-        if (!$product_img.length) {
+        
+        if ($product_img.length !== 1) {
             return false;
         }
 
