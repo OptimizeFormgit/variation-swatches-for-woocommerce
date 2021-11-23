@@ -513,6 +513,9 @@ class TA_WC_Variation_Swatches_Admin {
      * It also can be called from the Ajax callback to save attribute type
 	 */
 	public function update_attribute_type_setting() {
+		if ( ! wp_verify_nonce( $_POST['__nonce'], 'tawcvs_admin_settings') || ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_send_json_error( array( 'message' => 'Failed to update', 'success' => false ), 200 );
+		}
 
         //Get the latest plugin option
 		$latest_option = $this->get_latest_plugin_option();
@@ -535,6 +538,10 @@ class TA_WC_Variation_Swatches_Admin {
 	 * Ajax callback to update the Product Attribute type
 	 */
 	public function update_product_attr_type() {
+		if ( ! wp_verify_nonce( $_POST['__nonce'], 'tawcvs_admin_settings') || ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_send_json_error( array( 'message' => 'Failed to update', 'success' => false ), 200 );
+		}
+
 		global $wpdb;
 
 		$attribute_name = isset( $_POST['attribute'] ) ? sanitize_text_field( $_POST['attribute'] ) : '';

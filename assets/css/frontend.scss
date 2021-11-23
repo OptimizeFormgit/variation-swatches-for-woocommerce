@@ -284,7 +284,7 @@
 
       &.oss-hide {
         .swatch.disabled {
-          display: none;
+          display: none !important;
         }
       }
     }
@@ -331,6 +331,12 @@
 .woocommerce.theme-sober div.product form.cart.variations_form {
   .variations .variable {
     width: 90%;
+  }
+
+  @media (max-width: 768px) {
+    .variations .variable {
+      width: 100%;
+    }
   }
 
   .line-hover {

@@ -637,6 +637,7 @@ button.accor-tab-btn {
 
 .variation-html-wrapper {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .variation-checkbox-container {
@@ -1428,8 +1429,8 @@ p.vmch-text a {
   }
 }
 
-.configure-items-link {
-  float: left;
+.configure-items-link:not(.hidden) {
+  display: block;
 }
 
 #woocommerce-coupon-data ul.wc-tabs li.variation-swatches_options a::before,

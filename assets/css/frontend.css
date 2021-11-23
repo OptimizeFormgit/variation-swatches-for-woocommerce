@@ -379,7 +379,7 @@
 .woocommerce div.product form.cart.variations_form .tawcvs-swatches.oss-hide .swatch.disabled,
 .woocommerce.archive form.cart.variations_form .tawcvs-swatches.oss-hide .swatch.disabled,
 .woocommerce.single-product form.cart.variations_form .tawcvs-swatches.oss-hide .swatch.disabled {
-  display: none;
+  display: none !important;
 }
 
 .swatch-align-left .variations {
@@ -416,6 +416,11 @@
  */
 .woocommerce.theme-sober div.product form.cart.variations_form .variations .variable {
   width: 90%;
+}
+@media (max-width: 768px) {
+  .woocommerce.theme-sober div.product form.cart.variations_form .variations .variable {
+    width: 100%;
+  }
 }
 .woocommerce.theme-sober div.product form.cart.variations_form .line-hover {
   cursor: default;

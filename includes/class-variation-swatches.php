@@ -113,7 +113,12 @@ final class TA_WC_Variation_Swatches {
 			$attr = $taxonomy;
 		}
 
-		$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . $wpdb->prefix . "woocommerce_attribute_taxonomies WHERE attribute_name = %s", $attr ) );
+		$result = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT * FROM " . $wpdb->prefix . "woocommerce_attribute_taxonomies WHERE attribute_name = %s",
+				$attr
+			)
+		);
 
 		return apply_filters( 'tawcvs_tax_attributes', $result );
 	}
@@ -163,7 +168,13 @@ final class TA_WC_Variation_Swatches {
 		}
 	}
 
-	public static function get_product_attributes_as_checkbox( $section_id, $tab_id, $field_name, $show_configure_link = false, $type_to_update = '' ) {
+	public static function get_product_attributes_as_checkbox(
+		$section_id,
+		$tab_id,
+		$field_name,
+		$show_configure_link = false,
+		$type_to_update = ''
+	) {
 		ob_start();
 		$current_options = get_option( 'woosuite_variation_swatches_option' ) ?: array();
 		if ( ! empty( $tab_id ) ) {
@@ -212,7 +223,8 @@ final class TA_WC_Variation_Swatches {
 			return array();
 		}
 		$collected_variations = array();
-		$variations           = $product->get_available_variations();
+		$variations           = self::get_available_variations( $product );
+
 		if ( ! empty( $variations ) ) {
 			foreach ( $variations as $variation ) {
 				$attribute_item_obj_slug = $variation['attributes'][ 'attribute_' . $attribute_tax_name ];
@@ -224,6 +236,51 @@ final class TA_WC_Variation_Swatches {
 		}
 
 		return $collected_variations;
+	}
+
+	/**
+	 * Get an array of available variations for the current product.
+	 *
+	 * @param $product
+	 *
+	 * @return array[]|WC_Product_Variation[]
+	 */
+	public static function get_available_variations( $product ) {
+		if ( ! $product instanceof WC_Product_Variable ) {
+			return array();
+		}
+		$variation_ids = $product->get_children();
+		if ( empty( $variation_ids ) ) {
+			return array();
+		}
+		$available_variations = array();
+
+		if ( is_callable( '_prime_post_caches' ) ) {
+			_prime_post_caches( $variation_ids );
+		}
+
+		foreach ( $variation_ids as $variation_id ) {
+
+			$variation = wc_get_product( $variation_id );
+
+			// Hide out of stock variations if 'Hide out of stock items from the catalog' is checked.
+			if ( ! $variation || ! $variation->exists() ) {
+				continue;
+			}
+
+			// Filter 'woocommerce_hide_invisible_variations' to optionally hide invisible variations (disabled variations and variations with empty price).
+			if ( apply_filters( 'woocommerce_hide_invisible_variations', true, $product->get_id(),
+					$variation ) && ! $variation->variation_is_visible() ) {
+				continue;
+			}
+
+			$available_variations[] = array(
+				'attributes'   => $variation->get_variation_attributes(),
+				'variation_id' => $variation_id
+			);
+		}
+
+		return array_values( array_filter( $available_variations ) );
 	}
 
 	/**

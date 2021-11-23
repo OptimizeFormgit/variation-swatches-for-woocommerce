@@ -85,8 +85,9 @@ class VSWC_Settings_Page {
 
 	public function tawcvs_save_settings() {
 		unset( $_POST['action'] );
-		$this->save_post_data_to_db();
-		wp_send_json_success( [ 'msg' => 'saved' ], 200 );
+		if ( $this->save_post_data_to_db() ) {
+			wp_send_json_success( [ 'msg' => 'saved' ], 200 );
+		}
 	}
 
 	/**
@@ -97,9 +98,10 @@ class VSWC_Settings_Page {
 	public function handle_save_actions() {
 		if ( isset( $_POST['woosuite_saving_variation_settings'] ) ) {
 			unset( $_POST['woosuite_saving_variation_settings'] );
-			$this->save_post_data_to_db();
-			$this->syncing_up_color_image_swatches();
-			$_POST['woosuite_saved_variation_settings'] = true;
+			if ( $this->save_post_data_to_db() ) {
+				$this->syncing_up_color_image_swatches();
+				$_POST['woosuite_saved_variation_settings'] = true;
+			}
 		}
 	}
 
@@ -107,7 +109,11 @@ class VSWC_Settings_Page {
 	 * Helper function to save _POST data to db
 	 */
 	private function save_post_data_to_db() {
-		update_option( $this->option_name, $this->sanitize_post_data( $_POST ) );
+		if ( wp_verify_nonce( $_POST['__nonce'], 'tawcvs_admin_settings') && current_user_can( 'manage_woocommerce' ) ) {
+			unset( $_POST['__nonce'] );
+			update_option( $this->option_name, $this->sanitize_post_data( $_POST ) );
+			return TRUE;
+		}
 	}
 
 	/**

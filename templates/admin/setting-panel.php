@@ -46,6 +46,7 @@
                             <div class="variation-accordion-wrap woosuite-master-form">
                                 <form method="POST" action="" enctype="multipart/form-data">
                                     <input type="hidden" name="woosuite_saving_variation_settings" value="ok">
+                                    <input type="hidden" name="__nonce" value="<?php echo wp_create_nonce( 'tawcvs_admin_settings' ); ?>" />
 									<?php do_action( 'woosuite_variation_swatches_settings_fields_html' ); ?>
                                 </form>
                             </div>
