@@ -40,10 +40,10 @@
             <div class="thd-title">
 				<?php _e( 'Do you need a custom plugin or edit to your site?', 'wcvs' ); ?></div>
 
-            <div class="thd-description"><?php _e( 'We have created top-class plugins for WooCommerce powering over 80,000 online stores, we can customize our plugins or create you something custom.', 'wcvs' ); ?></div>
+            <div class="thd-description"><?php _e( 'Bring your project to life with the help of our trusted agency partners. They are equipped to handle both large and small customization jobs.', 'wcvs' ); ?></div>
 
             <div class="thd-button-wrap">
-                <a href="https://woosuite.com/services?utm_source=user-dashboard&utm_medium=link" class="thd-button button"
+                <a href="https://woosuite.com/developers/?utm_source=user-dashboard&utm_medium=link" class="thd-button button"
                    target="_blank"><?php _e( 'Start a Project' ); ?></a>
             </div>
         </div>

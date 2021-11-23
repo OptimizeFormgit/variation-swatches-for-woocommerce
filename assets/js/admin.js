@@ -157,6 +157,7 @@ jQuery(document).ready(function ($) {
         e.preventDefault();
 
         const data = JSON.parse(getAllValues());
+        data['__nonce'] = $('[name="__nonce"]').val();
         let savingNoticeEle = $('.wcvs-saving-notice');
 
         $('.wcvs-notice').hide();
@@ -320,6 +321,7 @@ jQuery(document).ready(function ($) {
         }
 
         ajaxData.typeToUpdate = typeToUpdate;
+        ajaxData.__nonce =  $('[name="__nonce"]').val();
 
         $(this).closest(".ajax-to-update").toggleClass("saving");
 
@@ -383,6 +385,7 @@ jQuery(document).ready(function ($) {
 
         //We need to get the response after update the plugin setting
         ajaxData.sendResponse = 1;
+        ajaxData.__nonce =  $('[name="__nonce"]').val();
 
         //Run the Ajax to update plugin setting
         wp.ajax.send("update_attribute_type_setting", {

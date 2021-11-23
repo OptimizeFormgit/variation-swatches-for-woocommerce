@@ -560,6 +560,7 @@ button.accor-tab-btn.active-at-btn {
 
 .variation-html-wrapper {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .variation-checkbox-container {
@@ -1218,8 +1219,8 @@ p.vmch-text a:focus {
   border: 1px solid #5d6367;
 }
 
-.configure-items-link {
-  float: left;
+.configure-items-link:not(.hidden) {
+  display: block;
 }
 
 #woocommerce-coupon-data ul.wc-tabs li.variation-swatches_options a::before,

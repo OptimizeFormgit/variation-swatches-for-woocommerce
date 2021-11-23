@@ -81,7 +81,11 @@
                                     $swatch.removeClass('disabled');
                                 } else {
                                     $swatch.addClass('disabled');
-
+                                    
+                                    if ($swatch.closest('.tawcvs-swatches').hasClass('oss-hide')) {
+                                        $swatch.closest('.swatch-item-wrapper').hide();
+                                    }
+                                    
                                     if ($selected.length && value === $selected.val()) {
                                         $swatch.removeClass('selected');
                                     }
@@ -166,5 +170,15 @@
         $('.variations_form').tawcvs_variation_swatches_form();
         $(document.body).trigger('tawcvs_initialized');
         toggle_hidden_variation_btn();
+    });
+
+    $(document).ajaxComplete(function () { 
+        var $variations_form = $('.variations_form:not(.swatches-support)');
+        if ($variations_form.length > 0) {
+            $variations_form.each(function() {
+				$(this).wc_variation_form();
+			});
+            $variations_form.tawcvs_variation_swatches_form();
+        }
     });
 })(jQuery);
