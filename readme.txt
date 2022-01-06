@@ -3,9 +3,9 @@ Contributors: variationswatches, themealien, zgani, mehbubrashid, minhnguyen25
 Tags: variation swatches, woocommerce, product attribute, product color, product size, variable products
 Requires at least: 4.5
 Tested up to: 5.8.2
-Stable tag: 2.1.2
+Stable tag: 2.1.3
 WC requires at least: 3.2.0
-WC tested up to: 5.9.0
+WC tested up to: 6.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,7 +53,7 @@ If you like this WordPress popup plugin, then consider checking out our other pr
 *    <a href="https://woosuite.com/plugins/sales-agent-reps/">Sales Agents for WooCommerce</a> - Grow your business by adding sale agents to your WooCommerce store.
 
 
-Visit <a href="https://woosuite.com/blog/" rel="friend" title="WPBeginner">the Woosuite blog</a> to learn from our <a href="https://woosuite.com/woocommerce/" rel="friend" title="WooCommerce Tutorials">WordPress Tutorials</a> and find out about other <a href="https://woosuite.com/plugins/" rel="friend" title="Best WordPress Plugins">WooCommerce plugins</a>.
+Visit <a href="https://woosuite.com/blog/" rel="friend">the Woosuite blog</a> to learn from our <a href="https://woosuite.com/woocommerce/" rel="friend" title="WooCommerce Tutorials">WordPress Tutorials</a> and find out about other <a href="https://woosuite.com/plugins/" rel="friend" title="Best WordPress Plugins">WooCommerce plugins</a>.
 
 
 == Installation ==
@@ -103,6 +103,14 @@ Yes, it will work with any theme, but may require some styling to make it match 
 7. Add new attribute color when edit a product
 
 == Changelog ==
+= 2.1.3 =
+* Fixed firefox showing unavailable sizes
+* Create option for image position for swatches
+* Added arrows for the margin and padding setting fields
+* Fix swatches not resetting appearance on click event
+* Add option to use variable image only 
+* Add an option to disable checking variation availability
+
 = 2.1.2 =
 * Remove inline styles when disable plugin styling is active
 * Remove unnecessary data when getting the product variation

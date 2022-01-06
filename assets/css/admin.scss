@@ -397,6 +397,19 @@ span.sw-input-type-text {
   border-bottom-right-radius: 5px;
 }
 
+span.sw-input-type-icon {
+  display: block;
+  background: #F0F0F1;
+  height: 28px;
+  padding: 0 7px;
+  position: absolute;
+  line-height: 28px;
+  left: 2px;
+  top: 1px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
 input.font-size-input {
   width: 70px;
   margin-right: 10px;
@@ -607,8 +620,23 @@ button.accor-tab-btn {
 .variation-switch-field {
   display: flex;
 
-  .field-with-html-after {
+  .field-with-html-after,
+  .field-with-html-before {
     position: relative;
+  }
+
+  .field-with-html-before {
+    input[type="number"] {
+      padding-left: 27px;
+      width: 65px;
+      -moz-appearance: textfield;
+
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+    }
   }
 
   .wp-picker-container .wp-color-result.button {

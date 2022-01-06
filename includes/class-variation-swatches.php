@@ -188,7 +188,7 @@ final class TA_WC_Variation_Swatches {
 			} else {
 				$field_value = isset( $current_options[ $section_id ][ $field_name . '-' . $att->attribute_name ] ) ? $current_options[ $section_id ][ $field_name . '-' . $att->attribute_name ] : '';
 			}
-			$field_id            = $field_name . '-' . $att->attribute_name;
+			$field_id = $field_name . '-' . $att->attribute_name;
 			$field_name_modified = $field_name_prefix . '[' . $field_name . '-' . $att->attribute_name . ']';
 
 			$tax_slug = esc_attr( wc_attribute_taxonomy_name( $att->attribute_name ) );
@@ -223,7 +223,7 @@ final class TA_WC_Variation_Swatches {
 			return array();
 		}
 		$collected_variations = array();
-		$variations           = self::get_available_variations( $product );
+		$variations = self::get_available_variations( $product );
 
 		if ( ! empty( $variations ) ) {
 			foreach ( $variations as $variation ) {
@@ -245,7 +245,7 @@ final class TA_WC_Variation_Swatches {
 	 *
 	 * @return array[]|WC_Product_Variation[]
 	 */
-	public static function get_available_variations( $product ) {
+	public static function get_available_variations( $product, $ignore_out_of_stock = false, $get_full_attribute_data = false ) {
 		if ( ! $product instanceof WC_Product_Variable ) {
 			return array();
 		}
@@ -264,7 +264,7 @@ final class TA_WC_Variation_Swatches {
 			$variation = wc_get_product( $variation_id );
 
 			// Hide out of stock variations if 'Hide out of stock items from the catalog' is checked.
-			if ( ! $variation || ! $variation->exists() ) {
+			if ( ! $variation || ! $variation->exists() || ( $ignore_out_of_stock && ! $variation->is_in_stock() ) ) {
 				continue;
 			}
 
@@ -273,11 +273,14 @@ final class TA_WC_Variation_Swatches {
 					$variation ) && ! $variation->variation_is_visible() ) {
 				continue;
 			}
-
-			$available_variations[] = array(
-				'attributes'   => $variation->get_variation_attributes(),
-				'variation_id' => $variation_id
-			);
+			if ( $get_full_attribute_data ) {
+				$available_variations[] = $product->get_available_variation( $variation_id );
+			} else {
+				$available_variations[] = array(
+					'attributes' => $variation->get_variation_attributes(),
+					'variation_id' => $variation_id,
+				);
+			}
 		}
 
 		return array_values( array_filter( $available_variations ) );
