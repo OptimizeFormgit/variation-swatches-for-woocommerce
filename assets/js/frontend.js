@@ -8,10 +8,14 @@
         return this.each(function () {
             var $form = $(this);
 
+            if (typeof $form.find(".tawcvs-available-product-variation").data("product_variations") !== "undefined") {
+                $form.data("product_variations", $form.find(".tawcvs-available-product-variation").data("product_variations"))
+                    .trigger('reload_product_variations')
+                    .trigger('update_variation_values');
+            }
+
             $form
                 .addClass('swatches-support')
-                .data("product_variations", $form.find(".tawcvs-available-product-variation").data("product_variations"))
-                .trigger('reload_product_variations')
                 .on("found_variation", function (event, variation) {
                     change_variation_image_on_shop_page($form, variation);
                 })
@@ -77,15 +81,17 @@
                                 var $swatch = $(this),
                                     value = $swatch.attr('data-value');
 
+                                $swatch.closest('.swatch-item-wrapper').show();
+
                                 if (values.indexOf(value) > -1) {
                                     $swatch.removeClass('disabled');
                                 } else {
                                     $swatch.addClass('disabled');
-                                    
+
                                     if ($swatch.closest('.tawcvs-swatches').hasClass('oss-hide')) {
                                         $swatch.closest('.swatch-item-wrapper').hide();
                                     }
-                                    
+
                                     if ($selected.length && value === $selected.val()) {
                                         $swatch.removeClass('selected');
                                     }
@@ -103,36 +109,24 @@
     //Tracking the reset_variations button on change visibility -> change the corresponding display state
     function toggle_hidden_variation_btn() {
         const resetVariationNodes = document.getElementsByClassName('reset_variations');
-
         if (resetVariationNodes.length) {
-
             Array.prototype.forEach.call(resetVariationNodes, function (resetVariationEle) {
-
                 let observer = new MutationObserver(function () {
-
                     if (resetVariationEle.style.visibility !== 'hidden') {
-
                         resetVariationEle.style.display = 'block';
-
                     } else {
-
                         resetVariationEle.style.display = 'none';
-
                     }
-
                 });
-
                 observer.observe(resetVariationEle, {attributes: true, childList: true});
-
             })
-
         }
     }
 
     function change_variation_image_on_shop_page($form, variation) {
         var $product = $form.closest('.product'),
             $product_img = $product.find('.woocommerce-LoopProduct-link img');
-        
+
         if ($product_img.length !== 1) {
             return false;
         }
@@ -167,17 +161,17 @@
     }
 
     $(function () {
-        $('.variations_form').tawcvs_variation_swatches_form();
+        $('.variations_form').tawcvs_variation_swatches_form().trigger('woocommerce_update_variation_values');
         $(document.body).trigger('tawcvs_initialized');
         toggle_hidden_variation_btn();
     });
 
-    $(document).ajaxComplete(function () { 
+    $(document).ajaxComplete(function () {
         var $variations_form = $('.variations_form:not(.swatches-support)');
         if ($variations_form.length > 0) {
-            $variations_form.each(function() {
-				$(this).wc_variation_form();
-			});
+            $variations_form.each(function () {
+                $(this).wc_variation_form();
+            });
             $variations_form.tawcvs_variation_swatches_form();
         }
     });

@@ -43,9 +43,9 @@ class TA_WC_Variation_Swatches_Frontend {
 
 		$this->generalSettings = isset( $latest_option['general'] ) ? $latest_option['general'] : array();
 		$this->archiveSettings = isset( $latest_option['archive'] ) ? $latest_option['archive'] : array();
-		$this->productDesign   = isset( $latest_option['design']['productDesign'] ) ? $latest_option['design']['productDesign'] : array();
-		$this->shopDesign      = isset( $latest_option['design']['shopDesign'] ) ? $latest_option['design']['shopDesign'] : array();
-		$this->toolTipDesign   = isset( $latest_option['design']['toolTipDesign'] ) ? $latest_option['design']['toolTipDesign'] : array();
+		$this->productDesign = isset( $latest_option['design']['productDesign'] ) ? $latest_option['design']['productDesign'] : array();
+		$this->shopDesign = isset( $latest_option['design']['shopDesign'] ) ? $latest_option['design']['shopDesign'] : array();
+		$this->toolTipDesign = isset( $latest_option['design']['toolTipDesign'] ) ? $latest_option['design']['toolTipDesign'] : array();
 
 
 		if ( isset( $this->archiveSettings['show-clear-link'] ) && ! $this->archiveSettings['show-clear-link'] ) {
@@ -72,7 +72,7 @@ class TA_WC_Variation_Swatches_Frontend {
 		if ( empty( $attr ) ) {
 			return '';
 		}
-		$supported_swatch_types    = TA_WCVS()->types;
+		$supported_swatch_types = TA_WCVS()->types;
 		$dropdown_to_label_setting = isset( $this->generalSettings['dropdown-to-label'] ) && $this->generalSettings['dropdown-to-label'];
 
 		// If the type isn't supported, and we turned on the setting to convert dropdown to label/image
@@ -102,8 +102,13 @@ class TA_WC_Variation_Swatches_Frontend {
 	 */
 	public function get_available_variation() {
 		global $product;
+
+		if ( 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' ) || $this->is_disabled_checking_availability()) {
+			return '';
+		}
+
 		if ( $product instanceof WC_Product_Variable ) {
-			$variations_json = wp_json_encode( $product->get_available_variations() );
+			$variations_json = wp_json_encode( TA_WC_Variation_Swatches::get_available_variations( $product, true, true ) );
 			$variations_attr = function_exists( 'wc_esc_json' ) ? wc_esc_json( $variations_json ) : _wp_specialchars( $variations_json, ENT_QUOTES, 'UTF-8', true );
 			if ( ! empty( $variations_attr ) ) {
 				?>
@@ -144,13 +149,13 @@ class TA_WC_Variation_Swatches_Frontend {
 			return $html;
 		}
 
-		$options            = $args['options'];
-		$product            = $args['product'];
+		$options = $args['options'];
+		$product = $args['product'];
 		$attribute_tax_name = $args['attribute'];
-		$class              = "variation-selector variation-select-{$attr->attribute_type}";
-		$swatches           = '';
-		$is_product_page    = is_product();
-		$defined_limit      = apply_filters( 'tawcvs_swatch_limit_number', 0 );
+		$class = "variation-selector variation-select-{$attr->attribute_type}";
+		$swatches = '';
+		$is_product_page = is_product();
+		$defined_limit = apply_filters( 'tawcvs_swatch_limit_number', 0 );
 		$out_of_stock_state = apply_filters( 'tawcvs_out_of_stock_state', '' );
 
 		//If this product has disabled the variation swatches
@@ -160,7 +165,7 @@ class TA_WC_Variation_Swatches_Frontend {
 
 		if ( empty( $options ) && ! empty( $product ) && ! empty( $attribute_tax_name ) ) {
 			$attributes = $product->get_variation_attributes();
-			$options    = $attributes[ $attribute_tax_name ];
+			$options = $attributes[ $attribute_tax_name ];
 		}
 
 
@@ -170,9 +175,14 @@ class TA_WC_Variation_Swatches_Frontend {
 
 		// Add new option for tooltip to $args variable.
 		$args['tooltip'] = apply_filters( 'tawcvs_tooltip_enabled', $this->is_tooltip_enabled() );
+
 		//Get the product variation detail for each attribute
 		//If there are more than one attributes, the first one will be applied
-		$collected_variations = TA_WC_Variation_Swatches::get_detailed_product_variations( $product, $attribute_tax_name );
+		$collected_variations = array();
+
+		if ( TA_WC_Variation_Swatches::is_pro_addon_active() && ! $this->is_use_attribute_image_only() ) {
+			$collected_variations = TA_WC_Variation_Swatches::get_detailed_product_variations( $product, $attribute_tax_name );
+		}
 
 		if ( ! empty( $options ) && taxonomy_exists( $attribute_tax_name ) ) {
 			// Get terms if this is a taxonomy - ordered. We need the names too.
@@ -200,12 +210,20 @@ class TA_WC_Variation_Swatches_Frontend {
 		}
 
 		if ( ! empty( $swatches ) ) {
-			$class    .= ' hidden';
+			$class .= ' hidden';
 			$swatches = '<div class="tawcvs-swatches oss-' . $out_of_stock_state . '" data-attribute_name="attribute_' . esc_attr( $attribute_tax_name ) . '">' . $swatches . '</div>';
-			$html     = '<div class="' . esc_attr( $class ) . '">' . $html . '</div>' . $swatches;
+			$html = '<div class="' . esc_attr( $class ) . '">' . $html . '</div>' . $swatches;
 		}
 
 		return $html;
+	}
+
+	private function is_use_attribute_image_only() {
+		return wc_string_to_bool( isset( $this->generalSettings['attribute-image-only'] ) ? $this->generalSettings['attribute-image-only'] : 0 );
+	}
+
+    private function is_disabled_checking_availability() {
+		return wc_string_to_bool( isset( $this->generalSettings['disable-checking-availability'] ) ? $this->generalSettings['disable-checking-availability'] : 0 );
 	}
 
 	private function is_disabled_variation_swatches( $product ) {
@@ -251,35 +269,45 @@ class TA_WC_Variation_Swatches_Frontend {
 	public function swatch_html( $html, $term, $type, $args ) {
 
 		$selected = sanitize_title( $args['selected'] ) == $term->slug ? 'selected' : '';
-		$name     = esc_html( apply_filters( 'woocommerce_variation_option_name', $term->name ) );
+		$name = esc_html( apply_filters( 'woocommerce_variation_option_name', $term->name ) );
 
 		$tooltip = $this->get_tooltip_html( '', $term, $name, $args );
 		$tooltip = apply_filters( 'tawcvs_tooltip_html', $tooltip, $term, $name, $args );
 
 		$swatchShape = isset( $this->generalSettings['swatch-shape'] ) ? $this->generalSettings['swatch-shape'] : 'circle';
 
-
 		switch ( $type ) {
 			case 'color':
-				$main_color            = get_term_meta( $term->term_id, 'color', true );
+				$main_color = get_term_meta( $term->term_id, 'color', true );
 				$formatted_color_style = TA_WC_Variation_Swatches::generate_color_style( $term->term_id, $main_color );
 				list( $r, $g, $b ) = sscanf( $main_color, "#%02x%02x%02x" );
+
+				if ( $this->is_show_label_enabled() ) {
+					$class = ' swatch-label ';
+					$text_shadow = 'text-shadow: -1px -1px 0 #555, 1px -1px 0 #555, -1px 1px 0 #555, 1px 1px 0 #555;';
+					$color = 'white';
+				} else {
+					$class = ' swatch-color ';
+					$text_shadow = '';
+					$color = 'rgba($r,$g,$b,0.5)';
+				}
+
 				$html = sprintf(
-					'<div class="swatch-item-wrapper"><div class="swatch swatch-shape-' . $swatchShape . ' swatch-color swatch-%s %s" style="background:%s;color:%s;" data-value="%s"></div>%s</div>',
+					'<div class="swatch-item-wrapper"><div class="swatch swatch-shape-' . $swatchShape . $class . ' swatch-%s %s" style="background:%s;color:%s;' . $text_shadow . '" data-value="%s"><span class="text">%s</span></div>%s</div>',
 					esc_attr( $term->slug ),
 					$selected,
 					esc_attr( $formatted_color_style ),
-					"rgba($r,$g,$b,0.5)",
+					$color,
 					esc_attr( $term->slug ),
+					$name,
 					$tooltip
 				);
 				break;
-
 			case 'image':
 				// First, we check the default thumbnail of attribute variation
 				$attach_id = get_term_meta( $term->term_id, 'image', true );
 				if ( ! empty( $attach_id ) ) {
-					$image_url = wp_get_attachment_image_url( $attach_id );
+					$image_url = wp_get_attachment_image_url( $attach_id, 'large' );
 				} else {
 					//If we also do not have default thumbnail, we will use the placeholder image of WC
 					$image_url = WC()->plugin_url() . '/assets/images/placeholder.png';
@@ -287,20 +315,20 @@ class TA_WC_Variation_Swatches_Frontend {
 				$image_url = apply_filters( 'tawcvs_product_swatch_image_url', $image_url, $args );
 
 				$html = sprintf(
-					'<div class="swatch-item-wrapper"><div class="swatch swatch-shape-' . $swatchShape . ' swatch-image swatch-%s %s %s" data-value="%s"><img src="%s" alt="%s"></div>%s</div>',
+					'<div class="swatch-item-wrapper"><div class="swatch swatch-shape-' . $swatchShape . ' swatch-image swatch-%s %s %s" data-value="%s" style="background-image:url(%s);background-size:cover;%s"></div>%s</div>',
 					esc_attr( $term->slug ),
 					$selected,
 					apply_filters( 'tawcvs_swatch_image_ratio_class', 'swatch-ratio-disabled' ),
 					esc_attr( $term->slug ),
 					esc_url( $image_url ),
-					esc_attr( $name ),
+					( isset( $this->generalSettings['image-position'] ) ? 'background-position:' . $this->generalSettings['image-position'] . ';' : '' ), // background position
 					$tooltip
 				);
 				break;
 			case 'label':
 				$label = get_term_meta( $term->term_id, 'label', true );
 				$label = $label ?: $name;
-				$html  = sprintf(
+				$html = sprintf(
 					'<div class="swatch-item-wrapper"><div class="swatch swatch-shape-' . $swatchShape . ' swatch-label swatch-%s %s" data-value="%s"><span class="text">%s</span></div>%s</div>',
 					esc_attr( $term->slug ),
 					$selected,
@@ -345,6 +373,9 @@ class TA_WC_Variation_Swatches_Frontend {
 			echo '<div class="swatch-align-' . $alignment . '">';
 			do_action( 'woocommerce_variable_add_to_cart' );
 			echo '</div>';
+
+			// fix variation doesn't appear on list page
+			add_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart' );
 		} else {
 			return $html;
 		}
@@ -362,6 +393,19 @@ class TA_WC_Variation_Swatches_Frontend {
 		}
 
 		return wc_string_to_bool( isset( $this->generalSettings['enable-tooltip'] ) ? $this->generalSettings['enable-tooltip'] : 0 );
+	}
+	/**
+	 * 
+	 * Return the boolean to check if show label on color swatches is enabled in General Settings page
+	 *
+	 * @return bool
+	 */
+	public function is_show_label_enabled() {
+		if ( isset( $this->generalSettings['show-label-on-color-swatches'] ) && $this->generalSettings['show-label-on-color-swatches'] == 1 && TA_WC_Variation_Swatches::is_pro_addon_active() ) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**

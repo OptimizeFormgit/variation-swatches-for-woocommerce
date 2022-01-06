@@ -141,6 +141,7 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Renderer' ) ) {
 				'custom_item_class' => '',
 				'field_to_check'    => '',
 				'placeholder'       => '',
+				'html_before'        => '',
 				'html_after'        => '',
 				'html'              => '',
 				'min'               => 0,
@@ -342,7 +343,10 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Renderer' ) ) {
 			$field_name  = $this->get_field_name( $args );
 			ob_start();
 			echo empty( $args['html_after'] ) ? '' : '<div class="field-with-html-after">';
-			?>
+			echo empty( $args['html_before'] ) ? '' : '<div class="field-with-html-before">';
+
+			echo empty( $args['html_before'] ) ? '' : $args['html_before'];
+            ?>
             <input type="number"
                    name="<?php echo $field_name; ?>"
                    class="<?php echo esc_attr( $args['custom_item_class'] ); ?>"
@@ -353,6 +357,7 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Renderer' ) ) {
                    placeholder="<?php echo esc_attr( $args['placeholder'] ); ?>"
                    value="<?php echo $field_value; ?>">
 			<?php
+			echo empty( $args['html_before'] ) ? '' : '</div>';
 			echo empty( $args['html_after'] ) ? '' : $args['html_after'] . '</div>';
 
 			return ob_get_clean();
