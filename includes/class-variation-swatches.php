@@ -41,6 +41,10 @@ final class TA_WC_Variation_Swatches {
 			'label' => esc_html__( 'Label', 'wcvs' ),
 		);
 
+		if ( TA_WC_Variation_Swatches::is_pro_addon_active() ) {
+			$this->types['radio'] = esc_html__( 'Radio button', 'wcvs' );
+		}
+
 		$this->includes();
 		$this->init_hooks();
 	}

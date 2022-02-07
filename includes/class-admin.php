@@ -33,7 +33,7 @@ class TA_WC_Variation_Swatches_Admin {
 	public function __construct() {
 		add_action( 'admin_init', array( $this, 'includes' ) );
 		add_action( 'admin_init', array( $this, 'init_attribute_hooks' ) );
-		add_action( 'admin_print_scripts', array( $this, 'enqueue_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
 		add_action( 'woocommerce_product_data_tabs', array( $this, 'add_custom_swatch_variation_tab' ) );
 		add_action( 'woocommerce_product_data_panels', array( $this, 'product_tab_variation_swatches_panel' ) );
@@ -107,12 +107,20 @@ class TA_WC_Variation_Swatches_Admin {
 			case 'image':
 				$generalSettings[ 'image-swatches-attribute-' . $data['attribute_name'] ] = '1';
 				$generalSettings[ 'color-swatches-attribute-' . $data['attribute_name'] ] = '0';
+				$generalSettings[ 'radio-swatches-attribute-' . $data['attribute_name'] ] = '0';
 				$generalSettings['enable-image-swatches']                                 = '1';
 				break;
 			case 'color':
 				$generalSettings[ 'image-swatches-attribute-' . $data['attribute_name'] ] = '0';
 				$generalSettings[ 'color-swatches-attribute-' . $data['attribute_name'] ] = '1';
+				$generalSettings[ 'radio-swatches-attribute-' . $data['attribute_name'] ] = '0';
 				$generalSettings['enable-color-swatches']                                 = '1';
+				break;
+			case 'radio':
+				$generalSettings[ 'image-swatches-attribute-' . $data['attribute_name'] ] = '0';
+				$generalSettings[ 'color-swatches-attribute-' . $data['attribute_name'] ] = '0';
+				$generalSettings[ 'radio-swatches-attribute-' . $data['attribute_name'] ] = '1';
+				$generalSettings['enable-radio-swatches']                                 = '1';
 				break;
 		}
 
@@ -242,12 +250,10 @@ class TA_WC_Variation_Swatches_Admin {
 			wp_enqueue_style( 'tawcvs-admin-addons', plugins_url( '/assets/css/admin-addons-page.css', $dir_name ), array() );
 		}
 
-		if ( strpos( $screen->id, 'edit-pa_' ) === false && strpos( $screen->id, 'product' ) === false ) {
-			return;
-		}
-
-		// Don't let the below styles and css affect other woosuite plugin pages
-		if ( strpos( $screen->id, 'woosuite_page_' ) !== false ) {
+		// Don't enqueue unless we are in the edit product attribute or plugin setting page
+		if ( strpos( $screen->id, 'edit-pa_' ) === false &&
+		     strpos( $screen->id, 'product' ) === false &&
+		     TA_WC_Variation_Swatches::is_in_plugin_settings_page() === false ) {
 			return;
 		}
 
@@ -271,7 +277,8 @@ class TA_WC_Variation_Swatches_Admin {
 					'mediaTitle'  => esc_html__( 'Choose an image', 'wcvs' ),
 					'mediaButton' => esc_html__( 'Use image', 'wcvs' ),
 				),
-				'placeholder' => WC()->plugin_url() . '/assets/images/placeholder.png'
+				'placeholder' => WC()->plugin_url() . '/assets/images/placeholder.png',
+				'ajaxUrl' => admin_url( 'admin-ajax.php' )
 			)
 		);
 
@@ -399,18 +406,10 @@ class TA_WC_Variation_Swatches_Admin {
 		} else {
 			$term_id = false;
 		}
-		$value         = get_term_meta( $term_id, $type, true );
+		$value = get_term_meta( $term_id, $type, true );
+		$html  = '';
 
-		// Print the open tag of field container
-		printf(
-			'<%s class="form-field">%s<label for="term-%s">%s</label>%s',
-			'edit' == $form ? 'tr' : 'div',
-			'edit' == $form ? '<th>' : '',
-			esc_attr( $type ),
-			TA_WCVS()->types[ $type ],
-			'edit' == $form ? '</th><td>' : ''
-		);
-
+		ob_start();
 		switch ( $type ) {
 			case 'image':
 				$image = $value ? wp_get_attachment_image_src( $value ) : '';
@@ -420,25 +419,43 @@ class TA_WC_Variation_Swatches_Admin {
                     <img src="<?php echo esc_url( $image ) ?>" width="60px" height="60px"/>
                 </div>
                 <div style="line-height:60px;">
-                    <input type="hidden" class="tawcvs-term-image" name="image"
-                           value="<?php echo esc_attr( $value ) ?>"/>
-                    <button type="button"
-                            class="tawcvs-upload-image-button button"><?php esc_html_e( 'Upload/Add image', 'wcvs' ); ?></button>
-                    <button type="button"
-                            class="tawcvs-remove-image-button button <?php echo $value ? '' : 'hidden' ?>"><?php esc_html_e( 'Remove image', 'wcvs' ); ?></button>
+                    <input type="hidden" class="tawcvs-term-image" name="image" value="<?php echo esc_attr( $value ) ?>"/>
+                    <button type="button" class="tawcvs-upload-image-button button"><?php esc_html_e( 'Upload/Add image', 'wcvs' ); ?></button>
+                    <button type="button" class="tawcvs-remove-image-button button <?php echo $value ? '' : 'hidden' ?>"><?php esc_html_e( 'Remove image', 'wcvs' ); ?></button>
                 </div>
 				<?php
 				break;
-
+			case 'radio':
+				?>
+				<input type="hidden" name="radio" />
+				<?php
+				break;
 			default:
 				?>
-                <input type="text" id="term-<?php echo esc_attr( $type ) ?>" name="<?php echo esc_attr( $type ) ?>"
-                       value="<?php echo esc_attr( $value ) ?>"/>
+                <input type="text" id="term-<?php echo esc_attr( $type ) ?>" name="<?php echo esc_attr( $type ) ?>" value="<?php echo esc_attr( $value ) ?>"/>
 				<?php
 				break;
 		}
-		// Print the close tag of field container
-		echo 'edit' == $form ? '</td></tr>' : '</div>';
+		$html .= ob_get_clean();
+		$html = apply_filters( 'tawcvs_tooltip_attributes', $html, $type, $term, $taxonomy, $form );
+
+		if ( $type != 'radio' ) {
+			echo sprintf(
+				'<%s class="form-field">%s<label for="term-%s">%s</label>%s',
+				'edit' == $form ? 'tr' : 'div',
+				'edit' == $form ? '<th>' : '',
+				esc_attr( $type ),
+				TA_WCVS()->types[ $type ],
+				'edit' == $form ? '</th><td>' : ''
+			);
+
+			echo $html;
+
+			// Print the close tag of field container
+			echo 'edit' == $form ? '</td></tr>' : '</div>';
+		} else {
+			echo $html;
+		}
 	}
 
 	/**
@@ -451,7 +468,6 @@ class TA_WC_Variation_Swatches_Admin {
 		foreach ( TA_WCVS()->types as $type => $label ) {
 			if ( isset( $_POST[ $type ] ) ) {
 				update_term_meta( $term_id, $type, sanitize_text_field( $_POST[ $type ] ) );
-
 				do_action( 'tawcvs_after_save_term_meta', $term_id, $type );
 			}
 		}
@@ -466,9 +482,11 @@ class TA_WC_Variation_Swatches_Admin {
 	 */
 	public function add_attribute_columns( array $columns ) {
 		$new_columns          = array();
-		$new_columns['cb']    = $columns['cb'];
-		$new_columns['thumb'] = '';
-		unset( $columns['cb'] );
+		if ( isset( $columns['cb']) ) {
+			$new_columns['cb']    = $columns['cb'];
+			$new_columns['thumb'] = '';
+			unset( $columns['cb'] );
+		}
 
 		return array_merge( $new_columns, $columns );
 	}
@@ -588,4 +606,5 @@ class TA_WC_Variation_Swatches_Admin {
 
 		return is_array( $option ) ? $option : array();
 	}
+
 }

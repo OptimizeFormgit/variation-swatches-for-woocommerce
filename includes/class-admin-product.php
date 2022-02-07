@@ -171,6 +171,15 @@ class TA_WC_Variation_Swatches_Admin_Product {
 
 		</script>
 
+		<script type="text/template" id="tmpl-tawcvs-input-radio">
+
+			<label>
+				<?php esc_html_e( 'Label', 'wcvs' ) ?>
+				<input type="text" class="widefat tawcvs-input tawcvs-input-label" name="swatch">
+			</label>
+
+		</script>
+
 		<script type="text/template" id="tmpl-tawcvs-input-tax">
 
 			<input type="hidden" class="tawcvs-input" name="taxonomy" value="{{data.tax}}">

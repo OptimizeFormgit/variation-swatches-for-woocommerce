@@ -22,12 +22,6 @@ class VSWC_Settings_Page {
 		if ( TA_WC_Variation_Swatches::is_in_plugin_settings_page() ) {
 
 			do_action( 'woosuite_core_admin_page_scripts' );
-
-			wp_enqueue_style( 'wp-color-picker' );
-			wp_enqueue_script( 'wp-color-picker' );
-
-			wp_enqueue_script( 'tawcvs-admin', plugins_url( '/assets/js/admin.js', dirname( __FILE__ ) ), array( 'jquery' ), WCVS_PLUGIN_VERSION, true );
-			wp_enqueue_style( 'tawcvs-admin', plugins_url( '/assets/css/admin.css', dirname( __FILE__ ) ), array( 'wp-color-picker' ), WCVS_PLUGIN_VERSION );
 		}
 	}
 
@@ -139,6 +133,17 @@ class VSWC_Settings_Page {
 			'image-swatches-attribute-',
 			'image'
 		);
+
+		if ( TA_WC_Variation_Swatches::is_pro_addon_active() ) {
+			$this->update_attribute_by_type(
+				$general_settings,
+				$all_attrs,
+				'enable-radio-swatches',
+				'radio-swatches-attribute-',
+				'radio'
+			);
+		}
+
 	}
 
 	/**
