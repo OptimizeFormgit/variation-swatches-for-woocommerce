@@ -2,10 +2,10 @@
 Contributors: variationswatches, themealien, zgani, mehbubrashid, minhnguyen25 
 Tags: variation swatches, woocommerce, product attribute, product color, product size, variable products
 Requires at least: 4.5
-Tested up to: 5.8.2
-Stable tag: 2.1.3
+Tested up to: 5.9
+Stable tag: 2.1.4
 WC requires at least: 3.2.0
-WC tested up to: 6.0.0
+WC tested up to: 6.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -103,6 +103,14 @@ Yes, it will work with any theme, but may require some styling to make it match 
 7. Add new attribute color when edit a product
 
 == Changelog ==
+= 2.1.4 =
+* Replace wp.ajax by normal ajax call, fix media upload
+* Removing unused function, reformat code
+* Update recommended plugins loaded from server
+* Added support for radio button in pro
+* Added tooltip image support in pro
+* Added custom tooltip text support in pro
+
 = 2.1.3 =
 * Fixed firefox showing unavailable sizes
 * Create option for image position for swatches

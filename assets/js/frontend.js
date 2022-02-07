@@ -52,9 +52,21 @@
                     if ($el.hasClass('selected')) {
                         $select.val('');
                         $el.removeClass('selected');
+
+                        if ($el.attr('type') == 'radio') {
+                            setTimeout(function() {
+                                $el.prop('checked', false);
+                            }, 100);
+                        }
                     } else {
                         $el.addClass('selected').siblings('.selected').removeClass('selected');
                         $select.val(value);
+
+                        if ($el.attr('type') == 'radio') {
+                            setTimeout(function() {
+                                $el.prop('checked', true);
+                            }, 100);
+                        }
                     }
 
                     $select.change();
@@ -62,6 +74,10 @@
                 .on('click', '.reset_variations', function () {
                     $form.find('.swatch.selected').removeClass('selected');
                     $form.find('.swatch.disabled').removeClass('disabled');
+
+                    if ($form.find('input[type="radio"]').length > 1) {
+                        $form.find('input[type="radio"]').prop('checked', false);
+                    }
                 })
                 .on('woocommerce_update_variation_values', function () {
                     setTimeout(function () {

@@ -276,6 +276,10 @@ class TA_WC_Variation_Swatches_Frontend {
 
 		$swatchShape = isset( $this->generalSettings['swatch-shape'] ) ? $this->generalSettings['swatch-shape'] : 'circle';
 
+		if ( $type == 'radio' && ! TA_WC_Variation_Swatches::is_pro_addon_active() ) {
+			$type = 'select';
+		}
+
 		switch ( $type ) {
 			case 'color':
 				$main_color = get_term_meta( $term->term_id, 'color', true );
@@ -334,6 +338,20 @@ class TA_WC_Variation_Swatches_Frontend {
 					$selected,
 					esc_attr( $term->slug ),
 					esc_html( $label ),
+					$tooltip
+				);
+				break;
+			case 'radio':
+				$selected = ! empty( $selected ) ? 'checked' : '';
+				$html = sprintf(
+					'<div class="swatch-item-wrapper swatch-radio"><input id="%s" class="swatch" data-value="%s" type="radio" name="%s" value="%s" %s /><label for="%s" class="text swatch-label" style="display:inline">%s</label>%s</div>',
+					esc_attr( $term->slug ),
+					esc_attr( $term->slug ),
+					'attribute_' . $term->taxonomy,
+					esc_attr( $term->slug ),
+					$selected,
+					esc_attr( $term->slug ),
+					esc_html( $term->name ),
 					$tooltip
 				);
 				break;
@@ -420,7 +438,21 @@ class TA_WC_Variation_Swatches_Frontend {
 	 */
 	public function get_tooltip_html( $html, $term, $name, $args ) {
 		if ( ! empty( $args['tooltip'] ) ) {
-			$html = '<span class="swatch__tooltip">' . ( $term->description ?: $name ) . '</span>';
+
+			$show_tooltip = get_term_meta( $term->term_id, 'show-tooltip', true );
+			$show_tooltip = $show_tooltip === '' || ! TA_WC_Variation_Swatches::is_pro_addon_active() ? 1 : $show_tooltip;
+
+			if ( $show_tooltip == 1 ) {
+				// get default tooltip label
+				$label = get_term_meta( $term->term_id, 'tooltip-text', true );
+				$label = ! empty( $label ) && TA_WC_Variation_Swatches::is_pro_addon_active() ? $label : $name;
+				$html = '<span class="swatch__tooltip">' . $label . '</span>';
+			} else if ( $show_tooltip == 2 ) {
+				// image tooltip
+				$image = get_term_meta( $term->term_id, 'tooltip-image', true );
+				$image = wp_get_attachment_image_src( $image, 'thumbnail' );
+				$html = '<span class="swatch__tooltip"><img src="' . $image[0] . '" /></span>';
+			}
 		}
 
 		return $html;

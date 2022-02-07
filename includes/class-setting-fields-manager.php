@@ -127,7 +127,7 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 						),
 						'class'=>'main-ajax-trigger',
 						'desc'     => __( 'Enable the Image type for Product Attributes', 'wcvs' ),
-						'priority' => 1.2
+						'priority' => 1.3
 					),
 					array(
 						'title'           => __( 'Select Attributes', 'wcvs' ),
@@ -147,7 +147,21 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 						'class'           => 'indent ajax-to-update',
 						'field_to_check'  => 'wcvs-enable-image-swatches',
 						'show_if_checked' => true,
-						'priority'        => 1.3
+						'priority'        => 1.4
+					),
+					array(
+						'title'    => __( 'Enable Radio Button Swatches', 'wcvs' ),
+						'fields'   => array(
+							array(
+								'id'   => 'wcvs-enable-radio-swatches',
+								'type' => 'checkbox',
+								'name' => 'enable-radio-swatches',
+							)
+						),
+						'class'          => 'main-ajax-trigger',
+						'desc'           => __( 'Enable the Radio button type for Product Attributes', 'wcvs' ),
+						'priority'       => 1.5,
+						'is_pro_feature' => true,
 					),
 					array(
 						'title'    => __( 'Auto Convert Dropdowns To Label', 'wcvs' ),
@@ -159,7 +173,7 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 							)
 						),
 						'desc'     => __( 'Automatically covert dropdowns to &#34;Label Swatch&#34; by default', 'wcvs' ),
-						'priority' => 1.4
+						'priority' => 1.8
 					),
 					array(
 						'title'           => __( 'Select Attributes', 'wcvs' ),

@@ -8,8 +8,65 @@ jQuery(document).ready(function ($) {
 
     $('#term-color,#term-secondary-color').wpColorPicker();
 
+    // init tooltip fields
+    function init_tooltip_fields() {
+        $('.tooltip-text-wrapper, .tooltip-image-wrapper').hide();
+
+        if ($('#term-show-tooltip').val() == 1) {
+            $('.tooltip-text-wrapper').show();
+        } else if ($('#term-show-tooltip').val() == 2) {
+            $('.tooltip-image-wrapper').show();
+        }
+    }
+
+    init_tooltip_fields();
+
+    $('#term-show-tooltip').on('change', function() {
+        init_tooltip_fields();
+    });
+
     // Update attribute image
     $body.on('click', '.tawcvs-upload-image-button', function (event) {
+        event.preventDefault();
+
+        var $button = $(this);
+
+        // If the media frame already exists, reopen it.
+        if (!frame) {
+            // Create the media frame.
+            frame = wp.media.frames.downloadable_file = wp.media({
+                title: tawcvs.i18n.mediaTitle,
+                button: {
+                    text: tawcvs.i18n.mediaButton
+                },
+                multiple: false
+            });
+        }
+
+        // When an image is selected, run a callback.
+        frame.on('select', function () {
+            var attachment = frame.state().get('selection').first().toJSON();
+
+            $button.siblings('input.tawcvs-term-image').val(attachment.id);
+            $button.siblings('.tawcvs-remove-image-button').show();
+            $button.parent().prev('.tawcvs-term-image-thumbnail').find('img').attr('src', attachment.sizes.thumbnail.url);
+        });
+
+        // Finally, open the modal.
+        frame.open();
+
+    }).on('click', '.tawcvs-remove-image-button', function () {
+        var $button = $(this);
+
+        $button.siblings('input.tawcvs-term-image').val('');
+        $button.siblings('.tawcvs-remove-image-button').show();
+        $button.parent().prev('.tawcvs-term-image-thumbnail').find('img').attr('src', tawcvs.placeholder);
+
+        return false;
+    });
+
+    // Update attribute image for tooltip
+    $body.on('click', '.tawcvs-upload-image-tooltip-button', function (event) {
         event.preventDefault();
 
         var $button = $(this);
@@ -33,20 +90,20 @@ jQuery(document).ready(function ($) {
         frame.on('select', function () {
             var attachment = frame.state().get('selection').first().toJSON();
 
-            $button.siblings('input.tawcvs-term-image').val(attachment.id);
-            $button.siblings('.tawcvs-remove-image-button').show();
-            $button.parent().prev('.tawcvs-term-image-thumbnail').find('img').attr('src', attachment.sizes.thumbnail.url);
+            $button.siblings('input.tawcvs-term-image-tooltip').val(attachment.id);
+            $button.siblings('.tawcvs-remove-image-tooltip-button').show();
+            $button.parent().prev('.tawcvs-term-image-tooltip-thumbnail').find('img').attr('src', attachment.sizes.thumbnail.url);
         });
 
         // Finally, open the modal.
         frame.open();
 
-    }).on('click', '.tawcvs-remove-image-button', function () {
+    }).on('click', '.tawcvs-remove-image-tooltip-button', function () {
         var $button = $(this);
 
-        $button.siblings('input.tawcvs-term-image').val('');
-        $button.siblings('.tawcvs-remove-image-button').show();
-        $button.parent().prev('.tawcvs-term-image-thumbnail').find('img').attr('src', tawcvs.placeholder);
+        $button.siblings('input.tawcvs-term-image-tooltip').val('');
+        $button.siblings('.tawcvs-remove-image-tooltip-button').show();
+        $button.parent().prev('.tawcvs-term-image-tooltip-thumbnail').find('img').attr('src', tawcvs.placeholder);
 
         return false;
     });
@@ -112,13 +169,19 @@ jQuery(document).ready(function ($) {
         // Send ajax request
         $spinner.addClass('is-active');
         $msg.hide();
-        wp.ajax.send('tawcvs_add_new_attribute', {
+
+        data["action"] = "tawcvs_add_new_attribute";
+
+        $.ajax({
+            url: tawcvs.ajaxUrl,
+            type: 'post',
             data: data,
             error: function (res) {
                 $spinner.removeClass('is-active');
                 $msg.addClass('error').text(res).show();
             },
-            success: function (res) {
+            success: function (response) {
+                var res = response.data;
                 $spinner.removeClass('is-active');
                 $msg.addClass('success').text(res.msg).show();
 
@@ -162,8 +225,11 @@ jQuery(document).ready(function ($) {
 
         $('.wcvs-notice').hide();
         savingNoticeEle.fadeIn();
+        data["action"] = "tawcvs_save_settings";
 
-        wp.ajax.send('tawcvs_save_settings', {
+        $.ajax({
+            url: tawcvs.ajaxUrl,
+            type: 'post',
             data: data,
             error: function (res) {
                 savingNoticeEle.hide();
@@ -325,7 +391,10 @@ jQuery(document).ready(function ($) {
 
         $(this).closest(".ajax-to-update").toggleClass("saving");
 
-        wp.ajax.send("update_product_attr_type", {
+        ajaxData["action"] = "update_product_attr_type";
+        $.ajax({
+            url: tawcvs.ajaxUrl,
+            type: 'post',
             data: ajaxData,
             success: function (response) {
                 if (response.success) {
@@ -386,9 +455,11 @@ jQuery(document).ready(function ($) {
         //We need to get the response after update the plugin setting
         ajaxData.sendResponse = 1;
         ajaxData.__nonce =  $('[name="__nonce"]').val();
-
+        ajaxData.action = "update_attribute_type_setting";
         //Run the Ajax to update plugin setting
-        wp.ajax.send("update_attribute_type_setting", {
+        $.ajax({
+            url: tawcvs.ajaxUrl,
+            type: 'post',
             data: ajaxData,
             success: function (response) {
                 if (response.success) {
