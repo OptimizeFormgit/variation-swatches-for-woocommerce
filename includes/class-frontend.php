@@ -269,7 +269,7 @@ class TA_WC_Variation_Swatches_Frontend {
 	public function swatch_html( $html, $term, $type, $args ) {
 
 		$selected = sanitize_title( $args['selected'] ) == $term->slug ? 'selected' : '';
-		$name = esc_html( apply_filters( 'woocommerce_variation_option_name', $term->name ) );
+		$name = esc_html( apply_filters( 'woocommerce_variation_option_name', ! empty( $term->description ) ? $term->description : $term->name ) );
 
 		$tooltip = $this->get_tooltip_html( '', $term, $name, $args );
 		$tooltip = apply_filters( 'tawcvs_tooltip_html', $tooltip, $term, $name, $args );
