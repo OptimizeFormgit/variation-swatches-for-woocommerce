@@ -231,6 +231,9 @@ final class TA_WC_Variation_Swatches {
 
 		if ( ! empty( $variations ) ) {
 			foreach ( $variations as $variation ) {
+				if ( ! isset( $variation['attributes'][ 'attribute_' . $attribute_tax_name ] ) ) {
+					continue;
+				}
 				$attribute_item_obj_slug = $variation['attributes'][ 'attribute_' . $attribute_tax_name ];
 
 				if ( ! isset( $collected_variations[ $attribute_item_obj_slug ] ) ) {

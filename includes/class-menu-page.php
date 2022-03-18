@@ -9,7 +9,9 @@ class VSWC_Settings_Page {
 	private $upgrader_obj;
 
 	public function __construct() {
-		$this->upgrader_obj = new VSWC_Upgrader();
+		if ( class_exists( 'VSWC_Upgrader' ) ) {
+			$this->upgrader_obj = new VSWC_Upgrader();
+		}
 
 		add_action( 'admin_menu', array( $this, 'handle_save_actions' ), 5 );
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
@@ -68,7 +70,7 @@ class VSWC_Settings_Page {
 	public function render() {
 		TA_WC_Variation_Swatches::get_template( 'admin/setting-panel.php' );
 		TA_WC_Variation_Swatches::get_template( 'admin/pro-feature-popup.php' );
-		if ( $this->upgrader_obj->is_welcome_popup_should_be_shown() ) {
+		if ( $this->upgrader_obj instanceof VSWC_Upgrader && $this->upgrader_obj->is_welcome_popup_should_be_shown() ) {
 			TA_WC_Variation_Swatches::get_template( 'admin/welcome-popup.php' );
 		}
 	}
