@@ -164,6 +164,40 @@ class TA_WC_Variation_Swatches_Admin {
 					'desc_tip'      => false,
 					'description'   => __( 'Show the default dropdown selection instead of swatches settings', 'wcvs' )
 				) );
+
+				if ( ! TA_WC_Variation_Swatches::is_pro_addon_active() ) {
+					woocommerce_wp_select(
+						array(
+							'wrapper_class'     => 'wcvs-pro-feature',
+							'id'                => 'single_variation_preview',
+							'label'             => __( 'Single variation preview attributes', 'wcvs' ),
+							'options'           => array(
+								'' => __( ' - Choose Attribute - ', 'wcvs' )
+							),
+							'value'             => '',
+							'custom_attributes' => array(
+								'disabled' => 'disabled'
+							)
+						)
+					);
+					woocommerce_wp_select(
+						array(
+							'wrapper_class'     => 'wcvs-pro-feature',
+							'id'                => 'override_single_attribute',
+							'label'             => __( 'Single attribute for using in catalog pages', 'wcvs' ),
+							'options'           => array(
+								'' => __( ' - Choose Attribute - ', 'wcvs' )
+							),
+							'value'             => '',
+							'custom_attributes' => array(
+								'disabled' => 'disabled'
+							)
+						)
+					);
+					TA_WC_Variation_Swatches::get_template( 'admin/pro-feature-popup.php' );
+				}
+
+				do_action( 'variation_swatches_product_panel' );
 				?>
             </div>
         </div>

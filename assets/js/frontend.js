@@ -17,10 +17,10 @@
             $form
                 .addClass('swatches-support')
                 .on("found_variation", function (event, variation) {
-                    change_variation_image_on_shop_page($form, variation);
+                    $form.change_variation_image_on_shop_page(variation);
                 })
                 .on("reset_image", function (event) {
-                    change_variation_image_on_shop_page($form, false);
+                    $form.change_variation_image_on_shop_page(false);
                 })
                 .on('click', '.swatch', function (e) {
                     e.preventDefault();
@@ -122,31 +122,14 @@
         });
     };
 
-    //Tracking the reset_variations button on change visibility -> change the corresponding display state
-    function toggle_hidden_variation_btn() {
-        const resetVariationNodes = document.getElementsByClassName('reset_variations');
-        if (resetVariationNodes.length) {
-            Array.prototype.forEach.call(resetVariationNodes, function (resetVariationEle) {
-                let observer = new MutationObserver(function () {
-                    if (resetVariationEle.style.visibility !== 'hidden') {
-                        resetVariationEle.style.display = 'block';
-                    } else {
-                        resetVariationEle.style.display = 'none';
-                    }
-                });
-                observer.observe(resetVariationEle, {attributes: true, childList: true});
-            })
-        }
-    }
-
-    function change_variation_image_on_shop_page($form, variation) {
-        var $product = $form.closest('.product'),
+    $.fn.change_variation_image_on_shop_page = function (variation) {
+        var $product = $(this).closest('.product'),
             $product_img = $product.find('.woocommerce-LoopProduct-link img');
-
+    
         if ($product_img.length !== 1) {
             return false;
         }
-
+    
         if (variation && variation.image && variation.image.src && variation.image.src.length > 1) {
             $product_img.wc_set_variation_attr('src', variation.image.src);
             $product_img.wc_set_variation_attr('height', variation.image.src_h);
@@ -173,6 +156,23 @@
             $product_img.wc_reset_variation_attr('data-large_image');
             $product_img.wc_reset_variation_attr('data-large_image_width');
             $product_img.wc_reset_variation_attr('data-large_image_height');
+        }
+    }
+
+    //Tracking the reset_variations button on change visibility -> change the corresponding display state
+    function toggle_hidden_variation_btn() {
+        const resetVariationNodes = document.getElementsByClassName('reset_variations');
+        if (resetVariationNodes.length) {
+            Array.prototype.forEach.call(resetVariationNodes, function (resetVariationEle) {
+                let observer = new MutationObserver(function () {
+                    if (resetVariationEle.style.visibility !== 'hidden') {
+                        resetVariationEle.style.display = 'block';
+                    } else {
+                        resetVariationEle.style.display = 'none';
+                    }
+                });
+                observer.observe(resetVariationEle, {attributes: true, childList: true});
+            })
         }
     }
 

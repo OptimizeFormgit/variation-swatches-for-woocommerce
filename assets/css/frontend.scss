@@ -363,6 +363,10 @@
 
 table.variations {
   overflow: visible!important;
+
+  .label {
+    margin-bottom: 10px;
+  }
 }
 
 .swatch-radio {

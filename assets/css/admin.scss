@@ -1520,6 +1520,42 @@ p.vmch-text a {
   }
 }
 
+#variation_swatches_options {
+  .wcvs-pro-feature {
+    &:hover {
+      cursor: pointer;
+    }
+
+    label {
+      color: #BCB3B3;
+      position: relative;
+      padding-right: 50px;
+
+      &:after {
+        content: "Pro";
+        position: absolute;
+        padding: 2px 7px;
+        background-color: #239B6B;
+        right: 10px;
+        color: #fff;
+        top: 0px;
+        font-size: 14px;
+        font-weight: 400;
+        border: 1px solid #239B6B;
+      }
+    }
+
+    select{
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+
+  .wcvs-pro-feature-popup {
+    margin-left: calc(50vw - 600px);
+  }
+}
 @media screen and (min-width: 600px) {
 
   .pro-feature-popup {
