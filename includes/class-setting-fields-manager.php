@@ -215,6 +215,25 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 						'priority'       => 4.1
 					),
 					array(
+						'title'    => __( 'Single variation image preview', 'wcvs' ),
+						'fields'   => array(
+							array(
+								'type'          => 'select',
+								'options_group'	=> array(
+									array(
+										'value' => 0,
+										'label' => __( '-- Select attribute --', 'wcvs' )
+									)
+								),
+								'class'         => 'br-type',
+								'name'          => 'single-variation-preview',
+							)
+						),
+						'is_pro_feature' => true,
+						'desc'           => __( 'Automatically change product image based on this attribute', 'wcvs' ),
+						'priority'       => 4.2
+					),
+					array(
 						'title'    => __( 'Choose your swatch shape', 'wcvs' ),
 						'fields'   => array(
 							array(
@@ -300,7 +319,7 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 						'priority' => 5.1
 					),
 					array(
-						'title'    => __( 'Image position', 'woosuite-variation-swatches-pro' ),
+						'title'    => __( 'Image position', 'wcvs' ),
 						'fields'   => array(
 							array(
 								'id'            => 'wcvs-image-position-pro',
@@ -308,14 +327,14 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 								'options_group' => array(
 									array(
 										'value' => 'default',
-										'label' => __( 'Default', 'woosuite-variation-swatches-pro' ),
+										'label' => __( 'Default', 'wcvs' ),
 									)
 								),
 								'class'         => 'br-type',
 								'name'          => 'image-position',
 							)
 						),
-						'desc'     => __( 'Select option', 'woosuite-variation-swatches-pro' ),
+						'desc'     => __( 'Select option', 'wcvs' ),
 						'priority' => 5.2,
 						'is_pro_feature' => true,
 					),

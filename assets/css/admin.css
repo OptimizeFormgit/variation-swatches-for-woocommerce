@@ -1301,6 +1301,33 @@ p.vmch-text a:focus {
     transform: rotate(360deg);
   }
 }
+#variation_swatches_options .wcvs-pro-feature:hover {
+  cursor: pointer;
+}
+#variation_swatches_options .wcvs-pro-feature label {
+  color: #BCB3B3;
+  position: relative;
+  padding-right: 50px;
+}
+#variation_swatches_options .wcvs-pro-feature label:after {
+  content: "Pro";
+  position: absolute;
+  padding: 2px 7px;
+  background-color: #239B6B;
+  right: 10px;
+  color: #fff;
+  top: 0px;
+  font-size: 14px;
+  font-weight: 400;
+  border: 1px solid #239B6B;
+}
+#variation_swatches_options .wcvs-pro-feature select:hover {
+  cursor: pointer;
+}
+#variation_swatches_options .wcvs-pro-feature-popup {
+  margin-left: calc(50vw - 600px);
+}
+
 @media screen and (min-width: 600px) {
   .pro-feature-popup {
     width: 450px;

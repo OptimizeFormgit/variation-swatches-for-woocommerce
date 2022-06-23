@@ -37,6 +37,7 @@ class TA_WC_Variation_Swatches_Frontend {
 			$this,
 			'get_swatch_html'
 		), 100, 2 );
+
 		add_filter( 'tawcvs_swatch_html', array( $this, 'swatch_html' ), 5, 4 );
 
 		$latest_option = get_option( 'woosuite_variation_swatches_option' );
@@ -113,7 +114,8 @@ class TA_WC_Variation_Swatches_Frontend {
 			if ( ! empty( $variations_attr ) ) {
 				?>
                 <div class="tawcvs-placeholder-element hidden tawcvs-available-product-variation"
-                     data-product_variations="<?php echo $variations_attr; ?>"></div>
+                    data-product_variations="<?php echo $variations_attr; ?>">
+				</div>
 			<?php }
 		}
 	}
@@ -214,7 +216,6 @@ class TA_WC_Variation_Swatches_Frontend {
 			$swatches = '<div class="tawcvs-swatches oss-' . $out_of_stock_state . '" data-attribute_name="attribute_' . esc_attr( $attribute_tax_name ) . '">' . $swatches . '</div>';
 			$html = '<div class="' . esc_attr( $class ) . '">' . $html . '</div>' . $swatches;
 		}
-
 		return $html;
 	}
 
@@ -269,7 +270,7 @@ class TA_WC_Variation_Swatches_Frontend {
 	public function swatch_html( $html, $term, $type, $args ) {
 
 		$selected = sanitize_title( $args['selected'] ) == $term->slug ? 'selected' : '';
-		$name = esc_html( apply_filters( 'woocommerce_variation_option_name', ! empty( $term->description ) ? $term->description : $term->name ) );
+		$name = esc_html( apply_filters( 'woocommerce_variation_option_name', $term->name ) );
 
 		$tooltip = $this->get_tooltip_html( '', $term, $name, $args );
 		$tooltip = apply_filters( 'tawcvs_tooltip_html', $tooltip, $term, $name, $args );

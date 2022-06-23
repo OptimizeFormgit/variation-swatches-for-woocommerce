@@ -338,7 +338,11 @@ jQuery(document).ready(function ($) {
     //Show the Pro features popup
     $('#tawcvs-settings-wrap').on('click', '.wcvs-pro-item, .wcvs-pro-item *', function (e) {
         e.preventDefault();
-        $('.wcvs-pro-feature-popup,.wcvs-popup-blur').show();
+        showTheProPopUp();
+    })
+    $("#variation_swatches_options").on("click",".wcvs-pro-feature",function(e){
+        e.preventDefault();
+        showTheProPopUp();
     })
 
     //Hide the Pro features popup when clicking on close button or outside the popup
@@ -467,6 +471,10 @@ jQuery(document).ready(function ($) {
                 }
             }
         });
+    }
+
+    function showTheProPopUp(){
+        $('.wcvs-pro-feature-popup,.wcvs-popup-blur').show();
     }
 
 });
