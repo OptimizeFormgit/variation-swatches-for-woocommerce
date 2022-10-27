@@ -2,10 +2,10 @@
 Contributors: variationswatches, themealien, zgani, mehbubrashid, minhnguyen25 
 Tags: variation swatches, woocommerce swatches, variation swatches for woocommerce, woocommerce attributes, woocommerce
 Requires at least: 4.5
-Tested up to: 6.0
-Stable tag: 2.1.6
+Tested up to: 6.0.3
+Stable tag: 2.1.7
 WC requires at least: 3.2.0
-WC tested up to: 6.6.1
+WC tested up to: 7.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -103,6 +103,14 @@ Yes, it will work with any theme, but may require some styling to make it match 
 7. Add new attribute color when edit a product
 
 == Changelog ==
+= 2.1.7 =
+* Fix PHP warning
+* Removed unused param from hook
+* Fix the spacing issue in the Safari browser 
+* Added the option to limit the number of swatches on the single product in Pro
+* Separate variables to get swatch name and desc
+* Added support to change the variation image by hovering in Pro
+
 = 2.1.6 =
 * Update: WooCommerce and WordPress Compatibility
 * Minor bugs fix and improvements

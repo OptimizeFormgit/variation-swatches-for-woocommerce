@@ -101,6 +101,7 @@
 .woocommerce.single-product form.cart.variations_form .tawcvs-swatches .swatch-show-more.swatch-label {
   font-size: 14px;
   min-width: max-content;
+  width: auto;
 }
 .woocommerce div.product form.cart.variations_form .tawcvs-swatches .swatch.swatch-image,
 .woocommerce div.product form.cart.variations_form .tawcvs-swatches .swatch-show-more.swatch-image,
