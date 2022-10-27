@@ -12,14 +12,16 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Renderer' ) ) {
 		public function __construct() {
 			add_action( 'woosuite_variation_swatches_settings_fields_html', array( $this, 'render_settings_page' ) );
 
-			//Hook for the template parts
-			add_action( 'woosuite_child_plugin_header', array( $this, 'render_settings_page_header' ) );
-			add_action( 'woosuite_child_plugin_sidebar', array( $this, 'render_settings_page_sidebar' ) );
-			add_action( 'woosuite_child_plugin_footer', array( $this, 'render_settings_page_footer' ) );
-			add_action( 'woosuite_child_plugin_video_tutorials', array(
-				$this,
-				'render_settings_page_video_tutorials'
-			) );
+			if ( TA_WC_Variation_Swatches::is_in_plugin_settings_page() ) {
+				//Hook for the template parts
+				add_action( 'woosuite_child_plugin_header', array( $this, 'render_settings_page_header' ) );
+				add_action( 'woosuite_child_plugin_sidebar', array( $this, 'render_settings_page_sidebar' ) );
+				add_action( 'woosuite_child_plugin_footer', array( $this, 'render_settings_page_footer' ) );
+				add_action( 'woosuite_child_plugin_video_tutorials', array(
+					$this,
+					'render_settings_page_video_tutorials'
+				) );
+			}
 
 
 			$this->settings_sections = VSWC_Setting_Fields_Manager::get_settings_sections();

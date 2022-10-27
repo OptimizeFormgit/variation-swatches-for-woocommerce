@@ -62,7 +62,7 @@ class TA_WC_Variation_Swatches_Frontend {
 			add_filter( 'woocommerce_loop_add_to_cart_link', array(
 				$this,
 				'display_variations_on_shop_page_before_add_to_cart_btn'
-			), 10, 3 );
+			), 10, 2 );
 		}
 		add_action( 'wp_head', array( $this, 'apply_custom_design_styles' ) );
 
@@ -272,8 +272,9 @@ class TA_WC_Variation_Swatches_Frontend {
 		$selected = sanitize_title( $args['selected'] ) == $term->slug ? 'selected' : '';
 		$name = esc_html( apply_filters( 'woocommerce_variation_option_name', $term->name ) );
 
-		$tooltip = $this->get_tooltip_html( '', $term, $name, $args );
-		$tooltip = apply_filters( 'tawcvs_tooltip_html', $tooltip, $term, $name, $args );
+        $tooltip_text = esc_html( apply_filters( 'woocommerce_variation_option_description_text', ! empty( $term->description ) ? $term->description : $term->name ) );
+		$tooltip = $this->get_tooltip_html( '', $term, $tooltip_text, $args );
+		$tooltip = apply_filters( 'tawcvs_tooltip_html', $tooltip, $term, $tooltip_text, $args );
 
 		$swatchShape = isset( $this->generalSettings['swatch-shape'] ) ? $this->generalSettings['swatch-shape'] : 'circle';
 
@@ -375,11 +376,10 @@ class TA_WC_Variation_Swatches_Frontend {
 	 *
 	 * @param $html
 	 * @param $product
-	 * @param $args
 	 *
 	 * @return mixed|void
 	 */
-	public function display_variations_on_shop_page_before_add_to_cart_btn( $html, $product, $args ) {
+	public function display_variations_on_shop_page_before_add_to_cart_btn( $html, $product ) {
 		global $product;
 
 		if ( $product instanceof WC_Product_Variable ) {

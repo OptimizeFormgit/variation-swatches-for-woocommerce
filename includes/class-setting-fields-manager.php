@@ -395,6 +395,46 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 						'desc'           => __( 'Select option', 'wcvs' ),
 						'priority'       => 8
 					),
+					array(
+						'title'    => __( 'Enable Attribute Name', 'woosuite-variation-swatches-pro' ),
+						'fields'   => array(
+							array(
+								'id'   => 'wcvs-enable-attribute-name',
+								'type' => 'checkbox',
+								'name' => 'enable-attribute-name',
+							)
+						),
+						'is_pro_feature' => true,
+						'desc'     => __( 'It will show the attribute name when choosing a desired attribute value', 'woosuite-variation-swatches-pro' ),
+						'priority' => 9
+					),
+					array(
+						'title'    => __( 'Enable Attribute Description', 'woosuite-variation-swatches-pro' ),
+						'fields'   => array(
+							array(
+								'id'   => 'wcvs-enable-attribute-desc',
+								'type' => 'checkbox',
+								'name' => 'enable-attribute-desc',
+							)
+						),
+						'is_pro_feature' => true,
+						'desc'     => __( 'It will show the attribute description under the attribute block', 'woosuite-variation-swatches-pro' ),
+						'priority' => 10
+					),
+					array(
+						'title'          => __( 'Swatch limit on Singe product', 'wcvs' ),
+						'fields'         => array(
+							array(
+								'id'            => 'wcvs-swatch-limit-single-page',
+								'type'          => 'number',
+								'name'          => 'swatch-limit-single-page',
+								'default_value' => '0'
+							)
+						),
+						'is_pro_feature' => true,
+						'desc'           => __( 'Set a max amount of swatches to show.<br>0 means show all swatches', 'wcvs' ),
+						'priority'       => 11
+					),
 				),
 				'design'  => array(
 					'productDesign' => array(
