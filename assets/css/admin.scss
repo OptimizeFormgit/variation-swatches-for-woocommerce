@@ -542,6 +542,7 @@ h3.vs-label-title {
     background-color: #BBBBBB;
     -webkit-transition: .4s;
     transition: .4s;
+    margin: 0 !important;
 
     &:before {
       position: absolute;
@@ -1545,7 +1546,7 @@ p.vmch-text a {
       }
     }
 
-    select{
+    select {
       &:hover {
         cursor: pointer;
       }
@@ -1556,6 +1557,7 @@ p.vmch-text a {
     margin-left: calc(50vw - 600px);
   }
 }
+
 @media screen and (min-width: 600px) {
 
   .pro-feature-popup {
