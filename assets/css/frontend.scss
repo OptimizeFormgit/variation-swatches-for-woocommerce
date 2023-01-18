@@ -4,6 +4,7 @@
 }
 
 .woocommerce div.product,
+.woocommerce:not(.archive) li.product,
 .woocommerce.archive,
 .woocommerce.single-product {
   form.cart.variations_form {

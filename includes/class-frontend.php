@@ -38,7 +38,7 @@ class TA_WC_Variation_Swatches_Frontend {
 			'get_swatch_html'
 		), 100, 2 );
 
-		add_filter( 'tawcvs_swatch_html', array( $this, 'swatch_html' ), 5, 4 );
+		add_filter( 'tawcvs_swatch_html', array( $this, 'swatch_html' ), 5, 5 );
 
 		$latest_option = get_option( 'woosuite_variation_swatches_option' );
 
@@ -199,7 +199,7 @@ class TA_WC_Variation_Swatches_Frontend {
 					unset( $args['variation_product'] );
 				}
 
-				$swatches .= apply_filters( 'tawcvs_swatch_html', '', $term, $attr->attribute_type, $args );
+				$swatches .= apply_filters( 'tawcvs_swatch_html', '', $term, $attr->attribute_type, $args, $product );
 
 			}
 			//If we are on shop/archived page (not product page), we will check the defined limit number of variations
@@ -267,10 +267,10 @@ class TA_WC_Variation_Swatches_Frontend {
 	 *
 	 * @return string
 	 */
-	public function swatch_html( $html, $term, $type, $args ) {
+	public function swatch_html( $html, $term, $type, $args, $product ) {
 
 		$selected = sanitize_title( $args['selected'] ) == $term->slug ? 'selected' : '';
-		$name = esc_html( apply_filters( 'woocommerce_variation_option_name', $term->name ) );
+		$name = esc_html( apply_filters( 'woocommerce_variation_option_name', $term->name, $term, $args['attribute'], $product ) );
 
         $tooltip_text = esc_html( apply_filters( 'woocommerce_variation_option_description_text', ! empty( $term->description ) ? $term->description : $term->name ) );
 		$tooltip = $this->get_tooltip_html( '', $term, $tooltip_text, $args );
@@ -466,6 +466,7 @@ class TA_WC_Variation_Swatches_Frontend {
 			?>
             <style>
                 .woocommerce div.product form.cart.variations_form .tawcvs-swatches,
+                .woocommerce:not(.archive) li.product form.cart.variations_form .tawcvs-swatches,
                 .woocommerce.single-product form.cart.variations_form .tawcvs-swatches,
                 .woocommerce.archive form.cart.variations_form .tawcvs-swatches {
                     margin-top: <?php echo isset($this->{$page}['wrm-top']) ? $this->{$page}['wrm-top'] : '0'; echo isset($this->{$page}['wrm-type']) ? $this->{$page}['wrm-type'] : 'px'  ?>;
@@ -479,6 +480,7 @@ class TA_WC_Variation_Swatches_Frontend {
                 }
 
                 .woocommerce div.product form.cart.variations_form .tawcvs-swatches .swatch-item-wrapper,
+                .woocommerce:not(.archive) li.product form.cart.variations_form .tawcvs-swatches .swatch-item-wrapper,
                 .woocommerce.single-product form.cart.variations_form .tawcvs-swatches .swatch-item-wrapper,
                 .woocommerce.archive form.cart.variations_form .tawcvs-swatches .swatch-item-wrapper {
                 <?php if($this->{$page}['item-font']):?> font-size: <?php echo isset($this->{$page}['text-font-size']) ? $this->{$page}['text-font-size'] : '12'; echo isset($this->{$page}['item-font-size-type']) ? $this->{$page}['item-font-size-type'] : 'px'; ?>;
@@ -494,6 +496,7 @@ class TA_WC_Variation_Swatches_Frontend {
 
                 /*tooltip*/
                 .woocommerce div.product form.cart.variations_form .tawcvs-swatches .swatch .swatch__tooltip,
+                .woocommerce:not(.archive) li.product form.cart.variations_form .tawcvs-swatches .swatch .swatch__tooltip,
                 .woocommerce.single-product form.cart.variations_form .tawcvs-swatches .swatch .swatch__tooltip,
                 .woocommerce.archive form.cart.variations_form .tawcvs-swatches .swatch .swatch__tooltip {
                 <?php if(isset($this->toolTipDesign['item-font']) && $this->toolTipDesign['item-font']):?> font-size: <?php echo isset($this->toolTipDesign['text-font-size']) ? $this->toolTipDesign['text-font-size'] : '14'; echo isset($this->toolTipDesign['item-font-size-type']) ? $this->toolTipDesign['item-font-size-type'] : 'px'; ?>;
