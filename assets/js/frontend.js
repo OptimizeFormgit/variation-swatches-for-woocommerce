@@ -32,6 +32,13 @@
                         return;
                     }
 
+                    //Woo product bundle plugin uses "select" class instead of "value" class
+                    if (!$select.length) {
+                        if ($form.closest(".woosb-product").length) {
+                            $select = $el.closest('.select').find('select');
+                        }
+                    }
+
                     //Disabling other swatches, then resetting the select value to empty
                     $el.parents('.tawcvs-swatches').find(".swatch.selected").each(function () {
                         $(this).not($el).removeClass("selected");

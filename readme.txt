@@ -2,10 +2,10 @@
 Contributors: variationswatches, themealien, zgani, mehbubrashid, minhnguyen25 
 Tags: variation swatches, woocommerce swatches, variation swatches for woocommerce, woocommerce attributes, woocommerce
 Requires at least: 4.5
-Tested up to: 6.1.1
-Stable tag: 2.1.8
+Tested up to: 6.2.2
+Stable tag: 2.1.9
 WC requires at least: 3.2.0
-WC tested up to: 7.3.0
+WC tested up to: 7.7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -103,6 +103,12 @@ Yes, it will work with any theme, but may require some styling to make it match 
 7. Add new attribute color when edit a product
 
 == Changelog ==
+= 2.1.9 =
+* Fix the product metadata not saving
+* Add support for WooCommerce product bundles plugin
+* Add pro field for setting shop swatch width height
+* Update the translation file
+
 = 2.1.8 =
 * Add more param to filter the variation name
 * Add support for li.product selector

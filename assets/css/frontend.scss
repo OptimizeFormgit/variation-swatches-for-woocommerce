@@ -7,7 +7,9 @@
 .woocommerce:not(.archive) li.product,
 .woocommerce.archive,
 .woocommerce.single-product {
-  form.cart.variations_form {
+  form.cart.variations_form,
+  .bundled_item_cart_content.cart.variations_form,
+  .woosb-product .variations_form {
     .variable:not(.type-select) {
       .arrow {
         display: none !important;
@@ -137,13 +139,17 @@
           }
         }
 
-        &.disabled {
+        &.disabled,
+        &.woosuite-selectable{
           cursor: default;
           opacity: 0.4 !important;
 
           .swatch__tooltip {
             display: none;
           }
+        }
+        &.woosuite-selectable{
+          cursor: pointer;
         }
 
         &:first-child {
@@ -227,8 +233,8 @@
       }
 
       .swatch-radio .swatch__tooltip {
-        left: 10%!important;
-        top:10px;
+        left: 10% !important;
+        top: 10px;
       }
 
       .swatch-item-wrapper {
@@ -242,7 +248,8 @@
       }
 
       &.oss-blur-with-cross {
-        .swatch.disabled {
+        .swatch.disabled,
+        .swatch.woosuite-selectable{
           position: relative;
           background: #33333357;
 
@@ -290,7 +297,8 @@
       }
 
       &.oss-hide {
-        .swatch.disabled {
+        .swatch.disabled,
+        .swatch.woosuite-selectable{
           display: none !important;
         }
       }
@@ -364,7 +372,7 @@
 }
 
 table.variations {
-  overflow: visible!important;
+  overflow: visible !important;
 
   .label {
     margin-bottom: 10px;
@@ -372,9 +380,10 @@ table.variations {
 }
 
 .swatch-radio {
-  width:100%;
+  width: 100%;
 }
+
 .swatch-radio input[type="radio"] {
-  width:auto!important;
-  height:auto!important;
+  width: auto !important;
+  height: auto !important;
 }
