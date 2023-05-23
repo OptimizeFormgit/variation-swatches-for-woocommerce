@@ -210,9 +210,8 @@ class TA_WC_Variation_Swatches_Admin {
 	 * @param $post_id
 	 */
 	public function save_custom_product_data( $post_id ) {
-		if ( isset( $_POST['variation_swatches_disabled'] ) ) {
-			update_post_meta( $post_id, 'variation_swatches_disabled', esc_attr( $_POST['variation_swatches_disabled'] ) );
-		}
+		$variation_swatches_disabled = isset( $_POST['variation_swatches_disabled'] ) ? esc_attr( $_POST['variation_swatches_disabled'] ) : 'no';
+		update_post_meta( $post_id, 'variation_swatches_disabled', $variation_swatches_disabled );
 	}
 
 	/**

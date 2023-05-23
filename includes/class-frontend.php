@@ -104,12 +104,21 @@ class TA_WC_Variation_Swatches_Frontend {
 	public function get_available_variation() {
 		global $product;
 
-		if ( 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' ) || $this->is_disabled_checking_availability()) {
+		if ( 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' )) {
+			return '';
+		}
+		$is_disabled_checking_availability     = $this->is_disabled_checking_availability();
+		$is_keep_disabled_variation_selectable = $this->is_keep_disabled_variation_selectable();
+		if ( $is_disabled_checking_availability && ! $is_keep_disabled_variation_selectable ) {
 			return '';
 		}
 
 		if ( $product instanceof WC_Product_Variable ) {
-			$variations_json = wp_json_encode( TA_WC_Variation_Swatches::get_available_variations( $product, true, true ) );
+			if ( $is_disabled_checking_availability && $is_keep_disabled_variation_selectable ) {
+				$variations_json = wp_json_encode( TA_WC_Variation_Swatches::get_available_variations( $product, false, true ) );
+			}else{
+				$variations_json = wp_json_encode( TA_WC_Variation_Swatches::get_available_variations( $product, true, true ) );
+			}
 			$variations_attr = function_exists( 'wc_esc_json' ) ? wc_esc_json( $variations_json ) : _wp_specialchars( $variations_json, ENT_QUOTES, 'UTF-8', true );
 			if ( ! empty( $variations_attr ) ) {
 				?>
@@ -124,7 +133,7 @@ class TA_WC_Variation_Swatches_Frontend {
 	 * Enqueue scripts and stylesheets
 	 */
 	public function enqueue_scripts() {
-		if ( isset( $this->generalSettings['disable-plugin-stylesheet'] ) && ! $this->generalSettings['disable-plugin-stylesheet'] ) {
+		if ( ! isset( $this->generalSettings['disable-plugin-stylesheet'] ) || ! $this->generalSettings['disable-plugin-stylesheet'] ) {
 			wp_enqueue_style( 'tawcvs-frontend', plugins_url( 'assets/css/frontend.css', TAWC_VS_PLUGIN_FILE ), array(), WCVS_PLUGIN_VERSION );
 		}
 		if ( is_shop() || is_product_category() || is_product_tag() ) {
@@ -227,6 +236,10 @@ class TA_WC_Variation_Swatches_Frontend {
 		return wc_string_to_bool( isset( $this->generalSettings['disable-checking-availability'] ) ? $this->generalSettings['disable-checking-availability'] : 0 );
 	}
 
+    private function is_keep_disabled_variation_selectable() {
+		return wc_string_to_bool( isset( $this->generalSettings['keep-showing-attribute-state'] ) ? $this->generalSettings['keep-showing-attribute-state'] : 0 );
+	}
+
 	private function is_disabled_variation_swatches( $product ) {
 		if ( ! $product instanceof WC_Product_Variable ) {
 			return false;
@@ -282,6 +295,14 @@ class TA_WC_Variation_Swatches_Frontend {
 			$type = 'select';
 		}
 
+		$selectable_class = '';
+		if ( $this->is_keep_disabled_variation_selectable() &&
+		     $this->is_disabled_checking_availability() &&
+		     isset( $args['variation_product']['woosuite_purchasable'] ) &&
+		     $args['variation_product']['woosuite_purchasable'] === false ) {
+			$selectable_class = ' woosuite-selectable ';
+		}
+
 		switch ( $type ) {
 			case 'color':
 				$main_color = get_term_meta( $term->term_id, 'color', true );
@@ -299,7 +320,7 @@ class TA_WC_Variation_Swatches_Frontend {
 				}
 
 				$html = sprintf(
-					'<div class="swatch-item-wrapper"><div class="swatch swatch-shape-' . $swatchShape . $class . ' swatch-%s %s" style="background:%s;color:%s;' . $text_shadow . '" data-value="%s"><span class="text">%s</span></div>%s</div>',
+					'<div class="swatch-item-wrapper"><div class="swatch '.$selectable_class.' swatch-shape-' . $swatchShape . $class . ' swatch-%s %s" style="background:%s;color:%s;' . $text_shadow . '" data-value="%s"><span class="text">%s</span></div>%s</div>',
 					esc_attr( $term->slug ),
 					$selected,
 					esc_attr( $formatted_color_style ),
@@ -321,7 +342,7 @@ class TA_WC_Variation_Swatches_Frontend {
 				$image_url = apply_filters( 'tawcvs_product_swatch_image_url', $image_url, $args );
 
 				$html = sprintf(
-					'<div class="swatch-item-wrapper"><div class="swatch swatch-shape-' . $swatchShape . ' swatch-image swatch-%s %s %s" data-value="%s" style="background-image:url(%s);background-size:cover;%s"></div>%s</div>',
+					'<div class="swatch-item-wrapper"><div class="swatch '.$selectable_class.' swatch-shape-' . $swatchShape . ' swatch-image swatch-%s %s %s" data-value="%s" style="background-image:url(%s);background-size:cover;%s"></div>%s</div>',
 					esc_attr( $term->slug ),
 					$selected,
 					apply_filters( 'tawcvs_swatch_image_ratio_class', 'swatch-ratio-disabled' ),
@@ -335,7 +356,7 @@ class TA_WC_Variation_Swatches_Frontend {
 				$label = get_term_meta( $term->term_id, 'label', true );
 				$label = $label ?: $name;
 				$html = sprintf(
-					'<div class="swatch-item-wrapper"><div class="swatch swatch-shape-' . $swatchShape . ' swatch-label swatch-%s %s" data-value="%s"><span class="text">%s</span></div>%s</div>',
+					'<div class="swatch-item-wrapper"><div class="swatch '.$selectable_class.' swatch-shape-' . $swatchShape . ' swatch-label swatch-%s %s" data-value="%s"><span class="text">%s</span></div>%s</div>',
 					esc_attr( $term->slug ),
 					$selected,
 					esc_attr( $term->slug ),
@@ -346,7 +367,7 @@ class TA_WC_Variation_Swatches_Frontend {
 			case 'radio':
 				$selected = ! empty( $selected ) ? 'checked' : '';
 				$html = sprintf(
-					'<div class="swatch-item-wrapper swatch-radio"><input id="%s" class="swatch" data-value="%s" type="radio" name="%s" value="%s" %s /><label for="%s" class="text swatch-label" style="display:inline">%s</label>%s</div>',
+					'<div class="swatch-item-wrapper swatch-radio '.$selectable_class.' "><input id="%s" class="swatch" data-value="%s" type="radio" name="%s" value="%s" %s /><label for="%s" class="text swatch-label" style="display:inline">%s</label>%s</div>',
 					esc_attr( $term->slug ),
 					esc_attr( $term->slug ),
 					'attribute_' . $term->taxonomy,

@@ -215,6 +215,20 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 						'priority'       => 4.1
 					),
 					array(
+						'title'          => __( 'Still showing the invalid attribute\'s as selectable', 'wcvs' ),
+						'fields'         => array(
+							array(
+								'id'   => 'wcvs-keep-showing-attribute-state',
+								'type' => 'checkbox',
+								'name' => 'keep-showing-attribute-state',
+							)
+						),
+						'priority'       => 4.1,
+						'class'           => 'indent',
+						'field_to_check'  => 'wcvs-disable-checking-availability',
+						'show_if_checked' => true,
+					),
+					array(
 						'title'    => __( 'Single variation image preview', 'wcvs' ),
 						'fields'   => array(
 							array(
@@ -1117,6 +1131,36 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 								)
 							),
 							'priority' => 19
+						),
+						array(
+							'title'          => __( 'Swatch Width', 'wcvs' ),
+							'fields'         => array(
+								array(
+									'id'            => 'wcvs-swatch-archive-width',
+									'type'          => 'number',
+									'name'          => 'swatch-archive-width',
+									'default_value' => '',
+									'placeholder'   => 'auto',
+									'html_after'    => '<span class="sw-input-type-text">' . __( 'px', 'wcvs' ) . '</span>'
+								),
+							),
+							'is_pro_feature' => true,
+							'priority'       => 20
+						),
+						array(
+							'title'          => __( 'Swatch Height', 'wcvs' ),
+							'fields'         => array(
+								array(
+									'id'            => 'wcvs-swatch-archive-height',
+									'type'          => 'number',
+									'name'          => 'swatch-archive-height',
+									'default_value' => '',
+									'placeholder'   => 'auto',
+									'html_after'    => '<span class="sw-input-type-text">' . __( 'px', 'wcvs' ) . '</span>'
+								),
+							),
+							'is_pro_feature' => true,
+							'priority'       => 21
 						),
 					),
 					'toolTipDesign' => array(

@@ -281,11 +281,17 @@ final class TA_WC_Variation_Swatches {
 				continue;
 			}
 			if ( $get_full_attribute_data ) {
-				$available_variations[] = $product->get_available_variation( $variation_id );
+				$available_variations[] = array_merge(
+					$product->get_available_variation( $variation_id ),
+					array(
+						'woosuite_purchasable' => $variation->is_purchasable() && $variation->is_in_stock()
+					)
+				);
 			} else {
 				$available_variations[] = array(
-					'attributes' => $variation->get_variation_attributes(),
-					'variation_id' => $variation_id,
+					'attributes'           => $variation->get_variation_attributes(),
+					'variation_id'         => $variation_id,
+					'woosuite_purchasable' => $variation->is_purchasable() && $variation->is_in_stock()
 				);
 			}
 		}
