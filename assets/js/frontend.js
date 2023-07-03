@@ -24,9 +24,20 @@
                 })
                 .on('click', '.swatch', function (e) {
                     e.preventDefault();
-                    var $el = $(this),
-                        $select = $el.closest('.value').find('select'),
+                    var $el = $(this);
+                    let $select = false, value = false;
+
+                    if (!$("body").hasClass("single-product") &&
+                        $("body").find(".wc-product-table-wrapper").length) {
+                        //For product table page
+                        let attribute_name = $el.closest('.tawcvs-swatches').data("attribute_name");
+                        $select = $el.closest('.variations').find('select[data-attribute_name="' + attribute_name + '"]');
                         value = $el.attr('data-value');
+                    } else {
+                        //For normal variable product page
+                        $select = $el.closest('.value').find('select');
+                        value = $el.attr('data-value');
+                    }
 
                     if ($el.hasClass('disabled')) {
                         return;

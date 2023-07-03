@@ -6,8 +6,9 @@
 .woocommerce div.product,
 .woocommerce:not(.archive) li.product,
 .woocommerce.archive,
+.wc-product-table-wrapper,
 .woocommerce.single-product {
-  form.cart.variations_form,
+  .cart.variations_form,
   .bundled_item_cart_content.cart.variations_form,
   .woosb-product .variations_form {
     .variable:not(.type-select) {
