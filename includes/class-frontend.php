@@ -302,6 +302,7 @@ class TA_WC_Variation_Swatches_Frontend {
 		     $args['variation_product']['woosuite_purchasable'] === false ) {
 			$selectable_class = ' woosuite-selectable ';
 		}
+		$class = ' swatch-type-'.$type;
 
 		switch ( $type ) {
 			case 'color':
@@ -310,11 +311,11 @@ class TA_WC_Variation_Swatches_Frontend {
 				list( $r, $g, $b ) = sscanf( $main_color, "#%02x%02x%02x" );
 
 				if ( $this->is_show_label_enabled() ) {
-					$class = ' swatch-label ';
+					$class .= ' swatch-label ';
 					$text_shadow = 'text-shadow: -1px -1px 0 #555, 1px -1px 0 #555, -1px 1px 0 #555, 1px 1px 0 #555;';
 					$color = 'white';
 				} else {
-					$class = ' swatch-color ';
+					$class .= ' swatch-color ';
 					$text_shadow = '';
 					$color = 'rgba($r,$g,$b,0.5)';
 				}
@@ -342,7 +343,7 @@ class TA_WC_Variation_Swatches_Frontend {
 				$image_url = apply_filters( 'tawcvs_product_swatch_image_url', $image_url, $args );
 
 				$html = sprintf(
-					'<div class="swatch-item-wrapper"><div class="swatch '.$selectable_class.' swatch-shape-' . $swatchShape . ' swatch-image swatch-%s %s %s" data-value="%s" style="background-image:url(%s);background-size:cover;%s"></div>%s</div>',
+					'<div class="swatch-item-wrapper"><div class="swatch '.$selectable_class.' swatch-shape-' . $swatchShape . $class . ' swatch-image swatch-%s %s %s" data-value="%s" style="background-image:url(%s);background-size:cover;%s"></div>%s</div>',
 					esc_attr( $term->slug ),
 					$selected,
 					apply_filters( 'tawcvs_swatch_image_ratio_class', 'swatch-ratio-disabled' ),
@@ -356,7 +357,7 @@ class TA_WC_Variation_Swatches_Frontend {
 				$label = get_term_meta( $term->term_id, 'label', true );
 				$label = $label ?: $name;
 				$html = sprintf(
-					'<div class="swatch-item-wrapper"><div class="swatch '.$selectable_class.' swatch-shape-' . $swatchShape . ' swatch-label swatch-%s %s" data-value="%s"><span class="text">%s</span></div>%s</div>',
+					'<div class="swatch-item-wrapper"><div class="swatch '.$selectable_class.' swatch-shape-' . $swatchShape . $class . ' swatch-label swatch-%s %s" data-value="%s"><span class="text">%s</span></div>%s</div>',
 					esc_attr( $term->slug ),
 					$selected,
 					esc_attr( $term->slug ),
@@ -367,7 +368,7 @@ class TA_WC_Variation_Swatches_Frontend {
 			case 'radio':
 				$selected = ! empty( $selected ) ? 'checked' : '';
 				$html = sprintf(
-					'<div class="swatch-item-wrapper swatch-radio '.$selectable_class.' "><input id="%s" class="swatch" data-value="%s" type="radio" name="%s" value="%s" %s /><label for="%s" class="text swatch-label" style="display:inline">%s</label>%s</div>',
+					'<div class="swatch-item-wrapper swatch-radio ' . $selectable_class . $class .' "><input id="%s" class="swatch" data-value="%s" type="radio" name="%s" value="%s" %s /><label for="%s" class="text swatch-label" style="display:inline">%s</label>%s</div>',
 					esc_attr( $term->slug ),
 					esc_attr( $term->slug ),
 					'attribute_' . $term->taxonomy,
@@ -486,10 +487,11 @@ class TA_WC_Variation_Swatches_Frontend {
 			$page = is_product() ? 'productDesign' : 'shopDesign';
 			?>
             <style>
-                .woocommerce div.product form.cart.variations_form .tawcvs-swatches,
-                .woocommerce:not(.archive) li.product form.cart.variations_form .tawcvs-swatches,
-                .woocommerce.single-product form.cart.variations_form .tawcvs-swatches,
-                .woocommerce.archive form.cart.variations_form .tawcvs-swatches {
+                .woocommerce div.product .cart.variations_form .tawcvs-swatches,
+                .woocommerce:not(.archive) li.product .cart.variations_form .tawcvs-swatches,
+                .woocommerce.single-product .cart.variations_form .tawcvs-swatches,
+                .wc-product-table-wrapper .cart.variations_form .tawcvs-swatches,
+                .woocommerce.archive .cart.variations_form .tawcvs-swatches {
                     margin-top: <?php echo isset($this->{$page}['wrm-top']) ? $this->{$page}['wrm-top'] : '0'; echo isset($this->{$page}['wrm-type']) ? $this->{$page}['wrm-type'] : 'px'  ?>;
                     margin-right: <?php echo isset($this->{$page}['wrm-right']) ? $this->{$page}['wrm-right'] : '15'; echo isset($this->{$page}['wrm-type']) ? $this->{$page}['wrm-type'] : 'px'  ?>;
                     margin-bottom: <?php echo isset($this->{$page}['wrm-bottom']) ? $this->{$page}['wrm-bottom'] : '15'; echo isset($this->{$page}['wrm-type']) ? $this->{$page}['wrm-type'] : 'px'  ?>;
@@ -500,10 +502,11 @@ class TA_WC_Variation_Swatches_Frontend {
                     padding-left: <?php echo isset($this->{$page}['wrp-left']) ? $this->{$page}['wrp-left'] : '0'; echo isset($this->{$page}['wrp-type']) ? $this->{$page}['wrp-type'] : 'px'  ?>;
                 }
 
-                .woocommerce div.product form.cart.variations_form .tawcvs-swatches .swatch-item-wrapper,
-                .woocommerce:not(.archive) li.product form.cart.variations_form .tawcvs-swatches .swatch-item-wrapper,
-                .woocommerce.single-product form.cart.variations_form .tawcvs-swatches .swatch-item-wrapper,
-                .woocommerce.archive form.cart.variations_form .tawcvs-swatches .swatch-item-wrapper {
+                .woocommerce div.product .cart.variations_form .tawcvs-swatches .swatch-item-wrapper,
+                .woocommerce:not(.archive) li.product .cart.variations_form .tawcvs-swatches .swatch-item-wrapper,
+                .woocommerce.single-product .cart.variations_form .tawcvs-swatches .swatch-item-wrapper,
+                .wc-product-table-wrapper .cart.variations_form .tawcvs-swatches .swatch-item-wrapper,
+                .woocommerce.archive .cart.variations_form .tawcvs-swatches .swatch-item-wrapper {
                 <?php if($this->{$page}['item-font']):?> font-size: <?php echo isset($this->{$page}['text-font-size']) ? $this->{$page}['text-font-size'] : '12'; echo isset($this->{$page}['item-font-size-type']) ? $this->{$page}['item-font-size-type'] : 'px'; ?>;
                 <?php endif;?> margin-top: <?php echo isset($this->{$page}['mar-top']) ? $this->{$page}['mar-top'] : '0'; echo isset($this->{$page}['mar-type']) ? $this->{$page}['mar-type'] : 'px'  ?> !important;
                     margin-right: <?php echo isset($this->{$page}['mar-right']) ? $this->{$page}['mar-right'] : '15'; echo isset($this->{$page}['mar-type']) ? $this->{$page}['mar-type'] : 'px'  ?> !important;
@@ -516,10 +519,11 @@ class TA_WC_Variation_Swatches_Frontend {
                 }
 
                 /*tooltip*/
-                .woocommerce div.product form.cart.variations_form .tawcvs-swatches .swatch .swatch__tooltip,
-                .woocommerce:not(.archive) li.product form.cart.variations_form .tawcvs-swatches .swatch .swatch__tooltip,
-                .woocommerce.single-product form.cart.variations_form .tawcvs-swatches .swatch .swatch__tooltip,
-                .woocommerce.archive form.cart.variations_form .tawcvs-swatches .swatch .swatch__tooltip {
+                .woocommerce div.product .cart.variations_form .tawcvs-swatches .swatch .swatch__tooltip,
+                .woocommerce:not(.archive) li.product .cart.variations_form .tawcvs-swatches .swatch .swatch__tooltip,
+                .woocommerce.single-product .cart.variations_form .tawcvs-swatches .swatch .swatch__tooltip,
+                .wc-product-table-wrapper .cart.variations_form .tawcvs-swatches .swatch .swatch__tooltip,
+                .woocommerce.archive .cart.variations_form .tawcvs-swatches .swatch .swatch__tooltip {
                 <?php if(isset($this->toolTipDesign['item-font']) && $this->toolTipDesign['item-font']):?> font-size: <?php echo isset($this->toolTipDesign['text-font-size']) ? $this->toolTipDesign['text-font-size'] : '14'; echo isset($this->toolTipDesign['item-font-size-type']) ? $this->toolTipDesign['item-font-size-type'] : 'px'; ?>;
                 <?php endif;?> width: <?php echo isset($this->toolTipDesign['width']) ? $this->toolTipDesign['width'] . 'px' : 'auto' ?>;
                     max-width: <?php echo isset($this->toolTipDesign['max-width']) ? $this->toolTipDesign['max-width'] .'px' : '100%' ?>;

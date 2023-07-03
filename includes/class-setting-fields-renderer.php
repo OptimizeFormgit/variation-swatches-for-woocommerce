@@ -366,6 +366,35 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Renderer' ) ) {
 		}
 
 		/**
+		 * Display a textbox field
+		 *
+		 * @param $args
+		 *
+		 * @return false|string
+		 */
+		function callback_textbox( $args ) {
+			$field_value = $this->get_field_value( $args );
+			$field_name  = $this->get_field_name( $args );
+			ob_start();
+			echo empty( $args['html_after'] ) ? '' : '<div class="field-with-html-after">';
+			echo empty( $args['html_before'] ) ? '' : '<div class="field-with-html-before">';
+
+			echo empty( $args['html_before'] ) ? '' : $args['html_before'];
+            ?>
+            <input type="text"
+                   name="<?php echo $field_name; ?>"
+                   class="<?php echo esc_attr( $args['custom_item_class'] ); ?>"
+                   id="<?php echo esc_attr( $args['id'] ); ?>"
+                   placeholder="<?php echo esc_attr( $args['placeholder'] ); ?>"
+                   value="<?php echo $field_value; ?>">
+			<?php
+			echo empty( $args['html_before'] ) ? '' : '</div>';
+			echo empty( $args['html_after'] ) ? '' : $args['html_after'] . '</div>';
+
+			return ob_get_clean();
+		}
+
+		/**
 		 * Rendering the heading of each field element (heading, desc, tip text)
 		 *
 		 * @param $field_args

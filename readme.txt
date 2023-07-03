@@ -1,11 +1,11 @@
 === Variation Swatches for WooCommerce ===
 Contributors: variationswatches, themealien, zgani, mehbubrashid, minhnguyen25 
-Tags: variation swatches, woocommerce swatches, variation swatches for woocommerce, woocommerce attributes, woocommerce
+Tags: variation swatches, woocommerce color swatches, variation swatches for woocommerce
 Requires at least: 4.5
 Tested up to: 6.2.2
-Stable tag: 2.1.9
+Stable tag: 2.2.1
 WC requires at least: 3.2.0
-WC tested up to: 7.7.0
+WC tested up to: 7.8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,12 +22,12 @@ https://www.youtube.com/watch?v=1qGusf9IfFY&t
 
 **Woosuite Variation Swatches for WooCommerce Features :**
 
-* <a href="https://woosuite.com/plugins/woocommerce-variation-swatches/#button" rel="friend">Auto Convert All Variation Dropdowns To Button Swatch</a> - With a click of a button you can convert your dropdowns into button/label.
-*  <a href="https://woosuite.com/plugins/woocommerce-variation-swatches/#autoimage" rel="friend">Auto Convert Into Image Swatches*</a> - By toggling this option you can set dual color for those products that can not be described with one color.
-*   <a href="https://woosuite.com/plugins/woocommerce-variation-swatches/#dualcolor" rel="friend">Dual Color Variation Swatches*</a> - Automatically covert dropdowns to "Image Swatch" if variation has an image.
-* <a href="https://woosuite.com/plugins/woocommerce-variation-swatches/#archive" rel="friend">Show swatches on archive / shop</a> - Let users find what they really want by showing your swatches on the shop archive.
-* <a href="https://woosuite.com/plugins/woocommerce-variation-swatches/#shapes" rel="friend">Attribute Variation Swatches Shapes</a> - We have included three presets for you to choose from as well as advanced styling options to further customize your swatches.
-* <a href="https://woosuite.com/plugins/woocommerce-variation-swatches/#outofstock" rel="friend">Out of Stock Variation Swatches Control</a> - With our recent update, we have included the option for you to manage how to handle your out-of-stock variation.
+* <a href="https://aovup.com/plugins/woocommerce-variation-swatches/#button" rel="friend">Auto Convert All Variation Dropdowns To Button Swatch</a> - With a click of a button you can convert your dropdowns into button/label.
+*  <a href="https://aovup.com/plugins/woocommerce-variation-swatches/#autoimage" rel="friend">Auto Convert Into Image Swatches*</a> - By toggling this option you can set dual color for those products that can not be described with one color.
+*   <a href="https://aovup.com/plugins/woocommerce-variation-swatches/#dualcolor" rel="friend">Dual Color Variation Swatches*</a> - Automatically covert dropdowns to "Image Swatch" if variation has an image.
+* <a href="https://aovup.com/plugins/woocommerce-variation-swatches/#archive" rel="friend">Show swatches on archive / shop</a> - Let users find what they really want by showing your swatches on the shop archive.
+* <a href="https://aovup.com/plugins/woocommerce-variation-swatches/#shapes" rel="friend">Attribute Variation Swatches Shapes</a> - We have included three presets for you to choose from as well as advanced styling options to further customize your swatches.
+* <a href="https://aovup.com/plugins/woocommerce-variation-swatches/#outofstock" rel="friend">Out of Stock Variation Swatches Control</a> - With our recent update, we have included the option for you to manage how to handle your out-of-stock variation.
 * Completely integrate with WooCommerce plugin
 * Work on variable product only
 * Create attribute color swatches
@@ -41,19 +41,19 @@ https://www.youtube.com/watch?v=1qGusf9IfFY&t
 
 If you like this WordPress popup plugin, then consider checking out our other projects:
 
-* <a href="https://woosuite.com/plugins/woocommerce-additional-variation-images/" rel="friend" title="Additional variation images for WooCommerce">Additional variation images for WooCommerce</a> - Show additional variation images and videos to showcase your product key highlights.
-*    <a href="https://woosuite.com/plugins/woocommerce-show-variations-on-shop-page/">Show Variations on Shop Page</a> - Show your variation products on your shop page separately to increase your catalog size and the user experience.
-* <a href="https://woosuite.com/plugins/dynamic-pricing-discount-rules/" rel="friend" title="Dynamic Pricing & Discount Rules for WooCommerce">Dynamic Pricing & Discount Rules for WooCommerce</a> - Create Buy one get one free offers, schedule promotions, tiered pricing, role base pricing, and much more.
-* <a href="https://woosuite.com/plugins/min-max-quantities/" rel="friend" title="Minimum/Maximum Quantity for WooCommerce">Minimum/Maximum Quantity for WooCommerce</a> - Create quantity increments, spending rules, and as the name suggests minimum and maximum quantity for woocommerce.
-* <a href="https://woosuite.com/plugins/woocommerce-product-bundles/">Product Bundles for WooCommerce</a> - Improve your average order value by creating irresistible product bundles.
-* <a href="https://woosuite.com/plugins/wholesale/">Wholesale Suite for Woocommerce</a> - Maximize your store revenue by catering to wholesale customers, you can sell to B2B + B2C.
-*  <a href="https://woosuite.com/plugins/product-table/">Quick Order Form for WooCommerce</a> - Create a streamlined bulk order form to reduce friction in users checking out.
-*   <a href="https://woosuite.com/plugins/woocommerce-quick-view/">Product Quick View for WooCommerce</a> - Allows users to get a quick look at products without opening the product page.
-*   <a href="https://woosuite.com/plugins/restriction-rules/">Restriction Rules for WooCommerce</a> - Set your store to private mode, password protection, menu item restriction, hide products, and more.
-*    <a href="https://woosuite.com/plugins/sales-agent-reps/">Sales Agents for WooCommerce</a> - Grow your business by adding sale agents to your WooCommerce store.
+* <a href="https://aovup.com/plugins/woocommerce-additional-variation-images/" rel="friend" title="Additional variation images for WooCommerce">Additional variation images for WooCommerce</a> - Show additional variation images and videos to showcase your product key highlights.
+*    <a href="https://aovup.com/plugins/woocommerce-show-variations-on-shop-page/">Show Variations on Shop Page</a> - Show your variation products on your shop page separately to increase your catalog size and the user experience.
+* <a href="https://aovup.com/plugins/dynamic-pricing-discount-rules/" rel="friend" title="Dynamic Pricing & Discount Rules for WooCommerce">Dynamic Pricing & Discount Rules for WooCommerce</a> - Create Buy one get one free offers, schedule promotions, tiered pricing, role base pricing, and much more.
+* <a href="https://aovup.com/plugins/min-max-quantities/" rel="friend" title="Minimum/Maximum Quantity for WooCommerce">Minimum/Maximum Quantity for WooCommerce</a> - Create quantity increments, spending rules, and as the name suggests minimum and maximum quantity for woocommerce.
+* <a href="https://aovup.com/plugins/woocommerce-product-bundles/">Product Bundles for WooCommerce</a> - Improve your average order value by creating irresistible product bundles.
+* <a href="https://aovup.com/plugins/wholesale/">Wholesale Suite for Woocommerce</a> - Maximize your store revenue by catering to wholesale customers, you can sell to B2B + B2C.
+*  <a href="https://aovup.com/plugins/product-table/">Quick Order Form for WooCommerce</a> - Create a streamlined bulk order form to reduce friction in users checking out.
+*   <a href="https://aovup.com/plugins/woocommerce-quick-view/">Product Quick View for WooCommerce</a> - Allows users to get a quick look at products without opening the product page.
+*   <a href="https://aovup.com/plugins/restriction-rules/">Restriction Rules for WooCommerce</a> - Set your store to private mode, password protection, menu item restriction, hide products, and more.
+*    <a href="https://aovup.com/plugins/sales-agent-reps/">Sales Agents for WooCommerce</a> - Grow your business by adding sale agents to your WooCommerce store.
 
 
-Visit <a href="https://woosuite.com/blog/" rel="friend">the Woosuite blog</a> to learn from our <a href="https://woosuite.com/woocommerce/" rel="friend" title="WooCommerce Tutorials">WordPress Tutorials</a> and find out about other <a href="https://woosuite.com/plugins/" rel="friend" title="Best WordPress Plugins">WooCommerce plugins</a>.
+Visit <a href="https://aovup.com/blog/" rel="friend">the AOVUP blog</a> to learn from our <a href="https://aovup.com/woocommerce/" rel="friend" title="WooCommerce Tutorials">WordPress Tutorials</a> and find out about other <a href="https://aovup.com/plugins/" rel="friend" title="Best WordPress Plugins">WooCommerce plugins</a>.
 
 
 == Installation ==
@@ -103,6 +103,10 @@ Yes, it will work with any theme, but may require some styling to make it match 
 7. Add new attribute color when edit a product
 
 == Changelog ==
+= 2.2.0 =
+* Fix compatibility with Woosuite product table 
+* Fix swatch width issue on Safari
+
 = 2.1.9 =
 * Fix the product metadata not saving
 * Add support for WooCommerce product bundles plugin

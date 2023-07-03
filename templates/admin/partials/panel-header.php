@@ -14,17 +14,17 @@
                             </a>
                         </li>
                         <li>
-                            <a href="https://woosuite.com/plugins/woocommerce-variation-swatches/free-vs-pro/?utm_source=user-dashboard&utm_medium=header" target="_blank">
+                            <a href="https://aovup.com/plugins/woocommerce-variation-swatches/free-vs-pro/?utm_source=user-dashboard&utm_medium=header" target="_blank">
                                 <?php _e( 'Free vs Pro', 'wcvs' ); ?>
                             </a>
                         </li>
                         <li>
-                            <a href="https://woosuite.com/support?utm_source=user-dashboard&utm_medium=header" target="_blank">
+                            <a href="https://aovup.com/support?utm_source=user-dashboard&utm_medium=header" target="_blank">
                                 <?php _e( 'Support', 'wcvs' ); ?>
                             </a>
                         </li>
                         <li>
-                            <a href="https://woosuite.com/docs?utm_source=user-dashboard&utm_medium=header" target="_blank">
+                            <a href="https://aovup.com/docs?utm_source=user-dashboard&utm_medium=header" target="_blank">
                                 <?php _e( 'Docs', 'wcvs' ); ?>
                             </a>
                         </li>

@@ -10,7 +10,7 @@ Our typical reply time is within 48 working hours.' ); ?>
 		</div>
 	</div>
 	<div class="footer">
-		<a class="action-btn support-btn" target="_blank" href="https://woosuite.com/support/">
+		<a class="action-btn support-btn" target="_blank" href="https://aovup.com/support/">
 			<?php _e( 'Get Support' ); ?>
 		</a>
 	</div>

@@ -7,17 +7,17 @@
             </a>
         </li>
         <li>
-            <a target="_blank" href="https://woosuite.com/docs?utm_source=user-dashboard&utm_medium=header" target="_blank">
+            <a target="_blank" href="https://aovup.com/docs?utm_source=user-dashboard&utm_medium=header" target="_blank">
 				<?php _e( 'Docs', 'wcvs' ); ?>
             </a>
         </li>
         <li>
-            <a target="_blank" href="https://woosuite.com/support?utm_source=user-dashboard&utm_medium=header" target="_blank">
+            <a target="_blank" href="https://aovup.com/support?utm_source=user-dashboard&utm_medium=header" target="_blank">
 				<?php _e( 'Support', 'wcvs' ); ?>
             </a>
         </li>
         <li>
-            <a target="_blank" href="https://woosuite.com/my-account?utm_source=user-dashboard&utm_medium=header" target="_blank">
+            <a target="_blank" href="https://aovup.com/my-account?utm_source=user-dashboard&utm_medium=header" target="_blank">
 				<?php _e( 'My Account ', 'wcvs' ); ?>
             </a>
         </li>

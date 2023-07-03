@@ -19,7 +19,7 @@ msgid "Variation Swatches for WooCommerce"
 msgstr ""
 
 #. Plugin URI of the plugin
-msgid "https://woosuite.com/plugins/woocommerce-variation-swatches/"
+msgid "https://aovup.com/plugins/woocommerce-variation-swatches/"
 msgstr ""
 
 #. Description of the plugin
@@ -27,11 +27,11 @@ msgid "Creates variation swatches for WooCommerce, converts your variation dropd
 msgstr ""
 
 #. Author of the plugin
-msgid "Woosuite"
+msgid "AOVUp"
 msgstr ""
 
 #. Author URI of the plugin
-msgid "https://woosuite.com/"
+msgid "https://aovup.com/"
 msgstr ""
 
 #: includes/class-admin-product.php:34
@@ -659,7 +659,7 @@ msgid "Configure items"
 msgstr ""
 
 #: templates/admin/addons-pages.php:14
-msgid "All Woosuite Plugins"
+msgid "All AOVUP Plugins"
 msgstr ""
 
 #: templates/admin/addons-pages.php:15
@@ -794,7 +794,7 @@ msgid "Settings saved un-successfully."
 msgstr ""
 
 #: templates/admin/setting-panel.php:42
-msgid "Variations Swatches for woocommerce by Woosuite"
+msgid "Variations Swatches for woocommerce by AOVUP"
 msgstr ""
 
 #: variation-swatches-for-woocommerce.php:57
