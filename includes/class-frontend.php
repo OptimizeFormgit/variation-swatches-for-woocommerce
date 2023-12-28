@@ -104,29 +104,32 @@ class TA_WC_Variation_Swatches_Frontend {
 	public function get_available_variation() {
 		global $product;
 
-		if ( 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' )) {
-			return '';
-		}
-		$is_disabled_checking_availability     = $this->is_disabled_checking_availability();
-		$is_keep_disabled_variation_selectable = $this->is_keep_disabled_variation_selectable();
-		if ( $is_disabled_checking_availability && ! $is_keep_disabled_variation_selectable ) {
+		if ( ! $product instanceof WC_Product_Variable ) {
 			return '';
 		}
 
-		if ( $product instanceof WC_Product_Variable ) {
-			if ( $is_disabled_checking_availability && $is_keep_disabled_variation_selectable ) {
-				$variations_json = wp_json_encode( TA_WC_Variation_Swatches::get_available_variations( $product, false, true ) );
-			}else{
-				$variations_json = wp_json_encode( TA_WC_Variation_Swatches::get_available_variations( $product, true, true ) );
-			}
-			$variations_attr = function_exists( 'wc_esc_json' ) ? wc_esc_json( $variations_json ) : _wp_specialchars( $variations_json, ENT_QUOTES, 'UTF-8', true );
-			if ( ! empty( $variations_attr ) ) {
-				?>
-                <div class="tawcvs-placeholder-element hidden tawcvs-available-product-variation"
-                    data-product_variations="<?php echo $variations_attr; ?>">
-				</div>
-			<?php }
+		$get_variations = count( $product->get_children() ) > apply_filters( 'woocommerce_ajax_variation_threshold', 30, $product );
+
+		$is_disabled_checking_availability     = $this->is_disabled_checking_availability();
+		$is_keep_disabled_variation_selectable = $this->is_keep_disabled_variation_selectable();
+		if ( ! $is_disabled_checking_availability && ! $get_variations ) {
+			return '';
 		}
+
+		if ( ! $is_disabled_checking_availability ) {
+			$skip_out_of_stock = 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' );
+		} else {
+			$skip_out_of_stock = $is_keep_disabled_variation_selectable;
+		}
+
+		$variations_json = wp_json_encode( TA_WC_Variation_Swatches::get_available_variations( $product, $skip_out_of_stock, true ) );
+		$variations_attr = function_exists( 'wc_esc_json' ) ? wc_esc_json( $variations_json ) : _wp_specialchars( $variations_json, ENT_QUOTES, 'UTF-8', true );
+		if ( ! empty( $variations_attr ) ) {
+			?>
+            <div class="tawcvs-placeholder-element hidden tawcvs-available-product-variation"
+                 data-product_variations="<?php echo $variations_attr; ?>">
+            </div>
+		<?php }
 	}
 
 	/**

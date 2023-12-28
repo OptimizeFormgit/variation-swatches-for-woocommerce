@@ -33,7 +33,7 @@ class TA_WC_Variation_Swatches_Admin {
 	public function __construct() {
 		add_action( 'admin_init', array( $this, 'includes' ) );
 		add_action( 'admin_init', array( $this, 'init_attribute_hooks' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ), PHP_INT_MAX );
 
 		add_action( 'woocommerce_product_data_tabs', array( $this, 'add_custom_swatch_variation_tab' ) );
 		add_action( 'woocommerce_product_data_panels', array( $this, 'product_tab_variation_swatches_panel' ) );
@@ -278,6 +278,7 @@ class TA_WC_Variation_Swatches_Admin {
 	 * Load stylesheet and scripts in edit product attribute screen
 	 */
 	public function enqueue_scripts() {
+		global $wp_styles;
 		$screen   = get_current_screen();
 		$dir_name = dirname( __FILE__ );
 
@@ -290,6 +291,12 @@ class TA_WC_Variation_Swatches_Admin {
 		     strpos( $screen->id, 'product' ) === false &&
 		     TA_WC_Variation_Swatches::is_in_plugin_settings_page() === false ) {
 			return;
+		}
+
+		if ( TA_WC_Variation_Swatches::is_in_plugin_settings_page() ) {
+			wp_dequeue_style( 'woocommerce_admin_styles' );
+			wp_deregister_script( 'woocommerce_admin_styles' );
+			unset( $wp_styles->registered['woocommerce_admin_styles'] );
 		}
 
 		wp_enqueue_media();
