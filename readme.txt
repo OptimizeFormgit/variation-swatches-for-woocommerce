@@ -2,10 +2,10 @@
 Contributors: variationswatches, themealien, zgani, mehbubrashid, minhnguyen25 
 Tags: variation swatches, woocommerce color swatches, variation swatches for woocommerce
 Requires at least: 4.5
-Tested up to: 6.2.2
+Tested up to: 6.4.2
 Stable tag: 2.2.1
 WC requires at least: 3.2.0
-WC tested up to: 7.8.1
+WC tested up to: 8.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -103,6 +103,12 @@ Yes, it will work with any theme, but may require some styling to make it match 
 7. Add new attribute color when edit a product
 
 == Changelog ==
+= 2.2.1 =
+* Add support for Woo HPOS feature
+* Add support for WC Product Addon plugin
+* Fix: not removing WC styles on the product edit page
+* Fix the logic to render the custom available variations
+
 = 2.2.0 =
 * Fix compatibility with Woosuite product table 
 * Fix swatch width issue on Safari

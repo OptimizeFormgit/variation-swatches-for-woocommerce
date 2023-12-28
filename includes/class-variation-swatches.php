@@ -249,10 +249,12 @@ final class TA_WC_Variation_Swatches {
 	 * Get an array of available variations for the current product.
 	 *
 	 * @param $product
+	 * @param $skip_out_of_stock
+	 * @param $get_full_attribute_data
 	 *
 	 * @return array[]|WC_Product_Variation[]
 	 */
-	public static function get_available_variations( $product, $ignore_out_of_stock = false, $get_full_attribute_data = false ) {
+	public static function get_available_variations( $product, $skip_out_of_stock = false, $get_full_attribute_data = false ) {
 		if ( ! $product instanceof WC_Product_Variable ) {
 			return array();
 		}
@@ -271,7 +273,7 @@ final class TA_WC_Variation_Swatches {
 			$variation = wc_get_product( $variation_id );
 
 			// Hide out of stock variations if 'Hide out of stock items from the catalog' is checked.
-			if ( ! $variation || ! $variation->exists() || ( $ignore_out_of_stock && ! $variation->is_in_stock() ) ) {
+			if ( ! $variation || ! $variation->exists() || ( $skip_out_of_stock && ! $variation->is_in_stock() ) ) {
 				continue;
 			}
 
