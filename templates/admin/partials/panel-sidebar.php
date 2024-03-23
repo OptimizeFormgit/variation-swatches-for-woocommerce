@@ -20,7 +20,7 @@
         $plugin_slug = 'variation-swatches-for-woocommerce';
 
         if ( ! $all_plugins = get_transient( 'woosuite-all-plugins' ) ) {
-            $request = wp_remote_request( 'https://dw.woosuite.com/wp-json/woosuite-server/v1/plugins/' );
+            $request = wp_remote_request( 'https://dw.aovup.com/wp-json/woosuite-server/v1/plugins/' );
 
             if ( ! is_wp_error( $request ) ) {
                 $all_plugins = json_decode( wp_remote_retrieve_body( $request ) );

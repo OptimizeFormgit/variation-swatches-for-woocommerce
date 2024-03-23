@@ -14,10 +14,29 @@ class VSWC_Settings_Page {
 		}
 
 		add_action( 'admin_menu', array( $this, 'handle_save_actions' ), 5 );
-		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+		add_action( 'admin_menu', array( $this, 'admin_menu' ), 99 );
+		add_action( 'admin_menu', array( $this, 'handle_external_link' ), 100 );
+
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
 		add_action( 'wp_ajax_tawcvs_save_settings', array( $this, 'tawcvs_save_settings' ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function handle_external_link() {
+		global $submenu;
+		$pro_external_url = 'https://aovup.com/lp/variations-swatches-upgrade/?utm_source=dashboard&utm_medium=menu-link&utm_campaign=swatch-offer&utm_id=dashboard-upgrade';
+
+		if ( isset( $submenu['woosuite-core'] ) ) {
+			foreach ( $submenu['woosuite-core'] as $index => $menu_data ) {
+				if ( $menu_data[2] === 'aovup-swatchupgrade-to-pro' ) {
+					$submenu['woosuite-core'][ $index ][2] = $pro_external_url;
+					$submenu['woosuite-core'][ $index ][4] = 'aovup-pro-upgrade-link';
+				}
+			}
+		}
 	}
 
 	public function admin_scripts() {
@@ -28,41 +47,68 @@ class VSWC_Settings_Page {
 	}
 
 	public function admin_menu() {
-		if ( TA_WC_Variation_Swatches::is_woo_core_active() ) {
-			add_submenu_page(
-				'woosuite-core',
-				__( 'Variation Swatches', 'wcvs' ),
-				__( 'Variation Swatches', 'wcvs' ),
-				'manage_options',
-				'variation-swatches-settings',
-				array( $this, 'render' )
-			);
-		} else {
+		global $admin_page_hooks;
+		if ( ! TA_WC_Variation_Swatches::is_woo_core_active() && empty ( $admin_page_hooks['woosuite-core'] ) ) {
+			// Register fake top AovUp menu.
 			add_menu_page(
-				__( 'Variation Swatches', 'wcvs' ),
-				__( 'Variation Swatches', 'wcvs' ),
+				__( 'AOVup Core', 'wcvs' ),
+				__( 'AOVup', 'wcvs' ),
 				'manage_options',
-				'variation-swatches-settings',
-				array( $this, 'render' ),
-				'dashicons-ellipsis',
-				12 );
+				'woosuite-core',
+				null,
+				WCVS_PLUGIN_URL . 'assets/images/admin-menu-icon.png',
+				4.9
+			);
+		}
 
-			add_submenu_page(
-				'variation-swatches-settings',
-				__( 'Settings', 'wcvs' ),
-				__( 'Settings', 'wcvs' ),
-				'manage_options',
-				'variation-swatches-settings',
-				array( $this, 'render' )
+
+		add_submenu_page(
+			'woosuite-core',
+			__( 'Variation Swatches', 'wcvs' ),
+			__( 'Variation Swatches', 'wcvs' ),
+			'manage_options',
+			'variation-swatches-settings',
+			array( $this, 'render' )
+		);
+
+		add_submenu_page(
+			'woosuite-core',
+			__( 'Woosuite Addons', 'wcvs' ),
+			__( 'Addons', 'wcvs' ),
+			'manage_options',
+			'variation-swatches-addons',
+			array( $this, 'render_addons' )
+		);
+
+		//Adding fake pages
+		if ( ! TA_WC_Variation_Swatches::is_woo_core_active() ) {
+			$list_of_fake_pages = array(
+				array(
+					'label'    => __( 'Upgrade to Pro!', 'wcvs' ),
+					'path'     => 'woosuite-variation-swatches-pro/woosuite-variation-swatches-pro.php',
+					'position' => 999999
+				)
+
 			);
-			add_submenu_page(
-				'variation-swatches-settings',
-				__( 'Woosuite Addons', 'wcvs' ),
-				__( 'Addons', 'wcvs' ),
-				'manage_options',
-				'variation-swatches-addons',
-				array( $this, 'render_addons' )
-			);
+			foreach ( $list_of_fake_pages as $fake_page_data ) {
+				if ( Swatch_AovUp_Freemium::is_plugin_activated( $fake_page_data['path'] ) ) {
+					continue;
+				}
+				add_submenu_page(
+					'woosuite-core',
+					$fake_page_data['label'],
+					$fake_page_data['label'],
+					'manage_options',
+					'aovup-swatch' . sanitize_title( $fake_page_data['label'] ),
+					array( $this, 'render_fake_page' ),
+					$fake_page_data['position'] ?? null
+				);
+			}
+		}
+
+		//Adding hack to remove the first sub menu page
+		if ( ! TA_WC_Variation_Swatches::is_woo_core_active() ) {
+			remove_submenu_page( 'woosuite-core', 'woosuite-core' );
 		}
 
 	}
@@ -77,6 +123,10 @@ class VSWC_Settings_Page {
 
 	public function render_addons() {
 		TA_WC_Variation_Swatches::get_template( 'admin/addons-pages.php' );
+	}
+
+	public function render_fake_page() {
+		TA_WC_Variation_Swatches::get_template( 'admin/freemium.php' );
 	}
 
 	public function tawcvs_save_settings() {

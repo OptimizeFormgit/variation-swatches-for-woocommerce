@@ -11,7 +11,7 @@
 				<div class="opt-module-banner">
 					<div class="opt-module-banner-grid">
 						<div class="opt-main-content-banner">
-							<h3 class="opt-banner-title"><?php _e('All Woosuite Plugins','wcvs');?></h3>
+							<h3 class="opt-banner-title"><?php _e('Supercharge Your Store!','wcvs');?></h3>
 							<p><?php _e('You can view and check more details on our plugins below', 'wcvs');?></p>
 						</div>
 						<div class="opt-module-banner-img">

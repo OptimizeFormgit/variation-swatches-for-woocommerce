@@ -282,6 +282,18 @@ class TA_WC_Variation_Swatches_Admin {
 		$screen   = get_current_screen();
 		$dir_name = dirname( __FILE__ );
 
+		wp_enqueue_style( 'tawcvs-admin-common-css', plugins_url( '/assets/css/common.css', $dir_name ), null, WCVS_PLUGIN_VERSION );
+		wp_enqueue_script( 'tawcvs-admin-common-js', plugins_url( '/assets/js/common.js', $dir_name ), null, WCVS_PLUGIN_VERSION );
+
+		wp_localize_script(
+			'tawcvs-admin-common-js',
+			'tawcvs',
+			array(
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+				'adminUrl' => admin_url()
+			)
+		);
+
 		if ( strpos( $screen->id, 'variation-swatches-addons' ) !== false ) {
 			wp_enqueue_style( 'tawcvs-admin-addons', plugins_url( '/assets/css/admin-addons-page.css', $dir_name ), array() );
 		}

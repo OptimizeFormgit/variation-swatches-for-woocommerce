@@ -33,7 +33,7 @@ if ( ! class_exists( 'VSWC_Addons_Page' ) ) {
 		}
 
 		private function woosuite_core_get_api_site_url() {
-			return apply_filters( 'woosuite_core_get_api_site_url', 'https://dw.woosuite.com/' );
+			return apply_filters( 'woosuite_core_get_api_site_url', 'https://dw.aovup.com/' );
 		}
 	}
 }

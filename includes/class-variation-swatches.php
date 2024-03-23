@@ -59,6 +59,7 @@ final class TA_WC_Variation_Swatches {
 
 		if ( is_admin() ) {
 			require_once $current_dir . '/class-admin.php';
+			require_once $current_dir . '/class-aovup-freemium.php';
 			if ( ! self::is_woo_core_active() ) {
 				require_once $current_dir . '/class-addon-page.php';
 			}
