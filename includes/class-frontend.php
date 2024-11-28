@@ -216,7 +216,7 @@ class TA_WC_Variation_Swatches_Frontend {
 			}
 			//If we are on shop/archived page (not product page), we will check the defined limit number of variations
 			//the product still have more variations -> show the view more icon
-			if ( ( ! $is_product_page || $woocommerce_loop['name'] == 'related' )
+			if ( ( ! $is_product_page || ( isset( $woocommerce_loop['name'] ) && $woocommerce_loop['name'] == 'related' ) )
 			     && 0 < $defined_limit
 			     && count( $options ) > $defined_limit ) {
 				$swatches .= apply_filters( 'tawcvs_swatch_show_more_html', '', $product );

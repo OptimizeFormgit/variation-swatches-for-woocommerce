@@ -71,17 +71,17 @@ class VSWC_Settings_Page {
 			array( $this, 'render' )
 		);
 
-		add_submenu_page(
-			'woosuite-core',
-			__( 'Woosuite Addons', 'wcvs' ),
-			__( 'Addons', 'wcvs' ),
-			'manage_options',
-			'variation-swatches-addons',
-			array( $this, 'render_addons' )
-		);
-
 		//Adding fake pages
 		if ( ! TA_WC_Variation_Swatches::is_woo_core_active() ) {
+			add_submenu_page(
+				'woosuite-core',
+				__( 'Woosuite Addons', 'wcvs' ),
+				__( 'Addons', 'wcvs' ),
+				'manage_options',
+				'variation-swatches-addons',
+				array( $this, 'render_addons' )
+			);
+
 			$list_of_fake_pages = array(
 				array(
 					'label'    => __( 'Upgrade to Pro!', 'wcvs' ),

@@ -1,8 +1,11 @@
+<?php
+$addon_page_slug = TA_WC_Variation_Swatches::is_woo_core_active() ? 'variation-swatches-addons' : 'woosuite-core-addons';
+?>
 <div class="opt-desh-menu-wrap">
     <ul class="opt-desh-menu">
         <li class="active">
-            <a href="<?php echo esc_url( admin_url( 'admin.php?page=variation-swatches-addons' ) ); ?>"
-               class="<?php echo isset( $_GET['page'] ) && $_GET['page'] == 'woosuite-core-addons' ? 'active-desh-menu' : ''; ?>">
+            <a href="<?php echo esc_url( admin_url( 'admin.php?page='.$addon_page_slug ) ); ?>"
+               class="<?php echo isset( $_GET['page'] ) && $_GET['page'] == $addon_page_slug ? 'active-desh-menu' : ''; ?>">
 				<?php _e( 'Addons', 'wcvs' ); ?>
             </a>
         </li>

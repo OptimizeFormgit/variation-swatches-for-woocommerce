@@ -3,15 +3,15 @@
  * Plugin Name: Variation Swatches for WooCommerce
  * Plugin URI: https://aovup.com/plugins/woocommerce-variation-swatches/
  * Description: Creates variation swatches for WooCommerce, converts your variation dropdown into color, label, or photo swatches with ease, The original Variation Swatches for WooCommerce.
- * Version: 2.2.2
+ * Version: 2.2.3
  * Author: AovUp
  * Author URI: https://aovup.com/
  * Requires at least: 4.5
- * Tested up to: 6.4.3
+ * Tested up to: 6.7.1
  * Text Domain: wcvs
  * Domain Path: /languages
  * WC requires at least: 3.0.0
- * WC tested up to: 8.7.0
+ * WC tested up to: 9.4.2
  *
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -27,7 +27,7 @@ if ( ! defined( 'TAWC_VS_PLUGIN_FILE' ) ) {
 }
 
 if ( ! defined( 'WCVS_PLUGIN_VERSION' ) ) {
-	define( 'WCVS_PLUGIN_VERSION', '2.2.2' );
+	define( 'WCVS_PLUGIN_VERSION', '2.2.3' );
 }
 
 if ( ! defined( 'WCVS_PLUGIN_URL' ) ) {
@@ -94,6 +94,7 @@ if ( ! function_exists( 'ta_wc_variation_swatches_constructor' ) ) {
 		}
 	}
 }
+add_action( 'plugins_loaded', 'ta_wc_variation_swatches_constructor', 20 );
 
 if ( ! function_exists( 'ta_wc_variation_swatches_deactivate' ) ) {
 	/**
@@ -167,8 +168,6 @@ if ( ! function_exists( 'ta_wc_variation_swatches_deactivate' ) ) {
 		}
 	}
 }
-
-add_action( 'plugins_loaded', 'ta_wc_variation_swatches_constructor', 20 );
 register_deactivation_hook( __FILE__, 'ta_wc_variation_swatches_deactivate' );
 
 //Add support for Woo HPOS
