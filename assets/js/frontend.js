@@ -24,6 +24,7 @@
                 })
                 .on('click', '.swatch', function (e) {
                     e.preventDefault();
+                    e.stopImmediatePropagation();
                     var $el = $(this);
                     let $select = false, value = false;
 

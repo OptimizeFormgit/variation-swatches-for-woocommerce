@@ -465,19 +465,24 @@ class TA_WC_Variation_Swatches_Frontend {
 	public function get_tooltip_html( $html, $term, $name, $args ) {
 		if ( ! empty( $args['tooltip'] ) ) {
 
+            $is_pro_addon_activated = TA_WC_Variation_Swatches::is_pro_addon_active();
 			$show_tooltip = get_term_meta( $term->term_id, 'show-tooltip', true );
-			$show_tooltip = $show_tooltip === '' || ! TA_WC_Variation_Swatches::is_pro_addon_active() ? 1 : $show_tooltip;
-
+			$show_tooltip = $show_tooltip === '' || ! $is_pro_addon_activated ? 1 : $show_tooltip;
+			$attribute_fee = '';
+			if ( $is_pro_addon_activated ) {
+				$attribute_fee = Woosuite_Variation_Swatches_Pro_Public::get_attribute_fee( $term->term_id, get_the_ID() );
+			}
 			if ( $show_tooltip == 1 ) {
 				// get default tooltip label
 				$label = get_term_meta( $term->term_id, 'tooltip-text', true );
-				$label = ! empty( $label ) && TA_WC_Variation_Swatches::is_pro_addon_active() ? $label : $name;
-				$html = '<span class="swatch__tooltip">' . $label . '</span>';
-			} else if ( $show_tooltip == 2 ) {
+				$label = ! empty( $label ) && $is_pro_addon_activated ? $label : $name;
+				$label = $attribute_fee ? $label . ' (+' . $attribute_fee . ')' : $label;
+				$html  = '<span class="swatch__tooltip">' . $label . '</span>';
+			} elseif ( $show_tooltip == 2 ) {
 				// image tooltip
 				$image = get_term_meta( $term->term_id, 'tooltip-image', true );
 				$image = wp_get_attachment_image_src( $image, 'thumbnail' );
-				$html = '<span class="swatch__tooltip"><img src="' . $image[0] . '" /></span>';
+				$html  = '<span class="swatch__tooltip"><img src="' . $image[0] . '" /></span>';
 			}
 		}
 
