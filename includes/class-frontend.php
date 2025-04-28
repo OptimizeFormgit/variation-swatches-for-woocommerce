@@ -307,6 +307,11 @@ class TA_WC_Variation_Swatches_Frontend {
 		}
 		$class = ' swatch-type-'.$type;
 
+		if( isset( $args['variation_product']['woosuite_purchasable'] ) &&
+		$args['variation_product']['woosuite_purchasable'] === false ) {
+			$class .= ' disabled blur-cross ';
+		}
+
 		switch ( $type ) {
 			case 'color':
 				$main_color = get_term_meta( $term->term_id, 'color', true );
