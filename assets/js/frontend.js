@@ -92,8 +92,9 @@
                 })
                 .on('click', '.reset_variations', function () {
                     $form.find('.swatch.selected').removeClass('selected');
-                    $form.find('.swatch.disabled').removeClass('disabled');
-
+                    if( !$form.find('.swatch.disabled').hasClass('blur-cross') ){
+                        $form.find('.swatch.disabled').removeClass('disabled');
+                    }
                     if ($form.find('input[type="radio"]').length > 1) {
                         $form.find('input[type="radio"]').prop('checked', false);
                     }
@@ -119,7 +120,9 @@
                                 $swatch.closest('.swatch-item-wrapper').show();
 
                                 if (values.indexOf(value) > -1) {
-                                    $swatch.removeClass('disabled');
+                                    if( !$swatch.hasClass('blur-cross')) {
+                                        $swatch.removeClass('disabled');
+                                    }
                                 } else {
                                     $swatch.addClass('disabled');
 
