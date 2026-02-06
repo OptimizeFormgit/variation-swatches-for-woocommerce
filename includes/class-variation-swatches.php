@@ -81,6 +81,21 @@ final class TA_WC_Variation_Swatches {
 		if ( ! is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
 			add_action( 'init', array( 'TA_WC_Variation_Swatches_Frontend', 'instance' ) );
 		}
+
+		// Clear cache when product is saved
+		add_action( 'woocommerce_process_product_meta', array( $this, 'clear_product_cache' ) );
+		add_action( 'woocommerce_save_product_variation', array( $this, 'clear_product_cache' ) );
+	}
+
+	/**
+	 * OPTIMIZED: Enhanced cache clearing for smart variations
+	 */
+	public function clear_product_cache( $product_id ) {
+		delete_transient( 'tawcvs_smart_variations_' . $product_id . '_0' );
+		delete_transient( 'tawcvs_smart_variations_' . $product_id . '_1' );
+		delete_transient( 'tawcvs_light_variations_' . $product_id . '_0' );
+		delete_transient( 'tawcvs_light_variations_' . $product_id . '_1' );
+		wp_cache_delete( 'tawcvs_terms_' . $product_id, '' );
 	}
 
 	/**
