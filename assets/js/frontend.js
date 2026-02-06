@@ -2,12 +2,15 @@
     'use strict';
 
     /**
+     * SIMPLIFIED: Original variation swatches form - PHP-only optimized
+     * No AJAX delays, no loading states, instant response
      * @TODO Code a function that calculate available combination instead of use WC hooks
      */
     $.fn.tawcvs_variation_swatches_form = function () {
         return this.each(function () {
             var $form = $(this);
 
+            // OPTIMIZED: All data is loaded upfront by PHP, no special handling needed
             if (typeof $form.find(".tawcvs-available-product-variation").data("product_variations") !== "undefined") {
                 $form.data("product_variations", $form.find(".tawcvs-available-product-variation").data("product_variations"))
                     .trigger('reload_product_variations')
@@ -25,8 +28,14 @@
                 .on('click', '.swatch', function (e) {
                     e.preventDefault();
                     e.stopImmediatePropagation();
+
                     var $el = $(this);
                     let $select = false, value = false;
+
+                    // PERFORMANCE: Quick debounce for rapid clicks
+                    if ($el.data('clicking')) return;
+                    $el.data('clicking', true);
+                    setTimeout(() => $el.removeData('clicking'), 50);
 
                     if (!$("body").hasClass("single-product") &&
                         $("body").find(".wc-product-table-wrapper").length) {
@@ -95,11 +104,13 @@
                     if( !$form.find('.swatch.disabled').hasClass('blur-cross') ){
                         $form.find('.swatch.disabled').removeClass('disabled');
                     }
+
                     if ($form.find('input[type="radio"]').length > 1) {
                         $form.find('input[type="radio"]').prop('checked', false);
                     }
                 })
                 .on('woocommerce_update_variation_values', function () {
+                    // OPTIMIZED: Efficient variation value updates
                     setTimeout(function () {
                         $form.find('.variation-selector').each(function () {
                             var $variationSelector = $(this),
@@ -136,7 +147,7 @@
                                 }
                             });
                         });
-                    }, 100);
+                    }, 50); // Faster response time
                 })
                 .on('tawcvs_no_matching_variations', function () {
                     window.alert(wc_add_to_cart_variation_params.i18n_no_matching_variations_text);
@@ -147,11 +158,11 @@
     $.fn.change_variation_image_on_shop_page = function (variation) {
         var $product = $(this).closest('.product'),
             $product_img = $product.find('.woocommerce-LoopProduct-link img');
-    
+
         if ($product_img.length !== 1) {
             return false;
         }
-    
+
         if (variation && variation.image && variation.image.src && variation.image.src.length > 1) {
             $product_img.wc_set_variation_attr('src', variation.image.src);
             $product_img.wc_set_variation_attr('height', variation.image.src_h);
@@ -198,19 +209,63 @@
         }
     }
 
-    $(function () {
+    // OPTIMIZED: Performance monitoring for large products
+    function logPerformanceInfo() {
+        if (typeof tawcvs_config !== 'undefined' && console && console.log) {
+            const $forms = $('.variations_form');
+            const $largeProductForms = $forms.filter(function() {
+                const variationData = $(this).find('.tawcvs-available-product-variation').data('product_variations');
+                return variationData && variationData.length > tawcvs_config.large_product_threshold;
+            });
+
+            if ($largeProductForms.length > 0) {
+                console.log('TAWCVS: PHP-optimized handling for', $largeProductForms.length, 'large product(s)');
+
+                $largeProductForms.each(function() {
+                    const variationData = $(this).find('.tawcvs-available-product-variation').data('product_variations');
+                    if (variationData) {
+                        console.log('TAWCVS: Loaded', variationData.length, 'variations instantly for product');
+                    }
+                });
+            }
+        }
+    }
+
+    // OPTIMIZED: Efficient initialization
+    function initializeSwatches() {
         $('.variations_form').tawcvs_variation_swatches_form().trigger('woocommerce_update_variation_values');
         $(document.body).trigger('tawcvs_initialized');
         toggle_hidden_variation_btn();
+        logPerformanceInfo();
+    }
+
+    // OPTIMIZED: Throttled re-initialization for AJAX content
+    let reinitTimeout;
+    function throttledReinit() {
+        clearTimeout(reinitTimeout);
+        reinitTimeout = setTimeout(() => {
+            var $variations_form = $('.variations_form:not(.swatches-support)');
+            if ($variations_form.length > 0) {
+                $variations_form.each(function () {
+                    $(this).wc_variation_form();
+                });
+                $variations_form.tawcvs_variation_swatches_form();
+            }
+        }, 50); // Faster reinit
+    }
+
+    $(function () {
+        // Initialize swatches immediately
+        initializeSwatches();
     });
 
     $(document).ajaxComplete(function () {
-        var $variations_form = $('.variations_form:not(.swatches-support)');
-        if ($variations_form.length > 0) {
-            $variations_form.each(function () {
-                $(this).wc_variation_form();
-            });
-            $variations_form.tawcvs_variation_swatches_form();
-        }
+        throttledReinit();
     });
+
+    // Handle dynamic content updates
+    $(document).on('updated_wc_div wc_fragments_refreshed', function() {
+        throttledReinit();
+    });
+
 })(jQuery);

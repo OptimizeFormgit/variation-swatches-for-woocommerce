@@ -2,8 +2,8 @@
 Contributors: variationswatches, themealien, zgani, mehbubrashid, minhnguyen25 
 Tags: variation swatches, woocommerce color swatches, variation swatches for woocommerce
 Requires at least: 4.5
-Tested up to: 6.7.1
-Stable tag: 2.2.5
+Tested up to: 6.9
+Stable tag: 2.2.6
 WC requires at least: 3.2.0
 WC tested up to: 9.4.2
 License: GPLv2 or later
@@ -103,6 +103,9 @@ Yes, it will work with any theme, but may require some styling to make it match 
 7. Add new attribute color when edit a product
 
 == Changelog ==
+= 2.2.6 =
+* Improved: Swatch rendering performance on frontend
+
 = 2.2.5 =
 * Feature - Added support for attribute fee on cart and checkout pages.
 
