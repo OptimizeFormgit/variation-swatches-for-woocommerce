@@ -252,8 +252,18 @@ final class TA_WC_Variation_Swatches {
 				}
 				$attribute_item_obj_slug = $variation['attributes'][ 'attribute_' . $attribute_tax_name ];
 
+				// Keep the first variation as the representative for display (image/price),
+				// but a term is only "unpurchasable" when EVERY combination containing it is
+				// unpurchasable. Aggregate purchasability across all variations sharing the
+				// term so a single out-of-stock combination no longer disables the whole
+				// attribute option on page load.
 				if ( ! isset( $collected_variations[ $attribute_item_obj_slug ] ) ) {
 					$collected_variations[ $attribute_item_obj_slug ] = $variation;
+					$collected_variations[ $attribute_item_obj_slug ]['woosuite_purchasable'] = false;
+				}
+
+				if ( ! empty( $variation['woosuite_purchasable'] ) ) {
+					$collected_variations[ $attribute_item_obj_slug ]['woosuite_purchasable'] = true;
 				}
 			}
 		}

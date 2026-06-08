@@ -3,7 +3,7 @@ Contributors: variationswatches, themealien, zgani, mehbubrashid, minhnguyen25
 Tags: variation swatches, woocommerce color swatches, variation swatches for woocommerce
 Requires at least: 4.5
 Tested up to: 6.9
-Stable tag: 2.2.6
+Stable tag: 2.2.7
 WC requires at least: 3.2.0
 WC tested up to: 9.4.2
 License: GPLv2 or later
@@ -103,6 +103,10 @@ Yes, it will work with any theme, but may require some styling to make it match 
 7. Add new attribute color when edit a product
 
 == Changelog ==
+= 2.2.7 =
+* Fix - Variation swatches no longer appear greyed out on page load when in-stock combinations are still available.
+* Tweak - Unavailable options now grey out automatically as you make selections, regardless of the "Hide out of stock items" setting.
+
 = 2.2.6 =
 * Improved: Swatch rendering performance on frontend
 

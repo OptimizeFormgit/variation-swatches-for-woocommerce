@@ -236,32 +236,40 @@ class TA_WC_Variation_Swatches_Frontend {
 		// Get availability HTML efficiently
 		$availability_html = wc_get_stock_html( $variation );
 
-		// Create the complete variation data structure that WooCommerce expects
-		return array(
-			'attributes'                => $attributes,
-			'availability_html'         => $availability_html,
-			'backorders_allowed'        => $variation->backorders_allowed(),
-			'dimensions'                => $dimensions,
-			'dimensions_html'           => $dimensions_html,
-			'display_price'             => $display_price,
-			'display_regular_price'     => $display_regular_price,
-			'image'                     => $image_data,
-			'image_id'                  => $variation->get_image_id(),
-			'is_downloadable'           => $variation->is_downloadable(),
-			'is_in_stock'               => $is_in_stock,
-			'is_purchasable'            => $is_purchasable,
-			'is_sold_individually'      => $variation->is_sold_individually(),
-			'is_virtual'                => $variation->is_virtual(),
-			'max_qty'                   => $stock_info['max_qty'],
-			'min_qty'                   => $variation->get_min_purchase_quantity(),
-			'price_html'                => $price_html,
-			'sku'                       => $variation->get_sku(),
-			'variation_description'     => wc_format_content( $variation->get_description() ),
-			'variation_id'              => $variation_id,
-			'variation_is_active'       => $variation->variation_is_active(),
-			'variation_is_visible'      => $variation->variation_is_visible(),
-			'weight'                    => $weight,
-			'weight_html'               => $weight_html,
+		// Create the complete variation data structure that WooCommerce expects.
+		// Apply the standard woocommerce_available_variation filter so that other plugins
+		// (e.g. woo-variation-gallery, product addons) can augment variation data on the
+		// large-product "smart" path, matching WC core's signature in WC_Product_Variable::get_available_variation().
+		return apply_filters(
+			'woocommerce_available_variation',
+			array(
+				'attributes'                => $attributes,
+				'availability_html'         => $availability_html,
+				'backorders_allowed'        => $variation->backorders_allowed(),
+				'dimensions'                => $dimensions,
+				'dimensions_html'           => $dimensions_html,
+				'display_price'             => $display_price,
+				'display_regular_price'     => $display_regular_price,
+				'image'                     => $image_data,
+				'image_id'                  => $variation->get_image_id(),
+				'is_downloadable'           => $variation->is_downloadable(),
+				'is_in_stock'               => $is_in_stock,
+				'is_purchasable'            => $is_purchasable,
+				'is_sold_individually'      => $variation->is_sold_individually(),
+				'is_virtual'                => $variation->is_virtual(),
+				'max_qty'                   => $stock_info['max_qty'],
+				'min_qty'                   => $variation->get_min_purchase_quantity(),
+				'price_html'                => $price_html,
+				'sku'                       => $variation->get_sku(),
+				'variation_description'     => wc_format_content( $variation->get_description() ),
+				'variation_id'              => $variation_id,
+				'variation_is_active'       => $variation->variation_is_active(),
+				'variation_is_visible'      => $variation->variation_is_visible(),
+				'weight'                    => $weight,
+				'weight_html'               => $weight_html,
+			),
+			$parent_product,
+			$variation
 		);
 	}
 
