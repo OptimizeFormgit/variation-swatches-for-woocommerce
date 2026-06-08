@@ -2,9 +2,55 @@
     'use strict';
 
     /**
+     * Is there at least one in-stock, purchasable variation that matches the
+     * given attribute value combined with the attributes already chosen?
+     *
+     * Drives stock-aware swatch greying independently of the WooCommerce
+     * "Hide out of stock items" setting. An attribute value in a variation is
+     * treated as a wildcard when it is empty (the "any" value).
+     *
+     * @param {string} attrName   e.g. "attribute_pa_size"
+     * @param {string} value      term slug for this swatch
+     * @param {Object} chosen     map of attribute_name -> selected slug
+     * @param {Array}  variations variation data (is_in_stock/is_purchasable per item)
+     * @returns {boolean} true when no data is available, so existing behavior stands
+     */
+    function matchingVariationInStock(attrName, value, chosen, variations) {
+        if (!Array.isArray(variations)) {
+            return true;
+        }
+
+        return variations.some(function (variation) {
+            if (!(variation.is_in_stock && variation.is_purchasable)) {
+                return false;
+            }
+
+            var attrs = variation.attributes || {};
+
+            // This attribute must match the swatch value (or be a wildcard).
+            var ownValue = attrs[attrName];
+            if (typeof ownValue !== 'undefined' && ownValue !== '' && ownValue !== value) {
+                return false;
+            }
+
+            // Every other already-selected attribute must match (or be a wildcard).
+            for (var key in chosen) {
+                if (key === attrName || !chosen.hasOwnProperty(key)) {
+                    continue;
+                }
+                var otherValue = attrs[key];
+                if (typeof otherValue !== 'undefined' && otherValue !== '' && otherValue !== chosen[key]) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+    }
+
+    /**
      * SIMPLIFIED: Original variation swatches form - PHP-only optimized
      * No AJAX delays, no loading states, instant response
-     * @TODO Code a function that calculate available combination instead of use WC hooks
      */
     $.fn.tawcvs_variation_swatches_form = function () {
         return this.each(function () {
@@ -112,10 +158,27 @@
                 .on('woocommerce_update_variation_values', function () {
                     // OPTIMIZED: Efficient variation value updates
                     setTimeout(function () {
+                        // Stock-aware data: works regardless of the WooCommerce
+                        // "Hide out of stock items" setting. Bails (returns "available")
+                        // when no variation data is present so existing behavior stands.
+                        var variations = $form.data('product_variations');
+
+                        // Attributes the shopper has currently selected.
+                        var chosen = {};
+                        $form.find('.variation-selector select').each(function () {
+                            var name = $(this).data('attribute_name') || $(this).attr('name'),
+                                val = $(this).val();
+                            if (name && val) {
+                                chosen[name] = val;
+                            }
+                        });
+
                         $form.find('.variation-selector').each(function () {
                             var $variationSelector = $(this),
-                                $options = $variationSelector.find('select').find('option'),
+                                $select = $variationSelector.find('select'),
+                                $options = $select.find('option'),
                                 $selected = $options.filter(':selected'),
+                                attrName = $select.data('attribute_name') || $select.attr('name'),
                                 values = [];
 
                             $options.each(function (index, option) {
@@ -133,6 +196,21 @@
                                 if (values.indexOf(value) > -1) {
                                     if( !$swatch.hasClass('blur-cross')) {
                                         $swatch.removeClass('disabled');
+                                    }
+
+                                    // Combo exists but is out of stock for the current
+                                    // selection -> disable it the same way as a missing combo.
+                                    if (!$swatch.hasClass('blur-cross') &&
+                                        !matchingVariationInStock(attrName, value, chosen, variations)) {
+                                        $swatch.addClass('disabled');
+
+                                        if ($swatch.closest('.tawcvs-swatches').hasClass('oss-hide')) {
+                                            $swatch.closest('.swatch-item-wrapper').hide();
+                                        }
+
+                                        if ($selected.length && value === $selected.val()) {
+                                            $swatch.removeClass('selected');
+                                        }
                                     }
                                 } else {
                                     $swatch.addClass('disabled');
