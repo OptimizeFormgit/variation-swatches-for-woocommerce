@@ -2,7 +2,7 @@
 Contributors: variationswatches, themealien, zgani, mehbubrashid, minhnguyen25 
 Tags: variation swatches, woocommerce color swatches, variation swatches for woocommerce
 Requires at least: 4.5
-Tested up to: 6.9
+Tested up to: 7.0
 Stable tag: 2.2.7
 WC requires at least: 3.2.0
 WC tested up to: 9.4.2

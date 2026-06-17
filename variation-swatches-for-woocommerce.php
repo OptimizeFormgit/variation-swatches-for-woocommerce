@@ -7,7 +7,7 @@
  * Author: AovUp
  * Author URI: https://aovup.com/
  * Requires at least: 4.5
- * Tested up to: 6.9
+ * Tested up to: 7.0
  * Text Domain: wcvs
  * Domain Path: /languages
  * WC requires at least: 3.0.0
