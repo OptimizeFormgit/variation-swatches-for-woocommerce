@@ -1,8 +1,11 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! class_exists( 'VSWC_Setting_Fields_Renderer' ) ) {
 	class VSWC_Setting_Fields_Renderer {
 		private $current_options;
-		private $option_name = 'woosuite_variation_swatches_option';
 		private $settings_sections;
 		private $settings_tabs;
 		private $settings_fields;
@@ -34,7 +37,7 @@ if ( ! class_exists( 'VSWC_Setting_Fields_Renderer' ) ) {
 		 */
 		public function render_settings_page() {
 			//Get the latest values
-			$this->current_options = get_option( $this->option_name ) ?: array();
+			$this->current_options = get_option( TA_WC_Variation_Swatches::OPTION_NAME ) ?: array();
 
 			$loop_count = 0;
 

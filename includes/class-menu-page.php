@@ -1,8 +1,10 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 
 class VSWC_Settings_Page {
-	private $option_name = 'woosuite_variation_swatches_option';
 	/**
 	 * @var VSWC_Upgrader
 	 */
@@ -115,6 +117,8 @@ class VSWC_Settings_Page {
 		unset( $_POST['action'] );
 		if ( $this->save_post_data_to_db() ) {
 			wp_send_json_success( [ 'msg' => 'saved' ], 200 );
+		} else {
+			wp_send_json_error( [ 'msg' => 'Failed to save settings' ], 403 );
 		}
 	}
 
@@ -139,7 +143,7 @@ class VSWC_Settings_Page {
 	private function save_post_data_to_db() {
 		if ( wp_verify_nonce( $_POST['__nonce'], 'tawcvs_admin_settings') && current_user_can( 'manage_woocommerce' ) ) {
 			unset( $_POST['__nonce'] );
-			update_option( $this->option_name, $this->sanitize_post_data( $_POST ) );
+			update_option( TA_WC_Variation_Swatches::OPTION_NAME, $this->sanitize_post_data( $_POST ) );
 			return TRUE;
 		}
 	}
@@ -148,7 +152,7 @@ class VSWC_Settings_Page {
 	 * Helper function to update the corresponding Color/Image swatches settings
 	 */
 	private function syncing_up_color_image_swatches() {
-		$latest_settings  = get_option( $this->option_name, array() );
+		$latest_settings  = get_option( TA_WC_Variation_Swatches::OPTION_NAME, array() );
 		$general_settings = isset( $latest_settings['general'] ) && is_array( $latest_settings['general'] ) ? $latest_settings['general'] : array();
 
 		$all_attrs = wc_get_attribute_taxonomies();
