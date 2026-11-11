@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Class TA_WC_Variation_Swatches_Admin_Product
@@ -55,7 +58,6 @@ class TA_WC_Variation_Swatches_Admin_Product {
 	public function add_new_attribute_ajax() {
 		$nonce  = isset( $_POST['nonce'] ) ? $_POST['nonce'] : '';
 		$tax    = isset( $_POST['taxonomy'] ) ? sanitize_text_field( $_POST['taxonomy'] ) : '';
-		$type   = isset( $_POST['type'] ) ? sanitize_text_field( $_POST['type'] ) : '';
 		$name   = isset( $_POST['name'] ) ? sanitize_text_field( $_POST['name'] ) : '';
 		$slug   = isset( $_POST['slug'] ) ? sanitize_text_field( $_POST['slug'] ) : '';
 		$swatch = isset( $_POST['swatch'] ) ? sanitize_text_field( $_POST['swatch'] ) : '';
@@ -64,7 +66,11 @@ class TA_WC_Variation_Swatches_Admin_Product {
 			wp_send_json_error( esc_html__( 'Wrong request', 'wcvs' ) );
 		}
 
-		if ( empty( $name ) || empty( $swatch ) || empty( $tax ) || empty( $type ) ) {
+		if ( ! current_user_can( 'manage_product_terms' ) ) {
+			wp_send_json_error( esc_html__( 'You are not allowed to add terms', 'wcvs' ) );
+		}
+
+		if ( empty( $name ) || empty( $swatch ) || empty( $tax ) ) {
 			wp_send_json_error( esc_html__( 'Not enough data', 'wcvs' ) );
 		}
 
@@ -72,7 +78,14 @@ class TA_WC_Variation_Swatches_Admin_Product {
 			wp_send_json_error( esc_html__( 'Taxonomy is not exists', 'wcvs' ) );
 		}
 
-		if ( term_exists( $_POST['name'], $_POST['tax'] ) ) {
+		// The meta key is the attribute's own swatch type, never a value from the request.
+		$attribute = TA_WCVS()->get_tax_attribute( $tax );
+		$type      = $attribute ? $attribute->attribute_type : '';
+		if ( ! isset( TA_WCVS()->types[ $type ] ) ) {
+			wp_send_json_error( esc_html__( 'Wrong request', 'wcvs' ) );
+		}
+
+		if ( term_exists( $name, $tax ) ) {
 			wp_send_json_error( esc_html__( 'This term is exists', 'wcvs' ) );
 		}
 

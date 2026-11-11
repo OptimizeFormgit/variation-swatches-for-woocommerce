@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! class_exists( 'VSWC_Setting_Fields_Manager' ) ) {
 	class VSWC_Setting_Fields_Manager {
 
