@@ -120,9 +120,9 @@ Yes, it will work with any theme, but may require some styling to make it match 
 == Changelog ==
 = 2.2.10 =
 * Fix - The Tooltip design settings (font size, width, maximum width, line height) now apply to the swatch tooltip.
-* Fix - On products with more than 100 variations, one visitor's prices are no longer shown to another visitor, and stock changes show up right away.
+* Fix - Products with over 100 variations no longer mix up visitors' prices, and stock updates show at once.
 * Fix - Saving a variation now refreshes the swatches of its product.
-* Fix - Adding a new swatch term on the product screen needs the right permission and saves the swatch with the attribute's own type.
+* Fix - Adding a swatch term on the product screen now needs the right permission and uses the attribute's own type.
 * Fix - Invalid hex colors, missing attributes and empty settings no longer cause errors.
 * Fix - A failed settings save now shows an error instead of reporting success.
 * Security - Settings and attribute actions are checked more strictly.
