@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! class_exists( 'VSWC_Upgrader' ) ) {
 	class VSWC_Upgrader {
 		/**
@@ -111,7 +115,7 @@ if ( ! class_exists( 'VSWC_Upgrader' ) ) {
 		 * @return bool
 		 */
 		private function is_met_admin_notice_requirements() {
-			$new_settings_value = get_option( 'woosuite_variation_swatches_option', false );
+			$new_settings_value = TA_WCVS()->get_settings();
 			if ( empty( $new_settings_value ) || ! isset( $new_settings_value['general'] ) ) {
 				return false;
 			}

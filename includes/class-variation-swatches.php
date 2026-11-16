@@ -1,9 +1,17 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * The main plugin class
  */
 final class TA_WC_Variation_Swatches {
+	/**
+	 * Centralized option name for plugin settings.
+	 */
+	const OPTION_NAME = 'woosuite_variation_swatches_option';
+
 	/**
 	 * The single instance of the class
 	 *
@@ -17,6 +25,13 @@ final class TA_WC_Variation_Swatches {
 	 * @var array
 	 */
 	public $types = array();
+
+	/**
+	 * Products whose large-product cache was already cleared in this request.
+	 *
+	 * @var array
+	 */
+	private $cleared_smart_variations = array();
 
 	/**
 	 * Main instance
@@ -54,10 +69,26 @@ final class TA_WC_Variation_Swatches {
 	 */
 	public function includes() {
 		$current_dir = dirname( __FILE__ );
+		$traits_dir  = $current_dir . '/traits';
+
+		// Load frontend traits first (required before class definition)
+		require_once $traits_dir . '/trait-frontend-variation-data.php';
+		require_once $traits_dir . '/trait-frontend-swatch-renderer.php';
+		require_once $traits_dir . '/trait-frontend-shop-display.php';
+		require_once $traits_dir . '/trait-frontend-styles.php';
+		require_once $traits_dir . '/trait-frontend-settings.php';
+
 		require_once $current_dir . '/class-upgrader.php';
 		require_once $current_dir . '/class-frontend.php';
 
 		if ( is_admin() ) {
+			// Load admin traits before class definition
+			require_once $traits_dir . '/trait-admin-attribute-fields.php';
+			require_once $traits_dir . '/trait-admin-ajax.php';
+			require_once $traits_dir . '/trait-admin-restore.php';
+			require_once $traits_dir . '/trait-admin-product-tab.php';
+			require_once $traits_dir . '/trait-admin-settings-sync.php';
+
 			require_once $current_dir . '/class-admin.php';
 		}
 	}
@@ -82,17 +113,80 @@ final class TA_WC_Variation_Swatches {
 		// Clear cache when product is saved
 		add_action( 'woocommerce_process_product_meta', array( $this, 'clear_product_cache' ) );
 		add_action( 'woocommerce_save_product_variation', array( $this, 'clear_product_cache' ) );
+
+		// Large products cache stock in a transient: refresh it when an order, refund or edit changes stock.
+		foreach ( array( 'woocommerce_variation_set_stock', 'woocommerce_variation_set_stock_status', 'woocommerce_product_set_stock', 'woocommerce_product_set_stock_status' ) as $stock_hook ) {
+			add_action( $stock_hook, array( $this, 'clear_stock_cache' ) );
+		}
+		// WooCommerce clears its own price caches here on every CRUD/REST save, bulk edit and scheduled sale.
+		add_action( 'woocommerce_delete_product_transients', array( $this, 'clear_smart_variations_cache' ) );
+	}
+
+	/**
+	 * Drop every price context of the large-product cache by deleting its generation key.
+	 *
+	 * @param int $product_id Product ID; only variable products (post type product) have this cache.
+	 */
+	public function clear_smart_variations_cache( $product_id ) {
+		// Once per product until the cache is rebuilt, so a 1,000-variation import clears once.
+		if ( isset( $this->cleared_smart_variations[ $product_id ] ) || 'product' !== get_post_type( $product_id ) ) {
+			return;
+		}
+		$this->cleared_smart_variations[ $product_id ] = true;
+		delete_transient( 'tawcvs_smart_variations_gen_' . $product_id . '_0' );
+		delete_transient( 'tawcvs_smart_variations_gen_' . $product_id . '_1' );
+	}
+
+	/**
+	 * A new cache generation was built: the next change to this product must clear it again.
+	 *
+	 * @param int $product_id Variable product ID.
+	 */
+	public function forget_cleared_smart_variations( $product_id ) {
+		unset( $this->cleared_smart_variations[ $product_id ] );
+	}
+
+	/**
+	 * @param WC_Product|int $product Product object (set_stock hooks) or ID (set_stock_status hooks).
+	 */
+	public function clear_stock_cache( $product ) {
+		if ( ! $product instanceof WC_Product ) {
+			$product = wc_get_product( $product );
+		}
+		if ( ! $product ) {
+			return;
+		}
+		// Only variable products have this cache; the parent's stock counts for variations that inherit it.
+		if ( $product->is_type( 'variation' ) ) {
+			$product_id = $product->get_parent_id();
+		} elseif ( $product->is_type( 'variable' ) ) {
+			$product_id = $product->get_id();
+		} else {
+			return;
+		}
+		$this->clear_smart_variations_cache( $product_id );
 	}
 
 	/**
 	 * OPTIMIZED: Enhanced cache clearing for smart variations
 	 */
 	public function clear_product_cache( $product_id ) {
-		delete_transient( 'tawcvs_smart_variations_' . $product_id . '_0' );
-		delete_transient( 'tawcvs_smart_variations_' . $product_id . '_1' );
+		$product = wc_get_product( $product_id );
+		// woocommerce_save_product_variation passes the variation ID; the caches belong to the parent.
+		if ( $product && $product->is_type( 'variation' ) ) {
+			$product_id = $product->get_parent_id();
+			$product    = wc_get_product( $product_id );
+		}
+
+		$this->clear_smart_variations_cache( $product_id );
 		delete_transient( 'tawcvs_light_variations_' . $product_id . '_0' );
 		delete_transient( 'tawcvs_light_variations_' . $product_id . '_1' );
-		wp_cache_delete( 'tawcvs_terms_' . $product_id, '' );
+		if ( $product ) {
+			// Same key as get_product_variation_term(): one entry per attribute taxonomy.
+			foreach ( array_keys( $product->get_attributes() ) as $taxonomy ) {
+				wp_cache_delete( 'tawcvs_terms_' . $product_id . '_' . $taxonomy );
+			}
+		}
 	}
 
 	/**
@@ -130,6 +224,16 @@ final class TA_WC_Variation_Swatches {
 	 */
 	public function add_attribute_types( array $types ) {
 		return array_merge( $types, $this->types );
+	}
+
+	/**
+	 * Get the plugin settings. The option is autoloaded, so WordPress already keeps it in memory.
+	 *
+	 * @return array
+	 */
+	public function get_settings() {
+		$option = get_option( self::OPTION_NAME, array() );
+		return is_array( $option ) ? $option : array();
 	}
 
 	/**
@@ -211,7 +315,7 @@ final class TA_WC_Variation_Swatches {
 		$type_to_update = ''
 	) {
 		ob_start();
-		$current_options = get_option( 'woosuite_variation_swatches_option' ) ?: array();
+		$current_options = self::instance()->get_settings();
 		if ( ! empty( $tab_id ) ) {
 			$field_name_prefix = $section_id . '[' . $tab_id . ']';
 		} else {

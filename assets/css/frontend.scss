@@ -86,10 +86,6 @@
 
         &.swatch-image {
           font-size: 0;
-
-          .swatch__tooltip {
-            font-size: 14px;
-          }
         }
 
         &.swatch-shape-circle {
@@ -144,10 +140,6 @@
         &.woosuite-selectable{
           cursor: default;
           opacity: 0.4 !important;
-
-          .swatch__tooltip {
-            display: none;
-          }
         }
         &.woosuite-selectable{
           cursor: pointer;

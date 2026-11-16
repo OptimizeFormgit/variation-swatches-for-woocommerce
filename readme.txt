@@ -3,7 +3,7 @@ Contributors: variationswatches, themealien, zgani, mehbubrashid, minhnguyen25
 Tags: variation swatches, woocommerce color swatches, variation swatches for woocommerce
 Requires at least: 4.5
 Tested up to: 7.1
-Stable tag: 2.2.9
+Stable tag: 2.2.10
 WC requires at least: 3.0.0
 WC tested up to: 11.2
 License: GPLv2 or later
@@ -118,6 +118,15 @@ Yes, it will work with any theme, but may require some styling to make it match 
 7. Add new attribute color when edit a product
 
 == Changelog ==
+= 2.2.10 =
+* Fix - The Tooltip design settings (font size, width, maximum width, line height) now apply to the swatch tooltip.
+* Fix - Products with over 100 variations no longer mix up visitors' prices, and stock updates show at once.
+* Fix - Saving a variation now refreshes the swatches of its product.
+* Fix - Adding a swatch term on the product screen now needs the right permission and uses the attribute's own type.
+* Fix - Invalid hex colors, missing attributes and empty settings no longer cause errors.
+* Fix - A failed settings save now shows an error instead of reporting success.
+* Security - Settings and attribute actions are checked more strictly.
+* Dev - Code restructured for maintainability; behaviour unchanged apart from the fixes above.
 = 2.2.9 =
 * Feature - Radio button swatches and labels inside color swatches are now part of the free plugin.
 * Note - If you set attributes to radio buttons or turned on labels inside color swatches while you had Pro, your store may show them again after this update, even if Pro is no longer active.
